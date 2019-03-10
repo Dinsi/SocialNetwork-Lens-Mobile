@@ -2,10 +2,12 @@ import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
-import 'package:proof_of_concept/api.dart';
-import 'package:proof_of_concept/uploadImageScreen.dart';
-
+import 'loginScreen.dart';
+import 'network/api.dart';
+import 'singletons/globals.dart';
+import 'widgets/userInfoLine.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key key}) : super(key: key);
@@ -26,7 +28,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   Future<void> _getUserInfo() async {
-    http.Response response = await Api().getUserInfo();
+    http.Response response = await Api.getUserInfo();
 
     if (response.statusCode == 200) {
       var body = json.decode(response.body);
@@ -36,56 +38,103 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         _username = body['username'];
         _email = body['email'];
       });
-
     } else {
       print('Error: ${response.body}');
     }
   }
 
+  Future<void> _getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      Api.upload(image);
+    }
+  }
+
+  void _logout(BuildContext context) {
+    var globals = Globals();
+    globals.accessToken = null;
+    globals.refreshToken = null;
+
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute<Null>(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.blue,
+            title: Text('Aperture'),
+          ),
+          body: LoginScreen());
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: ListView(
-        shrinkWrap: true,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text('Aperture'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: ListView(
+          shrinkWrap: true,
           children: <Widget>[
             UserInfoLine(label: 'Name', info: _name == null ? '' : _name),
             UserInfoLine(
-              label: 'Username',
-              info: _username == null ? '' : _username
-            ),
+                label: 'Username', info: _username == null ? '' : _username),
             UserInfoLine(label: 'Email', info: _email == null ? '' : _email),
-            UploadImageButton()
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _getImage(),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15.0, horizontal: 6.0),
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 60.0,
+                          decoration: BoxDecoration(
+                              color: Colors.blue[800],
+                              borderRadius: BorderRadius.circular(9.0)),
+                          child: Text(
+                            'Upload Image',
+                            style: Theme.of(context)
+                                .textTheme
+                                .title
+                                .copyWith(color: Colors.white),
+                          )),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _logout(context),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15.0, horizontal: 6.0),
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 60.0,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(9.0)),
+                          child: Text(
+                            'Log Out',
+                            style: Theme.of(context)
+                                .textTheme
+                                .title
+                                .copyWith(color: Colors.white),
+                          )),
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
-      ),
-    );
-  }
-
-
-}
-
-class UserInfoLine extends StatelessWidget {
-  final String label;
-  final String info;
-
-  const UserInfoLine({
-    @required this.label,
-    @required this.info
-  }) : assert(label != null),
-       assert(info != null);
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        child: Text(
-          label + ': ' + info,
-          style: Theme.of(context).textTheme.headline,
         ),
       ),
     );
   }
-
 }

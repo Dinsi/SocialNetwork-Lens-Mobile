@@ -5,13 +5,11 @@ class StartTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final bool obscured;
 
-  const StartTextField({
-    @required this.text,
-    @required this.onChanged,
-    @required this.obscured
-  }) : assert(text != null),
-       assert(onChanged != null),
-       assert(obscured != null);
+  const StartTextField(
+      {@required this.text, @required this.onChanged, @required this.obscured})
+      : assert(text != null),
+        assert(onChanged != null),
+        assert(obscured != null);
 
   @override
   Widget build(BuildContext context) {
@@ -32,5 +30,4 @@ class StartTextField extends StatelessWidget {
       ),
     );
   }
-
 }

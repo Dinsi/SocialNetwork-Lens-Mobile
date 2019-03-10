@@ -14,11 +14,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
       ),
       home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text('Aperture'),
-        ),
-        body: LoginScreen()),
+          appBar: AppBar(
+            backgroundColor: Colors.blue,
+            title: Text('Aperture'),
+          ),
+          body: LoginScreen()),
     );
   }
 }

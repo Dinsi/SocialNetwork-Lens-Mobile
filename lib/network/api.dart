@@ -2,29 +2,21 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert' show json, utf8;
 
-import 'package:proof_of_concept/globals.dart';
+import '../singletons/globals.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
-/// For this app, the only [Category] endpoint we retrieve from an API is Currency.
-///
-/// If we had more, we could keep a list of [Categories] here.
-const apiCategory = {
-  'name': 'Currency',
-  'route': 'currency',
-};
-
 class Api {
-  final String _url = 'https://lens.technic.pt/api';
-  final String _imagePath = '/v1/images/';
-  final String _loginPath = '/token/';
-  /*final String _refreshPath = '/token/refresh/';
-  final String _verifyPath = '/token/verify/';*/
-  final String _registerPath = '/v1/users/';
-  final String _selfPath = '/v1/users/self/';
+  static final String _url = 'https://lens.technic.pt/api';
+  static final String _imagePath = '/v1/images/';
+  static final String _loginPath = '/token/';
+  /*static final String _refreshPath = '/token/refresh/';
+  static final String _verifyPath = '/token/verify/';*/
+  static final String _registerPath = '/v1/users/';
+  static final String _selfPath = '/v1/users/self/';
 
-  Future<void> upload(File imageFile) async {
+  static Future<void> upload(File imageFile) async {
     var stream =
         new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
@@ -53,15 +45,15 @@ class Api {
     });
   }
 
-  Future<http.Response> login(String username, String password) async {
-    var response = await http.post(Uri.parse(_url + _loginPath),
+  static Future<http.Response> login(String username, String password) async {
+    var response = await http.post(Uri.parse('$_url$_loginPath'),
         body: json.encode({'username': username, 'password': password}),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
 
     return response;
   }
 
-  Future<http.Response> register(Map<String, String> fields) async {
+  static Future<http.Response> register(Map<String, String> fields) async {
     var response = await http.post(Uri.parse(_url + _registerPath),
         body: json.encode(fields),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
@@ -69,13 +61,10 @@ class Api {
     return response;
   }
 
-  Future<http.Response> getUserInfo() async {
-    var response = await http.get(
-        Uri.parse(_url + _selfPath),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ' + Globals().accessToken
-        }
-    );
+  static Future<http.Response> getUserInfo() async {
+    var response = await http.get(Uri.parse(_url + _selfPath), headers: {
+      HttpHeaders.authorizationHeader: 'Bearer ' + Globals().accessToken
+    });
 
     return response;
   }

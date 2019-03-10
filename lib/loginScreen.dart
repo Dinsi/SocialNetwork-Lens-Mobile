@@ -3,12 +3,12 @@ import 'dart:convert' show json;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:proof_of_concept/api.dart';
-import 'package:proof_of_concept/globals.dart';
-import 'package:proof_of_concept/basicButton.dart';
-import 'package:proof_of_concept/signUpScreen.dart';
-import 'package:proof_of_concept/startTextField.dart';
-import 'package:proof_of_concept/userInfoScreen.dart';
+import 'network/api.dart';
+import 'singletons/globals.dart';
+import 'widgets/basicButton.dart';
+import 'signUpScreen.dart';
+import 'widgets/startTextField.dart';
+import 'userInfoScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>{
+class _LoginScreenState extends State<LoginScreen> {
   String _username;
   String _password;
   String _message;
@@ -34,9 +34,7 @@ class _LoginScreenState extends State<LoginScreen>{
   }
 
   Future<void> _login() async {
-    final api = Api();
-
-    http.Response response = await api.login(_username, _password);
+    http.Response response = await Api.login(_username, _password);
 
     if (response.statusCode == 200) {
       var body = json.decode(response.body);
@@ -45,23 +43,8 @@ class _LoginScreenState extends State<LoginScreen>{
       globals.accessToken = body['access'];
       globals.refreshToken = body['refresh'];
 
-      setState(() {
-        _message = 'Access token: ${globals.accessToken}\n\n' +
-            'Refresh token: ${globals.refreshToken}';
-      });
-
-      Navigator.of(context).push(MaterialPageRoute<Null>(
-        builder: (BuildContext context) {
-          return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.blue,
-                title: Text('Aperture'),
-              ),
-              body: UserInfoScreen()
-          );
-        },
-      ));
-
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute<Null>(builder: (context) => UserInfoScreen()));
     } else {
       setState(() {
         _message = 'Error: Could not login';
@@ -69,18 +52,23 @@ class _LoginScreenState extends State<LoginScreen>{
     }
   }
 
-  void _signUp(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute<Null>(
+  void _signUp(BuildContext context) async {
+    final result = await Navigator.of(context).push(MaterialPageRoute(
       builder: (BuildContext context) {
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.blue,
-            title: Text('Aperture'),
-          ),
-          body: SignUpScreen()
-        );
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              title: Text('Aperture'),
+            ),
+            body: SignUpScreen());
       },
     ));
+
+    if (result != null) {
+      setState(() {
+        _message = 'You can now log in!';
+      });
+    }
   }
 
   @override
@@ -105,10 +93,8 @@ class _LoginScreenState extends State<LoginScreen>{
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              child: Text(
-                  _message == null ? '' : _message,
-                  style: Theme.of(context).textTheme.headline
-              ),
+              child: Text(_message == null ? '' : _message,
+                  style: Theme.of(context).textTheme.headline),
             ),
           ),
         ],

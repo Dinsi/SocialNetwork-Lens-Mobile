@@ -1,5 +1,3 @@
-library proof_of_concept.globals;
-
 class Globals {
   static final Globals _singleton = new Globals._internal();
   String accessToken = '';
