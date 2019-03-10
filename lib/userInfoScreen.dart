@@ -47,7 +47,38 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-      Api.upload(image);
+      try {
+        Api.upload(image);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Info'),
+                content: Text('Image uploaded'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              );
+            });
+      } on Exception {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Info'),
+                content: Text('An error occurred'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              );
+            });
+      }
     }
   }
 
