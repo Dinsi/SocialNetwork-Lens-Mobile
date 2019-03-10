@@ -19,8 +19,10 @@ class Api {
   final String _url = 'https://lens.technic.pt/api';
   final String _imagePath = '/v1/images/';
   final String _loginPath = '/token/';
-  final String _refreshPath = '/token/refresh/';
-  final String _verifyPath = '/token/verify/';
+  /*final String _refreshPath = '/token/refresh/';
+  final String _verifyPath = '/token/verify/';*/
+  final String _registerPath = '/v1/users/';
+  final String _selfPath = '/v1/users/self/';
 
   Future<void> upload(File imageFile) async {
     var stream =
@@ -30,9 +32,11 @@ class Api {
 
     var uri = Uri.parse(_url + _imagePath);
 
+    print(basename(imageFile.path));
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile('original_file', stream, length,
         filename: basename(imageFile.path));
+
     //contentType: new MediaType('image', 'png'));
 
     request.files.add(multipartFile);
@@ -50,10 +54,28 @@ class Api {
   }
 
   Future<http.Response> login(String username, String password) async {
-    print(_url + _loginPath);
     var response = await http.post(Uri.parse(_url + _loginPath),
         body: json.encode({'username': username, 'password': password}),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
+
+    return response;
+  }
+
+  Future<http.Response> register(Map<String, String> fields) async {
+    var response = await http.post(Uri.parse(_url + _registerPath),
+        body: json.encode(fields),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'});
+
+    return response;
+  }
+
+  Future<http.Response> getUserInfo() async {
+    var response = await http.get(
+        Uri.parse(_url + _selfPath),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer ' + Globals().accessToken
+        }
+    );
 
     return response;
   }
