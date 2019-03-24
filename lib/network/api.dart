@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert' show json, utf8;
 
-import '../singletons/globals.dart';
+import 'package:aperture/singletons/globals.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
@@ -10,9 +10,9 @@ import 'package:http/http.dart' as http;
 class Api {
   static final String _url = 'https://lens.technic.pt/api';
   static final String _imagePath = '/v1/images/';
-  static final String _loginPath = '/token/';
-  /*static final String _refreshPath = '/token/refresh/';
-  static final String _verifyPath = '/token/verify/';*/
+  static final String _loginPath = '/v1/token/';
+  /*static final String _refreshPath = '/v1/token/refresh/';
+  static final String _verifyPath = '/v1/token/verify/';*/
   static final String _registerPath = '/v1/users/';
   static final String _selfPath = '/v1/users/self/';
 
@@ -24,7 +24,6 @@ class Api {
 
     var uri = Uri.parse(_url + _imagePath);
 
-    print(basename(imageFile.path));
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile('original_file', stream, length,
         filename: basename(imageFile.path));

@@ -1,4 +1,4 @@
-package com.example.proofofconcept;
+package com.example.aperture;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

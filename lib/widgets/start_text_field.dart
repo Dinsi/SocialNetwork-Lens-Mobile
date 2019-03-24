@@ -26,6 +26,7 @@ class StartTextField extends StatelessWidget {
         ),
         keyboardType: TextInputType.text,
         obscureText: obscured,
+        enableInteractiveSelection: true,
         onChanged: onChanged,
       ),
     );

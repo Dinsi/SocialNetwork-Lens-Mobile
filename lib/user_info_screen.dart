@@ -1,13 +1,14 @@
 import 'dart:convert' show json;
 
+import 'package:aperture/auth/ui/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-import 'loginScreen.dart';
-import 'network/api.dart';
-import 'singletons/globals.dart';
-import 'widgets/userInfoLine.dart';
+//import 'package:aperture/login_screen.dart';
+import 'package:aperture/network/api.dart';
+import 'package:aperture/singletons/globals.dart';
+import 'package:aperture/widgets/user_info_line.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key key}) : super(key: key);
@@ -88,14 +89,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     globals.refreshToken = null;
 
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute<Null>(builder: (BuildContext context) {
-      return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.blue,
-            title: Text('Aperture'),
-          ),
-          body: LoginScreen());
-    }));
+        MaterialPageRoute<Null>(
+            builder: (BuildContext context) => LoginScreen()));
   }
 
   @override

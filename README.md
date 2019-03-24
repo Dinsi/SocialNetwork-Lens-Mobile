@@ -1,4 +1,4 @@
-# proof_of_concept
+# Aperture
 
 A new Flutter project.
 
