@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'dart:convert' show json;
 
-import 'package:aperture/singletons/globals.dart';
-import 'package:aperture/user_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:aperture/globals.dart';
+import 'package:aperture/user_info_screen.dart';
 import 'package:aperture/auth/style/theme.dart' as Theme;
 import 'package:aperture/auth/utils/bubble_indication_painter.dart';
 import 'package:aperture/network/api.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key key}) : super(key: key);
+  const LoginScreen({Key key}) : super(key: key);
 
   @override
   _LoginScreenState createState() => new _LoginScreenState();
@@ -23,33 +25,19 @@ class _LoginScreenState extends State<LoginScreen>
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  /*static const double _loginHeight = 800.0;
-  static const double _signUpHeight = 950.0;
-  double _currentHeight;*/
+  String _loginEmail;
+  String _loginPassword;
 
-  final FocusNode myFocusNodeEmailLogin = FocusNode();
-  final FocusNode myFocusNodePasswordLogin = FocusNode();
-
-  final FocusNode myFocusNodeUsername = FocusNode();
-  final FocusNode myFocusNodeFirstName = FocusNode();
-  final FocusNode myFocusNodeLastName = FocusNode();
-  final FocusNode myFocusNodeEmail = FocusNode();
-  final FocusNode myFocusNodePassword = FocusNode();
-
-  TextEditingController loginEmailController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
+  String _signUpUsername;
+  String _signUpFirstName;
+  String _signUpLastName;
+  String _signUpEmail;
+  String _signUpPassword;
+  String _signUpConfirmPassword;
 
   bool _obscureTextLogin = true;
-  bool _obscureTextSignup = true;
-  bool _obscureTextSignupConfirm = true;
-
-  TextEditingController signupUsernameController = new TextEditingController();
-  TextEditingController signupFirstNameController = new TextEditingController();
-  TextEditingController signupLastNameController = new TextEditingController();
-  TextEditingController signupEmailController = new TextEditingController();
-  TextEditingController signupPasswordController = new TextEditingController();
-  TextEditingController signupConfirmPasswordController =
-      new TextEditingController();
+  bool _obscureTextSignUp = true;
+  bool _obscureTextSignUpConfirm = true;
 
   PageController _pageController;
   ScrollController _scrollController;
@@ -88,11 +76,11 @@ class _LoginScreenState extends State<LoginScreen>
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(top: 75.0),
-                      child: new Image(
+                      child: Image.asset('assets/img/login_logo.png',
                           width: 250.0,
                           height: 191.0,
-                          fit: BoxFit.fill,
-                          image: new AssetImage('assets/img/login_logo.png')),
+                          fit: BoxFit.fill
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
@@ -107,6 +95,11 @@ class _LoginScreenState extends State<LoginScreen>
                             setState(() {
                               right = Colors.white;
                               left = Colors.black;
+                              _scrollController.animateTo(
+                                  _scrollController.position.minScrollExtent,
+                                  duration: Duration(milliseconds: 500),
+                                  curve: Curves.ease
+                              );
                             });
                           } else if (i == 1) {
                             setState(() {
@@ -137,19 +130,14 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
-    myFocusNodeUsername.dispose();
-    myFocusNodeFirstName.dispose();
-    myFocusNodeLastName.dispose();
-    myFocusNodeEmail.dispose();
-    myFocusNodePassword.dispose();
     _pageController?.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    // _currentHeight = _loginHeight;
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -161,8 +149,8 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Future<void> _login() async {
-    final String username = loginEmailController.text.trim();
-    final String password = loginPasswordController.text;
+    final String username = _loginEmail.trim();
+    final String password = _loginPassword;
 
     if (username.isEmpty || password.isEmpty) {
       setState(() {
@@ -172,13 +160,15 @@ class _LoginScreenState extends State<LoginScreen>
 
     http.Response response = await Api.login(username, password);
 
-
     if (response.statusCode == 200) {
-      final body = json.decode(response.body);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      final globals = Globals();
-      globals.accessToken = body['access'];
-      globals.refreshToken = body['refresh'];
+      final body = json.decode(response.body);
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('access', body['access']);
+      await prefs.setString('refresh', body['refresh']);
+
+      Globals().cacheTokens(body['access'], body['refresh']);
 
       Navigator.of(context).pushReplacement(
           MaterialPageRoute<Null>(builder: (context) => UserInfoScreen()));
@@ -191,23 +181,22 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Future<void> _signUp() async {
-    final String username = signupUsernameController.text.trim();
-    final String firstName = signupFirstNameController.text.trim();
-    final String lastName = signupLastNameController.text.trim();
-    final String email = signupEmailController.text.trim();
-    final String password = signupPasswordController.text;
-    final String confirmation = signupConfirmPasswordController.text;
+    final String username = _signUpUsername.trim();
+    final String firstName = _signUpFirstName.trim();
+    final String lastName = _signUpLastName.trim();
+    final String email = _signUpEmail.trim();
+    final String password = _signUpPassword;
+    final String confirmation = _signUpConfirmPassword;
 
     if (username.isEmpty || firstName.isEmpty ||
         lastName.isEmpty || email.isEmpty || password.isEmpty) {
-
-      setState(() {
-        showInSnackBar('All fields must be filled');
-      });
+      showInSnackBar('All fields must be filled');
+      return;
     }
 
     if (password != confirmation) {
-
+      showInSnackBar('Passwords must match');
+      return;
     }
 
     final Map<String, String> fields = {
@@ -221,13 +210,11 @@ class _LoginScreenState extends State<LoginScreen>
     http.Response response = await Api.register(fields);
 
     if (response.statusCode == 201) {
-      setState(() {
-        showInSnackBar('Sign up successful. You can now log in.');
-      });
+      showInSnackBar('Sign up successful. You can now log in.');
+      // Verify first?
+
     } else {
-      setState(() {
-        showInSnackBar('Error: Could not sign up');
-      });
+      showInSnackBar('Error: Could not sign up');
     }
   }
 
@@ -320,8 +307,7 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeEmailLogin,
-                          controller: loginEmailController,
+                          onChanged: (v) => _loginEmail = v,
                           keyboardType: TextInputType.text,
                           style: TextStyle(
                               fontFamily: "WorkSansSemiBold",
@@ -349,8 +335,7 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodePasswordLogin,
-                          controller: loginPasswordController,
+                          onChanged: (v) => _loginPassword = v,
                           obscureText: _obscureTextLogin,
                           style: TextStyle(
                               fontFamily: "WorkSansSemiBold",
@@ -370,7 +355,7 @@ class _LoginScreenState extends State<LoginScreen>
                               onTap: _toggleLogin,
                               child: Icon(
                                 FontAwesomeIcons.eye,
-                                size: 15.0,
+                                size: 20.0,
                                 color: Colors.black,
                               ),
                             ),
@@ -556,8 +541,7 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeUsername,
-                          controller: signupUsernameController,
+                          onChanged: (v) => _signUpUsername = v,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -585,8 +569,7 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeFirstName,
-                          controller: signupFirstNameController,
+                          onChanged: (v) => _signUpFirstName = v,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -614,8 +597,7 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeLastName,
-                          controller: signupLastNameController,
+                          onChanged: (v) => _signUpLastName = v,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -643,8 +625,7 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeEmail,
-                          controller: signupEmailController,
+                          onChanged: (v) => _signUpEmail = v,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
                               fontFamily: "WorkSansSemiBold",
@@ -671,9 +652,8 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodePassword,
-                          controller: signupPasswordController,
-                          obscureText: _obscureTextSignup,
+                          onChanged: (v) => _signUpPassword = v,
+                          obscureText: _obscureTextSignUp,
                           style: TextStyle(
                               fontFamily: "WorkSansSemiBold",
                               fontSize: 16.0,
@@ -691,7 +671,7 @@ class _LoginScreenState extends State<LoginScreen>
                               onTap: _toggleSignup,
                               child: Icon(
                                 FontAwesomeIcons.eye,
-                                size: 15.0,
+                                size: 20.0,
                                 color: Colors.black,
                               ),
                             ),
@@ -707,8 +687,8 @@ class _LoginScreenState extends State<LoginScreen>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          controller: signupConfirmPasswordController,
-                          obscureText: _obscureTextSignupConfirm,
+                          onChanged: (v) => _signUpConfirmPassword = v,
+                          obscureText: _obscureTextSignUpConfirm,
                           style: TextStyle(
                               fontFamily: "WorkSansSemiBold",
                               fontSize: 16.0,
@@ -726,7 +706,7 @@ class _LoginScreenState extends State<LoginScreen>
                               onTap: _toggleSignupConfirm,
                               child: Icon(
                                 FontAwesomeIcons.eye,
-                                size: 15.0,
+                                size: 20.0,
                                 color: Colors.black,
                               ),
                             ),
@@ -789,19 +769,13 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   void _onSignInButtonPress() {
-    /*setState(() {
-      _currentHeight = _loginHeight;
-    });*/
-    _pageController.animateToPage(0,
+    _pageController?.animateToPage(0,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-    _scrollController.animateTo(_scrollController.position.minScrollExtent,
+    _scrollController?.animateTo(_scrollController.position.minScrollExtent,
         duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   void _onSignUpButtonPress() {
-    /*setState(() {
-      _currentHeight = _signUpHeight;
-    });*/
     _pageController?.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
   }
@@ -814,13 +788,13 @@ class _LoginScreenState extends State<LoginScreen>
 
   void _toggleSignup() {
     setState(() {
-      _obscureTextSignup = !_obscureTextSignup;
+      _obscureTextSignUp = !_obscureTextSignUp;
     });
   }
 
   void _toggleSignupConfirm() {
     setState(() {
-      _obscureTextSignupConfirm = !_obscureTextSignupConfirm;
+      _obscureTextSignUpConfirm = !_obscureTextSignUpConfirm;
     });
   }
 }
