@@ -24,7 +24,6 @@ class BasicButton extends StatelessWidget {
             child: InkWell(
               onTap: onTap,
               borderRadius: _borderRadius,
-              highlightColor: Colors.pink,
               splashColor: Colors.pink,
               child: Center(
                   child: Text(text,

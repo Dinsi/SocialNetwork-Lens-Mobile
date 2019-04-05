@@ -130,6 +130,12 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     _pageController?.dispose();
     _scrollController?.dispose();
     super.dispose();

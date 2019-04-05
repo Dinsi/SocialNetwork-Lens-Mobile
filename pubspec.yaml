@@ -29,7 +29,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  font_awesome_flutter: ^8.0.1
+  font_awesome_flutter: ^8.4.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -89,3 +89,12 @@ flutter:
     - family: WorkSansMedium
       fonts:
         - asset: assets/fonts/Work_Sans/WorkSans-Medium.ttf
+
+#####################################
+    - family: SourceSansPro
+      fonts:
+        - asset: assets/fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf
+        - asset: assets/fonts/Source_Sans_Pro/SourceSansPro-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf
+          weight: 700

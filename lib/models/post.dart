@@ -8,8 +8,9 @@ class Post {
   User user;
   String image;
   List<Topic> topics; // String???
-  int ups;
-  int downs;
+  int votes;
+  int width;
+  int height;
 
   Post(
       {this.title,
@@ -17,8 +18,9 @@ class Post {
         this.user,
         this.image,
         this.topics,
-        this.ups,
-        this.downs});
+        this.votes,
+        this.width,
+        this.height,});
 
   Post.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -32,8 +34,9 @@ class Post {
         topics.add(new Topic.fromJson(v));
       });
     }
-    /*ups = json['ups'];
-    downs = json['downs'];*/
+    votes = json['votes'];
+    width = json['width'];
+    height = json['height'];
   }
 
   Map<String, dynamic> toJson() {
@@ -45,8 +48,11 @@ class Post {
     if (this.topics != null) {
       data['topics'] = this.topics.map((v) => v.toJson()).toList();
     }
-    /*data['ups'] = this.ups;
-    data['downs'] = this.downs;*/
+    data['image'] = this.image;
+    data['votes'] = votes;
+    data['width'] = width;
+    data['height'] = height;
+
     return data;
   }
 }

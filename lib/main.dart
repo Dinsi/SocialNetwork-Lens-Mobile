@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Aperture',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: "SourceSansPro",
         primarySwatch: Colors.blue,
       ),
       home: isLoggedIn ? UserInfoScreen() : LoginScreen(),

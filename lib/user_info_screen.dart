@@ -47,7 +47,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 content: Text('Error: ${response.body}'),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text('OK'),
+                    child: const Text('OK'),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 ],
@@ -73,11 +73,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Info'),
-                content: Text('Image uploaded'),
+                title: const Text('Info'),
+                content: const Text('Image uploaded'),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text('OK'),
+                    child: const Text('OK'),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 ],
@@ -88,11 +88,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Info'),
-                content: Text('An error occurred'),
+                title: const Text('Info'),
+                content: const Text('An error occurred'),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text('OK'),
+                    child: const Text('OK'),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 ],
@@ -129,88 +129,85 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           UserInfoLine(
               label: 'Username', info: _username == null ? '' : _username),
           UserInfoLine(label: 'Email', info: _email == null ? '' : _email),
-          Column(children: <Widget>[
-            Container(
-              height: 60.0,
-              margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6.0),
-                      child: Material(
-                        color: Colors.blue[600],
-                        borderRadius: BorderRadius.circular(9.0),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(9.0),
-                          splashColor: Colors.blue[800],
-                          highlightColor: Colors.blue[800],
-                          onTap: () => _getImage(context),
-                          child: Center(
-                              child: Text(
-                                'Upload Image',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .title
-                                    .copyWith(color: Colors.white),
-                              )),
-                        ),
-                      ),
+          const Divider(
+            height: 10.0,
+            color: Colors.transparent,
+          ),
+          SizedBox(
+            height: 60.0,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                    child: ButtonTheme(
+                      buttonColor: Colors.blue[600],
+                      splashColor: Colors.blueGrey,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0)),
+                      child: RaisedButton(
+                          elevation: 10.0,
+                          onPressed: () => _getImage(context),
+                          child: Text(
+                            'Upload Image',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline
+                                .copyWith(color: Colors.white, fontSize: 23.0),
+                          )),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6.0),
-                      child: Material(
-                        color: Colors.blue[600],
-                        borderRadius: BorderRadius.circular(9.0),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(9.0),
-                          splashColor: Colors.blue[800],
-                          highlightColor: Colors.blue[800],
-                          onTap: () => _feed(context),
-                          child: Center(
-                              child: Text(
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                    child: ButtonTheme(
+                      buttonColor: Colors.blue[600],
+                      splashColor: Colors.blueGrey,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0)),
+                      child: RaisedButton(
+                          elevation: 10.0,
+                          onPressed: () => _feed(context),
+                          child: Text(
                             'Feed',
                             style: Theme.of(context)
                                 .textTheme
-                                .title
+                                .headline
                                 .copyWith(color: Colors.white),
                           )),
-                        ),
-                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            Container(
-              height: 60.0,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: 2.0, horizontal: 6.0),
-                child: Material(
-                  color: Colors.red[600],
-                  borderRadius: BorderRadius.circular(9.0),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(9.0),
-                    splashColor: Colors.red[800],
-                    highlightColor: Colors.red[800],
-                    onTap: () => _logout(context),
-                    child: Center(
-                        child: Text(
-                          'Logout',
-                          style: Theme.of(context)
-                              .textTheme
-                              .title
-                              .copyWith(color: Colors.white),
-                        )),
-                  ),
                 ),
-              ),
+              ],
             ),
-          ])
+          ),
+          const Divider(
+            height: 10.0,
+            color: Colors.transparent,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: ButtonTheme(
+              minWidth: double.infinity,
+              height: 60.0,
+              buttonColor: Colors.red[600],
+              splashColor: Colors.red[800],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(9.0)),
+              child: RaisedButton(
+                  elevation: 10.0,
+                  onPressed: () => _logout(context),
+                  child: Text(
+                    'Logout',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline
+                        .copyWith(color: Colors.white),
+                  )),
+            ),
+          ),
         ],
       ),
     ));

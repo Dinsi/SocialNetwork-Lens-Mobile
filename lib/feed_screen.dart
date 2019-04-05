@@ -12,10 +12,16 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        onPressed: () {},
+        child: Icon(Icons.image),
+      ),
       body: LoadingListView(
         pageRequest: Api.feed,
         widgetAdapter: (Post post) => BasicPost(post: post),
