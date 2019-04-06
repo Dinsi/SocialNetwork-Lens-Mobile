@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-const double _sideIcon = 45.0;
+const double _iconSideSize = 45.0;
+const double _defaultHeight = 55.0;
 
 class BasicPost extends StatefulWidget {
   final Post post;
@@ -27,82 +28,6 @@ class _BasicPostState extends State<BasicPost> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                ClipOval(
-                  child: Container(
-                      height: _sideIcon,
-                      width: _sideIcon,
-                      color: Colors.grey[300],
-                      child: (widget.post.user.avatarUrl == null
-                          ? Image.asset(
-                              'assets/img/user_placeholder.png',
-                            )
-                          : FadeInImage.memoryNetwork(
-                              placeholder: kTransparentImage,
-                              image: widget.post.user.avatarUrl,
-                            ))),
-                ),
-                /*child: Container(
-                    width: _sideIcon,
-                    height: _sideIcon,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey[300],
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: (widget.post.user.avatarUrl == null
-                            ? AssetImage(
-                                'assets/img/user_placeholder.png',
-                              )
-                            : FadeInImage.memoryNetwork(
-                                placeholder: kTransparentImage,
-                                image: widget.post.user.avatarUrl,
-                              ).image),
-                      )),
-                  ),*/
-                /*Container(
-                      width: 190.0,
-                      height: 190.0,
-                      decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new NetworkImage(
-                                 "https://i.imgur.com/BoN9kdC.png")
-                                 )
-                )),
-                ),*/
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text(widget.post.title,
-                      style: Theme.of(context).textTheme.title),
-                ),
-                Expanded(
-                    child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    height: _sideIcon,
-                    width: _sideIcon,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 6.0),
-                      child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(
-                            Icons.menu,
-                            size: 28.0,
-                          )),
-                    ),
-                  ),
-                ))
-              ],
-            ),
-          ),
-          Container(
             color: Colors.grey[300],
             height: _calculatePlaceholderHeight(context),
             child: FadeInImage.memoryNetwork(
@@ -111,44 +36,129 @@ class _BasicPostState extends State<BasicPost> {
             ),
           ),
           Material(
-            elevation: 1.0,
+            elevation: 5.0,
             child: Container(
-              height: 50.0,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(FontAwesomeIcons.arrowAltCircleUp),
-                    onPressed: () {},
+              height: _defaultHeight,
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  iconTheme: Theme.of(context).iconTheme.copyWith(
+                        color: Colors.grey[600],
+                      ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      ClipOval(
+                        child: Container(
+                          height: _iconSideSize,
+                          width: _iconSideSize,
+                          color: Colors.grey[300],
+                          child: (widget.post.user.avatar == null
+                              ? Image.asset(
+                                  'assets/img/user_placeholder.png',
+                                )
+                              : FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: widget.post.user.avatar,
+                                )),
+                        ),
+                      ),
+                      DefaultTextStyle(
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[600]),
+                        child: Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  IconButton(
+                                    alignment: Alignment.centerRight,
+                                    icon:
+                                        Icon(FontAwesomeIcons.arrowAltCircleUp),
+                                    onPressed: () {},
+                                  ),
+                                  SizedBox(
+                                    width: 37.0,
+                                    child: Center(
+                                      child: Text(
+                                        _votes != null
+                                            ? nFormatter(_votes.toDouble(), 0)
+                                            : "0",
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    alignment: Alignment.centerLeft,
+                                    icon: Icon(
+                                        FontAwesomeIcons.arrowAltCircleDown),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  IconButton(
+                                    alignment: Alignment.centerRight,
+                                    iconSize: 18.0,
+                                    icon: Icon(FontAwesomeIcons.commentAlt),
+                                    onPressed: () {},
+                                  ),
+                                  Text(
+                                    "999", //TODO comments go here
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      /*SizedBox(
+                        height: _defaultHeight,
+                        width: _defaultHeight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 6.0),
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Icon(
+                                Icons.menu,
+                                size: 28.0,
+                              )),
+                        ),
+                      ),*/
+                      // This menu button widget updates a _selection field (of type WhyFarther,
+// not shown here).
+                      PopupMenuButton<int>(
+                        onSelected: (int result) {},
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<int>>[
+                              const PopupMenuItem<int>(
+                                value: 1,
+                                child: Text("1"),
+                              ),
+                              const PopupMenuItem<int>(
+                                value: 2,
+                                child: Text("2"),
+                              ),
+                              const PopupMenuItem<int>(
+                                value: 3,
+                                child: Text("3"),
+                              ),
+                              const PopupMenuItem<int>(
+                                value: 4,
+                                child: Text("4"),
+                              ),
+                            ],
+                      )
+                    ],
                   ),
-                  Text(
-                    _votes != null ? nFormatter(_votes.toDouble(), 1) : "0",
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, left: 11.0, right: 30.0),
-                    icon: Icon(FontAwesomeIcons.arrowAltCircleDown),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    iconSize: 20.0,
-                    padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, left: 30.0, right: 8.0),
-                    icon: Icon(FontAwesomeIcons.commentAlt),
-                    onPressed: () {},
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Text(
-                      "999", //TODO comments go here
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

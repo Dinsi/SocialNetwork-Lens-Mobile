@@ -9,7 +9,7 @@ class User {
   String email;
   bool isActive;
   bool isConfirmed;
-  String avatarUrl;
+  String avatar;
   List<Topic> topics;
 
   User(
@@ -21,7 +21,7 @@ class User {
       this.email,
       this.isActive,
       this.isConfirmed,
-      this.avatarUrl,
+      this.avatar,
       this.topics});
 
   User.fromJson(Map<String, dynamic> json, bool feed) {
@@ -42,7 +42,7 @@ class User {
     id = json['id'];
     username = json['username'];
     name = json['name'];
-    avatarUrl = json['avatar_url'];
+    avatar = json['avatar'];
   }
 
   Map<String, dynamic> toJson() {
@@ -55,7 +55,7 @@ class User {
     data['email'] = this.email;
     data['is_active'] = this.isActive;
     data['is_confirmed'] = this.isConfirmed;
-    data['avatar_url'] = this.avatarUrl;
+    data['avatar'] = this.avatar;
     if (this.topics != null) {
       data['topics'] = this.topics.map((v) => v.toJson()).toList();
     }
