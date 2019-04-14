@@ -12,11 +12,9 @@ class UserInfoLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
-      child: Container(
-        child: Text(
-          label + ': ' + info,
-          style: Theme.of(context).textTheme.headline,
-        ),
+      child: Text(
+        label + ': ' + info,
+        style: Theme.of(context).textTheme.headline,
       ),
     );
   }

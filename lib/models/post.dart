@@ -11,36 +11,47 @@ class Post {
   int votes;
   int width;
   int height;
+  int userVote;
 
   Post(
-      {this.title,
-        this.description,
-        this.user,
-        this.image,
-        this.topics,
-        this.votes,
-        this.width,
-        this.height,});
+      {this.id,
+      this.title,
+      this.description,
+      this.user,
+      this.image,
+      this.topics,
+      this.votes,
+      this.width,
+      this.height,
+      this.userVote});
 
-  Post.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    description = json['description'];
-    user = new User.fromJson(json['user'], true);
-    image = json['image'];
-    if (json['topics'] != null) {
-      topics = new List<Topic>();
-      json['topics'].forEach((v) {
-        topics.add(new Topic.fromJson(v));
-      });
-    }
-    votes = json['votes'];
-    width = json['width'];
-    height = json['height'];
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return new Post(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      user: new User.fromJson(json['user'], true),
+      image: json['image'],
+      topics: () {
+        if (json['topics'] != null) {
+          List<Topic> topicsList = new List<Topic>();
+          json['topics'].forEach((v) {
+            topicsList.add(new Topic.fromJson(v));
+          });
+          return topicsList;
+        }
+        return new List<Topic>();
+      }(),
+      votes: json['votes'],
+      width: json['width'],
+      height: json['height'],
+      userVote: json['user_vote'],
+    );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = id;
     data['title'] = this.title;
     data['description'] = this.description;
     data['image'] = this.image;
@@ -49,9 +60,10 @@ class Post {
       data['topics'] = this.topics.map((v) => v.toJson()).toList();
     }
     data['image'] = this.image;
-    data['votes'] = votes;
-    data['width'] = width;
-    data['height'] = height;
+    data['votes'] = this.votes;
+    data['width'] = this.width;
+    data['height'] = this.height;
+    data['user_vote'] = this.userVote;
 
     return data;
   }

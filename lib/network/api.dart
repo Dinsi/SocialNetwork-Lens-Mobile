@@ -20,7 +20,10 @@ class Api {
   static const String _verifyPath = 'token/verify/';
   static const String _registerPath = 'users/';
   static const String _selfPath = 'users/self/';
-  static const String _feed = 'feed';
+  static const String _feedPath = 'feed';
+  static const String _upVotePostPath = 'upvote/'; //posts/{id}/upvote
+  static const String _downVotePostPath = 'downvote/'; //posts/{id}/downvote
+  static const String _removeVotePostPath = 'removevote/'; //posts/{id}/removevote
 
   static Future<http.StreamedResponse> upload(File imageFile) async {
     verifyToken();
@@ -109,7 +112,8 @@ class Api {
 
     List<Post> posts;
     var response = await http.get(
-        Uri.parse(_url + _feed + (lastPost != null ? "?after=${lastPost.id}" : "")),
+        Uri.parse(
+            _url + _feedPath + (lastPost != null ? "?after=${lastPost.id}" : "")),
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
         });
@@ -130,6 +134,45 @@ class Api {
     }
 
     return posts;
+  }
+
+  static Future<int> downVote(int id) async {
+    verifyToken();
+
+    print('downVote');
+    var response = await http.post(Uri.parse(_url + _postPath + '$id/' + _downVotePostPath), headers: {
+      HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+    });
+
+    print(response.body + response.statusCode.toString());
+
+    return response.statusCode == 200 ? 0 : 1;
+  }
+
+  static Future<int> upVote(int id) async {
+    verifyToken();
+
+    print('upVote');
+    var response = await http.post(Uri.parse(_url + _postPath + '$id/' + _upVotePostPath), headers: {
+      HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+    });
+
+    print(response.body + response.statusCode.toString());
+
+    return response.statusCode == 200 ? 0 : 1;
+  }
+
+  static Future<int> removeVote(int id) async {
+    verifyToken();
+    
+    print('removeVote');
+    var response = await http.post(Uri.parse(_url + _postPath + '$id/' + _removeVotePostPath), headers: {
+      HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+    });
+
+    print(response.body + response.statusCode.toString());
+
+    return response.statusCode == 200 ? 0 : 1;
   }
 
   /*Future<Map<String, dynamic>> _getJson(Uri uri) async {

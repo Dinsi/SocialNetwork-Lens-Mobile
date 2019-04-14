@@ -120,34 +120,43 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 30.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          UserInfoLine(label: 'Name', info: _name == null ? '' : _name),
-          UserInfoLine(
-              label: 'Username', info: _username == null ? '' : _username),
-          UserInfoLine(label: 'Email', info: _email == null ? '' : _email),
-          const Divider(
-            height: 10.0,
-            color: Colors.transparent,
-          ),
-          SizedBox(
-            height: 60.0,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                    child: ButtonTheme(
-                      buttonColor: Colors.blue[600],
-                      splashColor: Colors.blueGrey,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0)),
-                      child: RaisedButton(
-                          elevation: 10.0,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 30.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            UserInfoLine(
+              label: 'Name',
+              info: _name == null ? '' : _name,
+            ),
+            UserInfoLine(
+              label: 'Username',
+              info: _username == null ? '' : _username,
+            ),
+            UserInfoLine(
+              label: 'Email',
+              info: _email == null ? '' : _email,
+            ),
+            const Divider(
+              height: 10.0,
+              color: Colors.transparent,
+            ),
+            SizedBox(
+              height: 60.0,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      child: ButtonTheme(
+                        buttonColor: Colors.blue[600],
+                        splashColor: Colors.blueGrey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0),
+                        ),
+                        child: RaisedButton(
+                          elevation: 5.0,
                           onPressed: () => _getImage(context),
                           child: Text(
                             'Upload Image',
@@ -155,20 +164,22 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 .textTheme
                                 .headline
                                 .copyWith(color: Colors.white, fontSize: 23.0),
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                    child: ButtonTheme(
-                      buttonColor: Colors.blue[600],
-                      splashColor: Colors.blueGrey,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0)),
-                      child: RaisedButton(
-                          elevation: 10.0,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      child: ButtonTheme(
+                        buttonColor: Colors.blue[600],
+                        splashColor: Colors.blueGrey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0),
+                        ),
+                        child: RaisedButton(
+                          elevation: 5.0,
                           onPressed: () => _feed(context),
                           child: Text(
                             'Feed',
@@ -176,28 +187,30 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 .textTheme
                                 .headline
                                 .copyWith(color: Colors.white),
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const Divider(
-            height: 10.0,
-            color: Colors.transparent,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-            child: ButtonTheme(
-              minWidth: double.infinity,
-              height: 60.0,
-              buttonColor: Colors.red[600],
-              splashColor: Colors.red[800],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9.0)),
-              child: RaisedButton(
-                  elevation: 10.0,
+            const Divider(
+              height: 10.0,
+              color: Colors.transparent,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: ButtonTheme(
+                minWidth: double.infinity,
+                height: 60.0,
+                buttonColor: Colors.red[600],
+                splashColor: Colors.red[800],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(9.0),
+                ),
+                child: RaisedButton(
+                  elevation: 5.0,
                   onPressed: () => _logout(context),
                   child: Text(
                     'Logout',
@@ -205,11 +218,13 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         .textTheme
                         .headline
                         .copyWith(color: Colors.white),
-                  )),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

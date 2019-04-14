@@ -44,6 +44,7 @@ class _LoadingListViewState extends State<LoadingListView> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size);
     Widget listView = ListView.builder(
       itemBuilder: itemBuilder,
       itemCount: posts.length,
