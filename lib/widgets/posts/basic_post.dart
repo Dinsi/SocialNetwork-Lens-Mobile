@@ -168,9 +168,7 @@ class _BasicPostState extends State<BasicPost> {
                                       width: 8.0,
                                     ),
                                     Text(
-                                      _votes != null
-                                          ? nFormatter(_votes.toDouble(), 0)
-                                          : "0",
+                                      nFormatter(_votes.toDouble(), 0),
                                       style: _getTextStyle(
                                           _upIconColor ? Colors.blue : null),
                                     ),
@@ -208,7 +206,7 @@ class _BasicPostState extends State<BasicPost> {
                               color: Colors.grey[600],
                             ),
                             label: Text(
-                              "999", //TODO comments go here
+                              widget.post.commentsLength.toString(),
                               style: _getTextStyle(),
                             ),
                             onPressed: () {},
@@ -305,45 +303,45 @@ class _BasicPostState extends State<BasicPost> {
   Future _upvoteOrRemove() async {
     await _lock.synchronized(() async {
       if (_currentVote == 1) {
+        setState(() {
+          _upIconColor = false;
+          _votes--;
+        });
+
+        int result = await Api.removeVote(widget.post.id);
+        if (result == 0) {
+          setState(() {
+            _currentVote = 0;
+          });
+        } else {
+          setState(() {
+            _upIconColor = true;
+            _votes++;
+          });
+          /*TODO place dialog here*/
+        }
+        return;
+      }
+
       setState(() {
-        _upIconColor = false;
-        _votes--;
+        _upIconColor = true;
+        _downIconColor = false;
+        _currentVote == -1 ? _votes += 2 : _votes++;
       });
 
-      int result = await Api.removeVote(widget.post.id);
+      int result = await Api.upVote(widget.post.id);
       if (result == 0) {
         setState(() {
-          _currentVote = 0;
+          _currentVote = 1;
         });
       } else {
         setState(() {
-          _upIconColor = true;
-          _votes++;
+          _upIconColor = false;
+          _downIconColor = true;
+          _currentVote == -1 ? _votes -= 2 : _votes--;
         });
         /*TODO place dialog here*/
       }
-      return;
-    }
-
-    setState(() {
-      _upIconColor = true;
-      _downIconColor = false;
-      _currentVote == -1 ? _votes += 2 : _votes++;
-    });
-
-    int result = await Api.upVote(widget.post.id);
-    if (result == 0) {
-      setState(() {
-        _currentVote = 1;
-      });
-    } else {
-      setState(() {
-        _upIconColor = false;
-        _downIconColor = true;
-        _currentVote == -1 ? _votes -= 2 : _votes--;
-      });
-      /*TODO place dialog here*/
-    }
     });
   }
 }
