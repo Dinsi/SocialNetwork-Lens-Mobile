@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert' show json;
 
+import 'package:aperture/widgets/posts/upload_post.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:aperture/feed_screen.dart';
@@ -44,7 +44,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('Info'),
-                content: Text('Error: ${response.body}'),
+                content: Text('Error: ${response.body}'), //TODO
                 actions: <Widget>[
                   FlatButton(
                     child: const Text('OK'),
@@ -63,42 +63,45 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     });
   }
 
-  Future<void> _getImage(BuildContext context) async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future<void> _getPostDetails(BuildContext context) async {
+    int result = await Navigator.of(context).push(
+      MaterialPageRoute<int>(
+        builder: (BuildContext context) => UploadPost(),
+      ),
+    );
 
-    if (image != null) {
-      http.StreamedResponse response = await Api.upload(image);
-      if (response.statusCode == 201) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Info'),
-                content: const Text('Image uploaded'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ],
-              );
-            });
-      } else {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Info'),
-                content: const Text('An error occurred'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ],
-              );
-            });
-      }
+    if (result == 0) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Uploaded post'),
+            content: const Text('The post has been uploaded successfully.'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Uploaded post'),
+            content: const Text('An error has occurred.'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -157,9 +160,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         ),
                         child: RaisedButton(
                           elevation: 5.0,
-                          onPressed: () => _getImage(context),
+                          onPressed: () => _getPostDetails(context),
                           child: Text(
-                            'Upload Image',
+                            'Upload Post',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline

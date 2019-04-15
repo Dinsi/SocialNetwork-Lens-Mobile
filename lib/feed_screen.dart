@@ -1,7 +1,7 @@
-import 'package:aperture/loading_list_view.dart';
+import 'package:aperture/widgets/loading_list_view.dart';
 import 'package:aperture/network/api.dart';
 import 'package:aperture/models/post.dart';
-import 'package:aperture/widgets/basic_post.dart';
+import 'package:aperture/widgets/posts/basic_post.dart';
 import 'package:flutter/material.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -15,7 +15,6 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
       body: LoadingListView(
         pageRequest: Api.feed,
         widgetAdapter: (Post post) => BasicPost(post: post),

@@ -12,6 +12,7 @@ class Post {
   int width;
   int height;
   int userVote;
+  int commentsLength;
 
   Post(
       {this.id,
@@ -23,30 +24,31 @@ class Post {
       this.votes,
       this.width,
       this.height,
-      this.userVote});
+      this.userVote,
+      this.commentsLength});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return new Post(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      user: new User.fromJson(json['user'], true),
-      image: json['image'],
-      topics: () {
-        if (json['topics'] != null) {
-          List<Topic> topicsList = new List<Topic>();
-          json['topics'].forEach((v) {
-            topicsList.add(new Topic.fromJson(v));
-          });
-          return topicsList;
-        }
-        return new List<Topic>();
-      }(),
-      votes: json['votes'],
-      width: json['width'],
-      height: json['height'],
-      userVote: json['user_vote'],
-    );
+        id: json['id'],
+        title: json['title'],
+        description: json['description'],
+        user: new User.fromJson(json['user'], true),
+        image: json['image'],
+        topics: () {
+          if (json['topics'] != null) {
+            List<Topic> topicsList = new List<Topic>();
+            json['topics'].forEach((v) {
+              topicsList.add(new Topic.fromJson(v));
+            });
+            return topicsList;
+          }
+          return new List<Topic>();
+        }(),
+        votes: json['votes'],
+        width: json['width'],
+        height: json['height'],
+        userVote: json['user_vote'],
+        commentsLength: json['comments_length']);
   }
 
   Map<String, dynamic> toJson() {
@@ -64,7 +66,7 @@ class Post {
     data['width'] = this.width;
     data['height'] = this.height;
     data['user_vote'] = this.userVote;
-
+    data['comments_length'] = this.commentsLength;
     return data;
   }
 }

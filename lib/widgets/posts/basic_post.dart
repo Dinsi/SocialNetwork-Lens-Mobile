@@ -109,9 +109,7 @@ class _BasicPostState extends State<BasicPost> {
                     onTap: () {
                       print('tap => $imageHeight');
                     }, //TODO postscreen
-                    onDoubleTap: () {
-                      print('double');
-                    }, //TODO upvote
+                    onDoubleTap: () => _upvoteOrRemove(),
                   ),
                 ),
               ],
@@ -348,5 +346,4 @@ class _BasicPostState extends State<BasicPost> {
     }
     });
   }
-  //TODO disable buttons/
 }

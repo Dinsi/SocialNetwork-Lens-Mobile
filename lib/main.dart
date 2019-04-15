@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:aperture/globals.dart';
 
 Future<void> main() async {
-  // await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  //TODO remove for full view pictures
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   if (prefs.getBool('isLoggedIn') != null) {
@@ -37,7 +38,21 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "SourceSansPro",
-        primarySwatch: Colors.blue,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+        appBarTheme: AppBarTheme(
+          color: Colors.white,
+          textTheme: Theme.of(context).textTheme.merge(
+                TextTheme(
+                  title: TextStyle(color: Colors.black),
+                ),
+              ),
+          iconTheme: Theme.of(context).iconTheme.merge(
+                IconThemeData(
+                  color: Colors.black,
+                ),
+              ),
+        ),
       ),
       home: isLoggedIn ? UserInfoScreen() : LoginScreen(),
     );
