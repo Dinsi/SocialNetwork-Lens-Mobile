@@ -1,16 +1,11 @@
 import 'dart:async';
-import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:aperture/globals.dart';
-import 'package:aperture/user_info_screen.dart';
-import 'package:aperture/auth/style/theme.dart' as Theme;
-import 'package:aperture/auth/utils/bubble_indication_painter.dart';
+import 'package:aperture/screens/user_info_screen.dart';
+import 'package:aperture/utils/login_theme.dart' as Theme;
+import 'package:aperture/utils/login_bubble_indication_painter.dart';
 import 'package:aperture/network/api.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   String _loginEmail;
@@ -47,83 +41,81 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      key: _scaffoldKey,
-      body: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (overscroll) {
-          overscroll.disallowGlow();
-        },
-        child: SingleChildScrollView(
-          controller: _scrollController,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height >= 950.0
-                    ? MediaQuery.of(context).size.height
-                    : 950.0,
-                decoration: new BoxDecoration(
-                  gradient: new LinearGradient(
-                      colors: [
-                        Theme.Colors.loginGradientStart,
-                        Theme.Colors.loginGradientEnd
+    return SafeArea(
+      child: new Scaffold(
+        key: _scaffoldKey,
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+          },
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height >= 950.0
+                  ? MediaQuery.of(context).size.height
+                  : 950.0,
+              decoration: new BoxDecoration(
+                gradient: new LinearGradient(
+                    colors: [
+                      Theme.Colors.loginGradientStart,
+                      Theme.Colors.loginGradientEnd
+                    ],
+                    begin: const FractionalOffset(0.0, 0.0),
+                    end: const FractionalOffset(1.0, 1.0),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 75.0),
+                    child: Image.asset('assets/img/login_logo.png',
+                        width: 250.0, height: 191.0, fit: BoxFit.fill),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: _buildMenuBar(context),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (i) {
+                        if (i == 0) {
+                          setState(() {
+                            right = Colors.white;
+                            left = Colors.black;
+                            _scrollController.animateTo(
+                                _scrollController.position.minScrollExtent,
+                                duration: Duration(milliseconds: 500),
+                                curve: Curves.ease);
+                          });
+                        } else if (i == 1) {
+                          setState(() {
+                            right = Colors.black;
+                            left = Colors.white;
+                          });
+                        }
+                      },
+                      children: <Widget>[
+                        new ConstrainedBox(
+                          constraints: const BoxConstraints.expand(),
+                          child: _buildSignIn(context),
+                        ),
+                        new ConstrainedBox(
+                          constraints: const BoxConstraints.expand(),
+                          child: _buildSignUp(context),
+                        ),
                       ],
-                      begin: const FractionalOffset(0.0, 0.0),
-                      end: const FractionalOffset(1.0, 1.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 75.0),
-                      child: Image.asset('assets/img/login_logo.png',
-                          width: 250.0,
-                          height: 191.0,
-                          fit: BoxFit.fill
-                      ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0),
-                      child: _buildMenuBar(context),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: (i) {
-                          if (i == 0) {
-                            setState(() {
-                              right = Colors.white;
-                              left = Colors.black;
-                              _scrollController.animateTo(
-                                  _scrollController.position.minScrollExtent,
-                                  duration: Duration(milliseconds: 500),
-                                  curve: Curves.ease
-                              );
-                            });
-                          } else if (i == 1) {
-                            setState(() {
-                              right = Colors.black;
-                              left = Colors.white;
-                            });
-                          }
-                        },
-                        children: <Widget>[
-                          new ConstrainedBox(
-                            constraints: const BoxConstraints.expand(),
-                            child: _buildSignIn(context),
-                          ),
-                          new ConstrainedBox(
-                            constraints: const BoxConstraints.expand(),
-                            child: _buildSignUp(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
+          ),
+        ),
       ),
     );
   }
@@ -132,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen>
   void dispose() {
     _pageController?.dispose();
     _scrollController?.dispose();
-    
+
     super.dispose();
   }
 
@@ -154,21 +146,11 @@ class _LoginScreenState extends State<LoginScreen>
       });
     }
 
-    http.Response response = await Api.login(username, password);
+    int code = await Api.login(username, password);
 
-    if (response.statusCode == 200) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      final body = json.decode(response.body);
-      await prefs.setBool('isLoggedIn', true);
-      await prefs.setString('access', body['access']);
-      await prefs.setString('refresh', body['refresh']);
-
-      Globals().cacheTokens(body['access'], body['refresh']);
-
+    if (code == 0) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute<Null>(builder: (context) => UserInfoScreen()));
-
     } else {
       setState(() {
         showInSnackBar('Error: Could not login');
@@ -184,8 +166,11 @@ class _LoginScreenState extends State<LoginScreen>
     final String password = _signUpPassword;
     final String confirmation = _signUpConfirmPassword;
 
-    if (username.isEmpty || firstName.isEmpty ||
-        lastName.isEmpty || email.isEmpty || password.isEmpty) {
+    if (username.isEmpty ||
+        firstName.isEmpty ||
+        lastName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty) {
       showInSnackBar('All fields must be filled');
       return;
     }
@@ -203,12 +188,10 @@ class _LoginScreenState extends State<LoginScreen>
       'password': password
     };
 
-    http.Response response = await Api.register(fields);
+    int code = await Api.register(fields);
 
-    if (response.statusCode == 201) {
+    if (code == 0) {
       showInSnackBar('Sign up successful. You can now log in.');
-      // Verify first?
-
     } else {
       showInSnackBar('Error: Could not sign up');
     }
@@ -389,24 +372,25 @@ class _LoginScreenState extends State<LoginScreen>
                       tileMode: TileMode.clamp),
                 ),
                 child: MaterialButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: Theme.Colors.loginGradientEnd,
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
-                      child: Text(
-                        "LOGIN",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
-                      ),
+                  highlightColor: Colors.transparent,
+                  splashColor: Theme.Colors.loginGradientEnd,
+                  //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 42.0),
+                    child: Text(
+                      "LOGIN",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: "WorkSansBold"),
                     ),
-                    onPressed: () => _login(),
-                        //showInSnackBar("Login button pressed")),
-              ),
-            )],
+                  ),
+                  onPressed: () => _login(),
+                  //showInSnackBar("Login button pressed")),
+                ),
+              )
+            ],
           ),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
@@ -730,15 +714,15 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ],
                   gradient: new LinearGradient(
-                    colors: [
-                      Theme.Colors.loginGradientEnd,
-                      Theme.Colors.loginGradientStart
-                    ],
-                    begin: const FractionalOffset(0.2, 0.2),
-                    end: const FractionalOffset(1.0, 1.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp),
-              ),
+                      colors: [
+                        Theme.Colors.loginGradientEnd,
+                        Theme.Colors.loginGradientStart
+                      ],
+                      begin: const FractionalOffset(0.2, 0.2),
+                      end: const FractionalOffset(1.0, 1.0),
+                      stops: [0.0, 1.0],
+                      tileMode: TileMode.clamp),
+                ),
                 child: MaterialButton(
                   highlightColor: Colors.transparent,
                   splashColor: Theme.Colors.loginGradientEnd,
@@ -755,9 +739,10 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   onPressed: () => _signUp(),
-                      //showInSnackBar("SignUp button pressed")),
-              ),
-            )],
+                  //showInSnackBar("SignUp button pressed")),
+                ),
+              )
+            ],
           ),
         ],
       ),

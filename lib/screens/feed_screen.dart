@@ -14,10 +14,12 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: LoadingListView(
-        pageRequest: Api.feed,
-        widgetAdapter: (Post post) => BasicPost(post: post),
+    return SafeArea(
+      child: Scaffold(
+        body: LoadingListView(
+          pageRequest: Api.feed,
+          widgetAdapter: (Post post) => BasicPost(post: post),
+        ),
       ),
     );
   }

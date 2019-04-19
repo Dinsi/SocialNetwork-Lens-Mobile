@@ -1,16 +1,11 @@
 import 'dart:async';
-import 'dart:convert' show json;
 
 import 'package:aperture/widgets/posts/upload_post.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:aperture/feed_screen.dart';
-import 'package:aperture/auth/ui/login_screen.dart';
+import 'package:aperture/screens/feed_screen.dart';
+import 'package:aperture/screens/login_screen.dart';
 import 'package:aperture/network/api.dart';
 import 'package:aperture/globals.dart';
-import 'package:aperture/widgets/user_info_line.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key key}) : super(key: key);
@@ -31,20 +26,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   Future<void> _getUserInfo() async {
-    final Globals globals = Globals();
+    final Globals globals = Globals.getInstance();
     if (globals.user == null) {
-      http.Response response = await Api.getUserInfo();
+      int code = await Api.userInfo();
 
-      if (response.statusCode == 200) {
-        dynamic body = json.decode(response.body);
-        globals.cacheUser(body);
-      } else {
+      if (code != 0) {
         showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('Info'),
-                content: Text('Error: ${response.body}'), //TODO
+                content: Text(
+                    'Error: Something went wrong with your request'), //TODO
                 actions: <Widget>[
                   FlatButton(
                     child: const Text('OK'),
@@ -111,10 +104,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   Future<void> _logout(BuildContext context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    Globals().clearCache();
-    await prefs.clear();
+    Globals.getInstance().clearCache();
 
     Navigator.of(context).pushReplacement(MaterialPageRoute<Null>(
         builder: (BuildContext context) => LoginScreen()));
@@ -122,23 +112,28 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 30.0),
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            UserInfoLine(
-              label: 'Name',
-              info: _name == null ? '' : _name,
+            ListTile(
+              title: Text(
+                'Name: ${(_name == null ? '' : _name)}',
+                style: Theme.of(context).textTheme.headline,
+              ),
             ),
-            UserInfoLine(
-              label: 'Username',
-              info: _username == null ? '' : _username,
+            ListTile(
+              title: Text(
+                'Username: ${(_username == null ? '' : _username)}',
+                style: Theme.of(context).textTheme.headline,
+              ),
             ),
-            UserInfoLine(
-              label: 'Email',
-              info: _email == null ? '' : _email,
+            ListTile(
+              title: Text(
+                'Email: ${(_email == null ? '' : _email)}',
+                style: Theme.of(context).textTheme.headline,
+              ),
             ),
             const Divider(
               height: 10.0,

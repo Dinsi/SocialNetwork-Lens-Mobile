@@ -1,72 +1,92 @@
-import 'package:aperture/models/topic.dart';
-import 'package:aperture/models/user.dart';
-
 class Post {
-  int id;
-  String title;
-  String description;
-  User user;
-  String image;
-  List<Topic> topics; // String???
-  int votes;
-  int width;
-  int height;
-  int userVote;
-  int commentsLength;
+  final int _id;
+  final String _title;
+  final String _description;
+  final _User _user;
+  final String _image;
+  final int _width;
+  final int _height;
+  final int _votes;
+  final int _userVote;
+  final int _commentsLength;
 
-  Post(
-      {this.id,
-      this.title,
-      this.description,
-      this.user,
-      this.image,
-      this.topics,
-      this.votes,
-      this.width,
-      this.height,
-      this.userVote,
-      this.commentsLength});
+  const Post(
+      this._id,
+      this._title,
+      this._description,
+      this._user,
+      this._image,
+      this._width,
+      this._height,
+      this._votes,
+      this._userVote,
+      this._commentsLength);
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    return new Post(
-        id: json['id'],
-        title: json['title'],
-        description: json['description'],
-        user: new User.fromJson(json['user'], true),
-        image: json['image'],
-        topics: () {
-          if (json['topics'] != null) {
-            List<Topic> topicsList = new List<Topic>();
-            json['topics'].forEach((v) {
-              topicsList.add(new Topic.fromJson(v));
-            });
-            return topicsList;
-          }
-          return new List<Topic>();
-        }(),
-        votes: json['votes'],
-        width: json['width'],
-        height: json['height'],
-        userVote: json['user_vote'],
-        commentsLength: json['comments_length']);
+    return Post(
+        json['id'],
+        json['title'],
+        json['description'],
+        _User.fromJson(json['user']),
+        json['image'],
+        json['width'],
+        json['height'],
+        json['votes'],
+        json['user_vote'],
+        json['comments_length']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = id;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['image'] = this.image;
-    data['user'] = this.user.toJson();
-    if (this.topics != null) {
-      data['topics'] = this.topics.map((v) => v.toJson()).toList();
-    }
-    data['image'] = this.image;
-    data['votes'] = this.votes;
-    data['width'] = this.width;
-    data['height'] = this.height;
-    data['user_vote'] = this.userVote;
-    data['comments_length'] = this.commentsLength;
+    data['id'] = this._id;
+    data['title'] = this._title;
+    data['description'] = this._description;
+    data['user'] = this._user.toJson();
+    data['image'] = this._image;
+    data['width'] = this._width;
+    data['height'] = this._height;
+    data['votes'] = this._votes;
+    data['user_vote'] = this._userVote;
+    data['comments_length'] = this._commentsLength;
     return data;
   }
+
+  int get id => _id;
+  String get title => _title;
+  String get description => _description;
+  _User get user => _user;
+  String get image => _image;
+  int get width => _width;
+  int get height => _height;
+  int get votes => _votes;
+  int get userVote => _userVote;
+  int get commentsLength => _commentsLength;
+}
+
+
+class _User {
+  final int _id;
+  final String _username;
+  final String _name;
+  final String _avatar;
+
+  _User(this._id, this._username, this._name, this._avatar);
+
+  factory _User.fromJson(Map<String, dynamic> json) {
+    return _User(json['id'], json['username'], json['name'], json['avatar']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this._id;
+    data['username'] = this._username;
+    data['name'] = this._name;
+    data['avatar'] = this._avatar;
+    return data;
+  }
+
+  int get id => _id;
+  String get username => _username;
+  String get name => _name;
+  String get avatar => _avatar;
 }

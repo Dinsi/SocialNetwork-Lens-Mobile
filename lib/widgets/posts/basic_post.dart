@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:aperture/models/post.dart';
 import 'package:aperture/network/api.dart';
+import 'package:aperture/screens/detailed_post_screen.dart';
+import 'package:aperture/utils/post_shared_functions.dart';
+import 'package:aperture/widgets/posts/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synchronized/synchronized.dart';
@@ -9,39 +12,6 @@ import 'package:transparent_image/transparent_image.dart';
 
 const double _iconSideSize = 45.0;
 const double _defaultHeight = 55.0;
-
-TextStyle _getTextStyle([Color color]) {
-  return TextStyle(
-    fontSize: 17.0,
-    fontWeight: FontWeight.bold,
-    color: color ?? Colors.grey[600],
-  );
-}
-
-String nFormatter(double num, int digits) {
-  final List<Map<dynamic, dynamic>> si = const [
-    {"value": 1, "symbol": ""},
-    {"value": 1E3, "symbol": "k"},
-    {"value": 1E6, "symbol": "M"},
-    {"value": 1E9, "symbol": "G"},
-    {"value": 1E12, "symbol": "T"},
-    {"value": 1E15, "symbol": "P"},
-    {"value": 1E18, "symbol": "E"}
-  ];
-  final rx = RegExp(r"\.0+$|(\.[0-9]*[1-9]*)0+$");
-  var i;
-  for (i = si.length - 1; i > 0; i--) {
-    if (num >= si[i]["value"]) {
-      break;
-    }
-  }
-
-  return (num / si[i]["value"]).toStringAsFixed(digits).replaceAllMapped(rx,
-          (match) {
-        return match.group(1) ?? "";
-      }) +
-      si[i]["symbol"];
-}
 
 class BasicPost extends StatefulWidget {
   final Post post;
@@ -59,61 +29,28 @@ class _BasicPostState extends State<BasicPost> {
   int _currentVote;
   bool _downIconColor;
   bool _upIconColor;
-  final Lock _lock = new Lock();
+  double _imageHeight;
+  final Lock _lock = Lock();
 
+  @override
   void initState() {
     super.initState();
-    switch (widget.post.userVote) {
-      case 0:
-        _downIconColor = false;
-        _upIconColor = false;
-        break;
-      case 1:
-        _downIconColor = false;
-        _upIconColor = true;
-        break;
-      case -1:
-        _downIconColor = true;
-        _upIconColor = false;
-        break;
-      default:
-    }
-    _currentVote = widget.post.userVote;
+    _setIconColors();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double imageHeight = _calculatePlaceholderHeight(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            height: imageHeight,
-            color: Colors.grey[300],
-            child: Stack(
-              children: <Widget>[
-                Center(
-                  child: FadeInImage.memoryNetwork(
-                    fit: BoxFit.fitWidth,
-                    placeholder: kTransparentImage,
-                    image: widget.post.image,
-                  ),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.white24,
-                    onTap: () {
-                      print('tap => $imageHeight');
-                    }, //TODO postscreen
-                    onDoubleTap: () => _upvoteOrRemove(),
-                  ),
-                ),
-              ],
-            ),
+          ImageContainer(
+            imageUrl: widget.post.image,
+            imageHeight: widget.post.height,
+            imageWidth: widget.post.width,
+            onTap: () => _toDetailedPostScreen(toComments: false),
+            onDoubleTap: () => _upvoteOrRemove(),
           ),
           Material(
             elevation: 5.0,
@@ -169,7 +106,7 @@ class _BasicPostState extends State<BasicPost> {
                                     ),
                                     Text(
                                       nFormatter(_votes.toDouble(), 0),
-                                      style: _getTextStyle(
+                                      style: votesTextStyle(
                                           _upIconColor ? Colors.blue : null),
                                     ),
                                   ],
@@ -207,9 +144,9 @@ class _BasicPostState extends State<BasicPost> {
                             ),
                             label: Text(
                               widget.post.commentsLength.toString(),
-                              style: _getTextStyle(),
+                              style: votesTextStyle(),
                             ),
-                            onPressed: () {},
+                            onPressed: () => _toDetailedPostScreen(toComments: true),
                           ),
                         ],
                       ),
@@ -246,14 +183,10 @@ class _BasicPostState extends State<BasicPost> {
     );
   }
 
-  double _calculatePlaceholderHeight(BuildContext context) {
-    if (MediaQuery.of(context).size.width >= widget.post.width) {
-      return widget.post.height.toDouble();
-    }
-
-    return MediaQuery.of(context).size.width *
-        widget.post.height /
-        widget.post.width;
+  void _toDetailedPostScreen({@required bool toComments}) {
+    Navigator.of(context).push(MaterialPageRoute<Null>(
+        builder: (BuildContext context) =>
+            DetailedPostScreen(post: widget.post, toComments: toComments)));
   }
 
   Future _downvoteOrRemove() async {
@@ -343,5 +276,24 @@ class _BasicPostState extends State<BasicPost> {
         /*TODO place dialog here*/
       }
     });
+  }
+
+  void _setIconColors() {
+    switch (widget.post.userVote) {
+      case 0:
+        _downIconColor = false;
+        _upIconColor = false;
+        break;
+      case 1:
+        _downIconColor = false;
+        _upIconColor = true;
+        break;
+      case -1:
+        _downIconColor = true;
+        _upIconColor = false;
+        break;
+      default:
+    }
+    _currentVote = widget.post.userVote;
   }
 }

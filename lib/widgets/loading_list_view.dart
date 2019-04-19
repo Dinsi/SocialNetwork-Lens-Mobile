@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aperture/models/post.dart';
 import 'package:flutter/material.dart';
 
-typedef PageRequest = Future<List<Post>> Function(Post lastPost);
+typedef PageRequest = Future<List<Post>> Function(int lastPostId);
 typedef WidgetAdapter = Widget Function(Post t);
 
 class LoadingListView extends StatefulWidget {
@@ -44,7 +44,6 @@ class _LoadingListViewState extends State<LoadingListView> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size);
     Widget listView = ListView.builder(
       itemBuilder: itemBuilder,
       itemCount: posts.length,
@@ -89,9 +88,9 @@ class _LoadingListViewState extends State<LoadingListView> {
 
   Future loadNext() async {
     List<Post> fetched =
-        await widget.pageRequest(posts.isEmpty ? null : posts.last);
+        await widget.pageRequest(posts.isEmpty ? null : posts.last.id);
 
-    if (fetched != null && mounted) {
+    if (fetched.isNotEmpty && mounted) {
       setState(() {
         currentPageSize = fetched.length;
         posts.addAll(fetched);

@@ -1,26 +1,28 @@
 import 'dart:async';
 
 import 'package:aperture/network/api.dart';
-import 'package:aperture/user_info_screen.dart';
+import 'package:aperture/screens/user_info_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:aperture/auth/ui/login_screen.dart';
-import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aperture/screens/login_screen.dart';
+import 'package:flutter/services.dart'
+    show SystemChrome, DeviceOrientation, SystemUiOverlayStyle;
 import 'package:aperture/globals.dart';
 
 Future<void> main() async {
   //TODO remove for full view pictures
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  if (prefs.getBool('isLoggedIn') != null) {
-    Globals()
-        .cacheTokens(prefs.getString('access'), prefs.getString('refresh'));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.blue,
+    statusBarColor: Colors.pink,
+  ));
 
-    if (await Api.verifyToken()) {
-      runApp(MyApp(isLoggedIn: true));
-      return;
-    }
+  final Globals globalVariables = Globals.getInstance();
+  await globalVariables.init();
+
+  if (globalVariables.isLoggedIn() && await Api.verifyToken()) {
+    runApp(MyApp(isLoggedIn: true));
+    return;
   }
 
   runApp(MyApp(isLoggedIn: false));

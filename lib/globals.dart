@@ -1,37 +1,55 @@
 library aperture.globals;
 
+import 'dart:async' show Future;
+import 'dart:convert' show jsonDecode, jsonEncode;
+
 import 'package:aperture/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Globals {
-  static final Globals _singleton = new Globals._internal();
-
-  String accessToken = '';
-  String refreshToken = '';
-  User user;
-
-  factory Globals() {
-    return _singleton;
-  }
+  static Globals _singleton;
+  SharedPreferences prefs;
 
   Globals._internal();
 
-  void cacheUser(Map<String, dynamic> body) {
-    user = User.fromJson(body, false);
+  factory Globals.getInstance() {
+    if (_singleton == null) {
+      _singleton = new Globals._internal();
+    }
+    return _singleton;
   }
 
-  void cacheTokens(String access, String refresh) {
-    accessToken = access;
-    refreshToken = refresh;
+  Future init() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
-  void removeTokens() {
-    accessToken = '';
-    refreshToken = '';
+  bool isLoggedIn() {
+    return loggedIn != null;
+  } 
+
+  Future clearCache() async {
+    await prefs.clear();
   }
 
-  void clearCache() {
-    removeTokens();
-    user = null;
+  Future cacheLogin(String access, String refresh) async {
+    final Future loggedInResult = setLoggedIn(true);
+    final Future accessResult = setAccessToken(access);
+    final Future refreshResult = setRefreshToken(refresh);
+    await loggedInResult;
+    await accessResult;
+    await refreshResult;
   }
+
+  bool get loggedIn => prefs.getBool('loggedIn');
+  Future setLoggedIn(bool value) async => await prefs.setBool('loggedIn', value);
+
+  String get accessToken => prefs.getString('accessToken');
+  Future setAccessToken(String value) async => await prefs.setString('accessToken', value);
+
+  String get refreshToken => prefs.getString('refreshToken');
+  Future setRefreshToken(String value) async => await prefs.setString('refreshToken', value);
+
+  User get user => prefs.getString('user') == null ? null : User.fromJson(jsonDecode(prefs.getString('user')));
+  Future setUser(Map<String, dynamic> value) async => await prefs.setString('user', jsonEncode(value));
 }
