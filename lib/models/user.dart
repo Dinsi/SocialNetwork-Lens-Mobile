@@ -1,3 +1,5 @@
+import 'package:aperture/models/topic.dart';
+
 class User {
   final int _id;
   final String _username;
@@ -7,8 +9,9 @@ class User {
   final String _email;
   final bool _isActive;
   final bool _isConfirmed;
+  final bool _finishedRegister;
   final String _avatar;
-  final List<_Topic> _topics;
+  final List<Topic> _topics;
 
   User(
       this._id,
@@ -19,6 +22,7 @@ class User {
       this._email,
       this._isActive,
       this._isConfirmed,
+      this._finishedRegister,
       this._avatar,
       this._topics);
 
@@ -32,16 +36,17 @@ class User {
         json['email'],
         json['is_active'],
         json['is_confirmed'],
+        json['finished_register'],
         json['avatar'],
         (json['topics'] as List).isEmpty
-            ? List<_Topic>()
+            ? List<Topic>()
             : setTopics((json['topics'] as List)));
   }
 
-  static List<_Topic> setTopics(List topics) {
-    List<_Topic> topicList = List<_Topic>(topics.length);
+  static List<Topic> setTopics(List topics) {
+    List<Topic> topicList = List<Topic>(topics.length);
     for (int i = 0; i < topicList.length; i++) {
-      topicList[i] = _Topic.fromJson(topics[i]);
+      topicList[i] = Topic.fromJson(topics[i]);
     }
 
     return topicList;
@@ -57,6 +62,7 @@ class User {
     data['email'] = this._email;
     data['is_active'] = this._isActive;
     data['is_confirmed'] = this._isConfirmed;
+    data['finished_register'] = this._finishedRegister;
     data['avatar'] = this._avatar;
     data['topics'] = this._topics.map((v) => v.toJson()).toList();
     return data;
@@ -70,26 +76,7 @@ class User {
   String get email => _email;
   bool get isActive => _isActive;
   bool get isConfirmed => _isConfirmed;
+  bool get hasFinishedRegister => _finishedRegister;
   String get avatar => _avatar;
-  List<_Topic> get topics => _topics;
-}
-
-class _Topic {
-  final int id;
-  final String name;
-  final int type;
-
-  _Topic(this.id, this.name, this.type);
-
-  factory _Topic.fromJson(Map<String, dynamic> json) {
-    return _Topic(json['id'], json['name'], json['type']);
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['type'] = this.type;
-    return data;
-  }
+  List<Topic> get topics => _topics;
 }

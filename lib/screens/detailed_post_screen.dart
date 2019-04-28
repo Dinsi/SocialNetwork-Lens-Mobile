@@ -4,45 +4,74 @@ import 'package:aperture/network/api.dart';
 import 'package:aperture/widgets/posts/comment_tile.dart';
 import 'package:aperture/widgets/posts/image_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:aperture/utils/post_shared_functions.dart';
 
-const double _votesTabHeight = 45.0;
+const double _numberOfVotesTabHeight = 45.0;
 const double _iconSideSize = 60.0;
 const double _defaultHeight = 75.0;
+const double _commentBoxHeight = 65.0;
 
 class DetailedPostScreen extends StatefulWidget {
   final Post post;
+  final int currentVote;
+  final int votes;
+  final int comments;
   final bool toComments;
 
-  const DetailedPostScreen({@required this.post, @required this.toComments});
+  const DetailedPostScreen(
+      {@required this.post,
+      @required this.currentVote,
+      @required this.comments,
+      @required this.votes,
+      @required this.toComments});
 
   @override
   _DetailedPostScreenState createState() =>
-      _DetailedPostScreenState(post.userVote);
+      _DetailedPostScreenState(currentVote, comments, votes);
 }
 
 class _DetailedPostScreenState extends State<DetailedPostScreen> {
-  _DetailedPostScreenState(this._votes);
+  _DetailedPostScreenState(this._currentVote, this._numberOfComments, this._numberOfVotes);
 
   GlobalKey _columnKey = GlobalKey();
-  int _votes;
+  int _numberOfVotes;
+  int _numberOfComments;
   int _currentVote;
   bool _downIconColor;
   bool _upIconColor;
+  bool _isLoading;
   List<Comment> _comments;
   ScrollController _scrollController;
   final Lock _lock = Lock();
   double _initialHeight;
+  VoidCallback _onPressedButtonFunction;
+  TextEditingController _commentController;
+  FocusNode _commentNode;
+
+  bool _enabledBackButton;
 
   @override
   void initState() {
     super.initState();
-    _setIconColors();
+
+    _enabledBackButton = true;
+
+    _comments = List<Comment>();
     _getComments();
+
     _scrollController = ScrollController();
+    _commentController = TextEditingController();
+    _commentNode = FocusNode();
+    _commentController.addListener(_checkButtonStatus);
+
+    _setIconColors();
+
+    _isLoading = true;
+
     if (widget.toComments) {
       WidgetsBinding.instance.addPostFrameCallback(_getInitialHeight);
     }
@@ -57,6 +86,9 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _commentNode.dispose();
+    _commentController.removeListener(_checkButtonStatus);
+    _commentController.dispose();
     super.dispose();
   }
 
@@ -120,7 +152,7 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: SizedBox(
-          height: _votesTabHeight,
+          height: _numberOfVotesTabHeight,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -144,7 +176,7 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
                               width: 8.0,
                             ),
                             Text(
-                              nFormatter(_votes.toDouble(), 0),
+                              nFormatter(_numberOfVotes.toDouble(), 0),
                               style: votesTextStyle(
                                   _upIconColor ? Colors.blue : null),
                             ),
@@ -179,7 +211,7 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
                       color: Colors.grey[600],
                     ),
                     label: Text(
-                      widget.post.commentsLength.toString(),
+                      _numberOfComments.toString(),
                       style: votesTextStyle(),
                     ),
                     onPressed: () {},
@@ -229,9 +261,79 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       votesTab,
     ];
 
-    if (_comments != null) {
+    if (_comments.isNotEmpty) {
       listOfWidgets = _addCommentWidgets(listOfWidgets);
+    } else if (_isLoading == true) {
+      listOfWidgets.add(
+        SizedBox(
+          height: 200.0,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
     }
+
+    //TODO new comment textbox / respective API calling
+    var newCommentContainer = Column(
+      children: <Widget>[
+        Divider(height: 10.0, color: Colors.black45),
+        Container(
+          height: _commentBoxHeight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+              vertical: 9.0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: _commentController,
+                    focusNode: _commentNode,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(1024),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: "Add a comment...",
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5.0,
+                        horizontal: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: SizedBox(
+                    width: 100.0,
+                    child: FlatButton(
+                      child: Text(
+                        'Publish',
+                        style: TextStyle(
+                          fontSize: 19.0,
+                          color: _onPressedButtonFunction != null
+                              ? Colors.blue
+                              : Colors.grey,
+                        ),
+                      ),
+                      onPressed: _onPressedButtonFunction,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
 
     return SafeArea(
       child: Scaffold(
@@ -241,12 +343,34 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
                   color: Colors.grey[600],
                 ),
           ),
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              key: _columnKey,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: listOfWidgets,
+          child: WillPopScope(
+            onWillPop: () {
+              if (_enabledBackButton) {
+                Navigator.of(context).pop({
+                  "votes": _numberOfVotes,
+                  "currentVote": _currentVote,
+                  "comments": _numberOfComments
+                });
+              }
+
+              return Future<bool>.value(false);
+            },
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        key: _columnKey,
+                        children: listOfWidgets,
+                      ),
+                    ),
+                  ),
+                  newCommentContainer,
+                ],
+              ),
             ),
           ),
         ),
@@ -254,15 +378,21 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
     );
   }
 
+  Future _onRefresh() async {
+    await _getComments();
+  }
+
   Future _downvoteOrRemove() async {
+    _enabledBackButton = false;
     await _lock.synchronized(() async {
       if (_currentVote == -1) {
         setState(() {
           _downIconColor = false;
-          _votes++;
+          _numberOfVotes++;
         });
 
         int result = await Api.removeVote(widget.post.id);
+
         if (result == 0) {
           setState(() {
             _currentVote = 0;
@@ -270,20 +400,22 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
         } else {
           setState(() {
             _downIconColor = true;
-            _votes--;
+            _numberOfVotes--;
           });
           /*TODO place dialog here*/
         }
+        _enabledBackButton = true;
         return;
       }
 
       setState(() {
         _upIconColor = false;
         _downIconColor = true;
-        _currentVote == 1 ? _votes -= 2 : _votes--;
+        _currentVote == 1 ? _numberOfVotes -= 2 : _numberOfVotes--;
       });
 
       int result = await Api.downVote(widget.post.id);
+
       if (result == 0) {
         setState(() {
           _currentVote = -1;
@@ -292,21 +424,25 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
         setState(() {
           _upIconColor = true;
           _downIconColor = false;
-          _currentVote == 1 ? _votes += 2 : _votes++;
+          _currentVote == 1 ? _numberOfVotes += 2 : _numberOfVotes++;
         }); /*TODO place dialog here*/
       }
     });
+
+    _enabledBackButton = true;
   }
 
   Future _upvoteOrRemove() async {
+    _enabledBackButton = false;
     await _lock.synchronized(() async {
       if (_currentVote == 1) {
         setState(() {
           _upIconColor = false;
-          _votes--;
+          _numberOfVotes--;
         });
 
         int result = await Api.removeVote(widget.post.id);
+
         if (result == 0) {
           setState(() {
             _currentVote = 0;
@@ -314,20 +450,23 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
         } else {
           setState(() {
             _upIconColor = true;
-            _votes++;
+            _numberOfVotes++;
           });
           /*TODO place dialog here*/
         }
+
+        _enabledBackButton = true;
         return;
       }
 
       setState(() {
         _upIconColor = true;
         _downIconColor = false;
-        _currentVote == -1 ? _votes += 2 : _votes++;
+        _currentVote == -1 ? _numberOfVotes += 2 : _numberOfVotes++;
       });
 
       int result = await Api.upVote(widget.post.id);
+
       if (result == 0) {
         setState(() {
           _currentVote = 1;
@@ -336,15 +475,17 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
         setState(() {
           _upIconColor = false;
           _downIconColor = true;
-          _currentVote == -1 ? _votes -= 2 : _votes--;
+          _currentVote == -1 ? _numberOfVotes -= 2 : _numberOfVotes--;
         });
         /*TODO place dialog here*/
       }
     });
+
+    _enabledBackButton = true;
   }
 
   void _setIconColors() {
-    switch (widget.post.userVote) {
+    switch (_currentVote) {
       case 0:
         _downIconColor = false;
         _upIconColor = false;
@@ -359,14 +500,19 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
         break;
       default:
     }
-    _currentVote = widget.post.userVote;
   }
 
   Future _getComments() async {
     List<Comment> comments = await Api.comments(widget.post.id);
+    if (!mounted) {
+      return;
+    }
+
     if (comments.isNotEmpty) {
       setState(() {
+        _numberOfComments = comments.length;
         _comments = comments;
+        _isLoading = false;
       });
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -379,12 +525,17 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
           }
         }
       });
+
+      return;
     }
+
+    setState(() {
+      _numberOfComments = 0;
+      _isLoading = false;
+    });
   }
 
   List<Widget> _addCommentWidgets(List<Widget> listOfWidgets) {
-    //TODO new comment textbox / respective API calling
-
     listOfWidgets.add(
       Divider(
         height: 10.0,
@@ -399,5 +550,38 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
     ));
 
     return listOfWidgets;
+  }
+
+  void _checkButtonStatus() {
+    String trimmedComment = _commentController.text.trim();
+    if (trimmedComment.isEmpty) {
+      if (_onPressedButtonFunction != null) {
+        setState(() => _onPressedButtonFunction = null);
+      }
+    } else {
+      if (_onPressedButtonFunction == null) {
+        setState(() => _onPressedButtonFunction = _onPressed);
+      }
+    }
+  }
+
+  Future _onPressed() async {
+    FocusScope.of(context).requestFocus(new FocusNode());
+    String comment = _commentController.text.trim();
+    _commentController.clear();
+
+    print("postCommentUI");
+
+    Comment newComment = await Api.postComment(widget.post.id, comment);
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _numberOfComments++;
+      _comments.insert(0, newComment);
+    });
+
+    print("done");
   }
 }

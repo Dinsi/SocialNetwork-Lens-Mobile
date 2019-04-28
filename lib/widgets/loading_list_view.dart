@@ -10,7 +10,7 @@ class LoadingListView extends StatefulWidget {
   /// Abstraction for loading the data.
   /// This can be anything: An API-Call,
   /// loading data from a certain file or database,
-  /// etc. It will deliver a list of objects (of type T)
+  /// etc. It will deliver a list of objects (of type List<Post>)
   final PageRequest pageRequest;
 
   /// Used for building Widgets out of
@@ -44,12 +44,17 @@ class _LoadingListViewState extends State<LoadingListView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget listView = ListView.builder(
-      itemBuilder: itemBuilder,
-      itemCount: posts.length,
-    );
-
-    return RefreshIndicator(onRefresh: onRefresh, child: listView);
+    return posts.isNotEmpty
+        ? RefreshIndicator(
+            onRefresh: onRefresh,
+            child: ListView.builder(
+              itemBuilder: itemBuilder,
+              itemCount: posts.length,
+            ),
+          )
+        : Center(
+            child: CircularProgressIndicator(),
+          );
   }
 
   @override

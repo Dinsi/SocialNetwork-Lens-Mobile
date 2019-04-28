@@ -19,17 +19,17 @@ class BasicPost extends StatefulWidget {
   const BasicPost({Key key, @required this.post}) : super(key: key);
 
   @override
-  _BasicPostState createState() => _BasicPostState(this.post.votes);
+  _BasicPostState createState() => _BasicPostState(this.post.votes, this.post.commentsLength, this.post.userVote);
 }
 
 class _BasicPostState extends State<BasicPost> {
-  _BasicPostState(this._votes);
+  _BasicPostState(this._numberOfVotes, this._numberOfComments, this._currentVote);
 
-  int _votes;
+  int _numberOfVotes;
+  int _numberOfComments;
   int _currentVote;
   bool _downIconColor;
   bool _upIconColor;
-  double _imageHeight;
   final Lock _lock = Lock();
 
   @override
@@ -105,7 +105,7 @@ class _BasicPostState extends State<BasicPost> {
                                       width: 8.0,
                                     ),
                                     Text(
-                                      nFormatter(_votes.toDouble(), 0),
+                                      nFormatter(_numberOfVotes.toDouble(), 0),
                                       style: votesTextStyle(
                                           _upIconColor ? Colors.blue : null),
                                     ),
@@ -143,10 +143,11 @@ class _BasicPostState extends State<BasicPost> {
                               color: Colors.grey[600],
                             ),
                             label: Text(
-                              widget.post.commentsLength.toString(),
+                              _numberOfComments.toString(),
                               style: votesTextStyle(),
                             ),
-                            onPressed: () => _toDetailedPostScreen(toComments: true),
+                            onPressed: () =>
+                                _toDetailedPostScreen(toComments: true),
                           ),
                         ],
                       ),
@@ -183,10 +184,29 @@ class _BasicPostState extends State<BasicPost> {
     );
   }
 
-  void _toDetailedPostScreen({@required bool toComments}) {
-    Navigator.of(context).push(MaterialPageRoute<Null>(
-        builder: (BuildContext context) =>
-            DetailedPostScreen(post: widget.post, toComments: toComments)));
+  Future _toDetailedPostScreen({@required bool toComments}) async {
+    Map<String, int> data = await Navigator.of(context).push(MaterialPageRoute<Map<String, int>>(
+        builder: (BuildContext context) => DetailedPostScreen(
+            post: widget.post,
+            votes: _numberOfVotes,
+            currentVote: _currentVote,
+            comments: _numberOfComments,
+            toComments: toComments)));
+
+    if (_numberOfVotes != data["votes"]) {
+      _numberOfVotes = data["votes"];
+      _currentVote = data["currentVote"];
+      _setIconColors();
+      if (_numberOfComments == data["comments"]) {
+        setState(() {});
+      }
+    }
+
+    if (_numberOfComments != data["comments"]) {
+      setState(() {
+        _numberOfComments = data["comments"];
+      });
+    }
   }
 
   Future _downvoteOrRemove() async {
@@ -194,10 +214,14 @@ class _BasicPostState extends State<BasicPost> {
       if (_currentVote == -1) {
         setState(() {
           _downIconColor = false;
-          _votes++;
+          _numberOfVotes++;
         });
 
         int result = await Api.removeVote(widget.post.id);
+        if (!mounted) {
+          return;
+        }
+
         if (result == 0) {
           setState(() {
             _currentVote = 0;
@@ -205,7 +229,7 @@ class _BasicPostState extends State<BasicPost> {
         } else {
           setState(() {
             _downIconColor = true;
-            _votes--;
+            _numberOfVotes--;
           });
           /*TODO place dialog here*/
         }
@@ -215,10 +239,14 @@ class _BasicPostState extends State<BasicPost> {
       setState(() {
         _upIconColor = false;
         _downIconColor = true;
-        _currentVote == 1 ? _votes -= 2 : _votes--;
+        _currentVote == 1 ? _numberOfVotes -= 2 : _numberOfVotes--;
       });
 
       int result = await Api.downVote(widget.post.id);
+      if (!mounted) {
+        return;
+      }
+
       if (result == 0) {
         setState(() {
           _currentVote = -1;
@@ -227,7 +255,7 @@ class _BasicPostState extends State<BasicPost> {
         setState(() {
           _upIconColor = true;
           _downIconColor = false;
-          _currentVote == 1 ? _votes += 2 : _votes++;
+          _currentVote == 1 ? _numberOfVotes += 2 : _numberOfVotes++;
         }); /*TODO place dialog here*/
       }
     });
@@ -238,31 +266,40 @@ class _BasicPostState extends State<BasicPost> {
       if (_currentVote == 1) {
         setState(() {
           _upIconColor = false;
-          _votes--;
+          _numberOfVotes--;
         });
 
         int result = await Api.removeVote(widget.post.id);
+        if (!mounted) {
+          return;
+        }
+
         if (result == 0) {
-          setState(() {
-            _currentVote = 0;
-          });
+          setState(() => _currentVote = 0);
         } else {
           setState(() {
             _upIconColor = true;
-            _votes++;
+            _numberOfVotes++;
           });
           /*TODO place dialog here*/
         }
+        return;
+      }
+      if (!mounted) {
         return;
       }
 
       setState(() {
         _upIconColor = true;
         _downIconColor = false;
-        _currentVote == -1 ? _votes += 2 : _votes++;
+        _currentVote == -1 ? _numberOfVotes += 2 : _numberOfVotes++;
       });
 
       int result = await Api.upVote(widget.post.id);
+      if (!mounted) {
+        return;
+      }
+
       if (result == 0) {
         setState(() {
           _currentVote = 1;
@@ -271,7 +308,7 @@ class _BasicPostState extends State<BasicPost> {
         setState(() {
           _upIconColor = false;
           _downIconColor = true;
-          _currentVote == -1 ? _votes -= 2 : _votes--;
+          _currentVote == -1 ? _numberOfVotes -= 2 : _numberOfVotes--;
         });
         /*TODO place dialog here*/
       }
@@ -279,7 +316,7 @@ class _BasicPostState extends State<BasicPost> {
   }
 
   void _setIconColors() {
-    switch (widget.post.userVote) {
+    switch (_currentVote) {
       case 0:
         _downIconColor = false;
         _upIconColor = false;
@@ -294,6 +331,5 @@ class _BasicPostState extends State<BasicPost> {
         break;
       default:
     }
-    _currentVote = widget.post.userVote;
   }
 }

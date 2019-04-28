@@ -42,8 +42,6 @@ class _CommentTileState extends State<CommentTile> {
               padding: const EdgeInsets.only(left: 8.0),
               child: RichText(
                 text: TextSpan(
-                  // Note: Styles for TextSpans must be explicitly defined.
-                  // Child text spans will inherit styles from parent
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14.0,

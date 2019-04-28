@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:aperture/globals.dart';
+import 'package:aperture/screens/recommended_topics_screen.dart';
+import 'package:aperture/utils/transition_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: new Scaffold(
+      child: Scaffold(
         key: _scaffoldKey,
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {
@@ -150,7 +153,11 @@ class _LoginScreenState extends State<LoginScreen>
 
     if (code == 0) {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute<Null>(builder: (context) => UserInfoScreen()));
+        MaterialPageRoute<Null>(
+          builder: (context) => TransitionWidget(),
+        ),
+      );
+      
     } else {
       setState(() {
         showInSnackBar('Error: Could not login');
