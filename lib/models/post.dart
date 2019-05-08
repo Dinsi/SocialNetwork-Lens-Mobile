@@ -1,16 +1,16 @@
 class Post {
-  final int _id;
-  final String _title;
-  final String _description;
-  final _User _user;
-  final String _image;
-  final int _width;
-  final int _height;
-  final int _votes;
-  final int _userVote;
-  final int _commentsLength;
+  int _id;
+  String _title;
+  String _description;
+  _User _user;
+  String _image;
+  int _width;
+  int _height;
+  int _votes;
+  int _userVote;
+  int _commentsLength;
 
-  const Post(
+  Post(
       this._id,
       this._title,
       this._description,
@@ -52,15 +52,25 @@ class Post {
   }
 
   int get id => _id;
+  set id(int id) => _id = id;
   String get title => _title;
+  set title(String title) => _title = title;
   String get description => _description;
+  set description(String description) => _description = description;
   _User get user => _user;
+  set user(_User user) => _user = user;
   String get image => _image;
+  set image(String image) => _image = image;
   int get width => _width;
+  set width(int width) => _width = width;
   int get height => _height;
+  set height(int height) => _height = height;
   int get votes => _votes;
+  set votes(int votes) => _votes = votes;
   int get userVote => _userVote;
+  set userVote(int userVote) => _userVote = userVote;
   int get commentsLength => _commentsLength;
+  set commentsLength(int commentsLength) => _commentsLength = commentsLength;
 }
 
 

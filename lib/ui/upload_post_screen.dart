@@ -1,19 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aperture/network/api.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../blocs/upload_post_bloc.dart';
 
 const int maxLengthTitle = 128;
 const int maxLengthDescription = 1024;
 
-class UploadPost extends StatefulWidget {
+class UploadPostScreen extends StatefulWidget {
   @override
-  _UploadPostState createState() => _UploadPostState();
+  _UploadPostScreenState createState() => _UploadPostScreenState();
 }
 
-class _UploadPostState extends State<UploadPost> {
+class _UploadPostScreenState extends State<UploadPostScreen> {
   String _title = '';
   String _description = '';
   File _image;
@@ -36,10 +37,9 @@ class _UploadPostState extends State<UploadPost> {
       },
     );
 
-    int code = await Api.upload(_image, _title, _description);
-    Navigator.of(context)
-      ..pop()
-      ..pop(code);
+    int code = await uploadPostBloc.uploadPost(_image, _title, _description);
+    Navigator.of(context)..pop()..pop(code);
+    //TODO fix
   }
 
   @override

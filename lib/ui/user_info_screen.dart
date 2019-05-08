@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:aperture/widgets/posts/upload_post.dart';
 import 'package:flutter/material.dart';
-import 'package:aperture/screens/feed_screen.dart';
-import 'package:aperture/screens/login_screen.dart';
-import 'package:aperture/network/api.dart';
-import 'package:aperture/globals.dart';
+
+import 'upload_post_screen.dart';
+import 'feed_screen.dart';
+import 'login_screen.dart';
+import '../blocs/user_info_screen_bloc.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key key}) : super(key: key);
@@ -15,51 +15,16 @@ class UserInfoScreen extends StatefulWidget {
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
-  String _name;
-  String _username;
-  String _email;
-
   @override
   void initState() {
     super.initState();
-    _getUserInfo();
-  }
-
-  Future<void> _getUserInfo() async {
-    final Globals globals = Globals.getInstance();
-    if (globals.user == null) {
-      int code = await Api.userInfo();
-
-      if (code != 0) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Info'),
-                content: Text(
-                    'Error: Something went wrong with your request'), //TODO
-                actions: <Widget>[
-                  FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ],
-              );
-            });
-      }
-    }
-
-    setState(() {
-      _name = globals.user.name;
-      _username = globals.user.username;
-      _email = globals.user.email;
-    });
   }
 
   Future<void> _getPostDetails(BuildContext context) async {
+    final replacementWidget = UploadPostScreen();
     int result = await Navigator.of(context).push(
       MaterialPageRoute<int>(
-        builder: (BuildContext context) => UploadPost(),
+        builder: (BuildContext context) => replacementWidget,
       ),
     );
 
@@ -99,15 +64,17 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   void _feed(BuildContext context) {
+    final replacementWidget = FeedScreen();
     Navigator.of(context).push(MaterialPageRoute<Null>(
-        builder: (BuildContext context) => FeedScreen()));
+        builder: (BuildContext context) => replacementWidget));
   }
 
-  Future<void> _logout(BuildContext context) async {
-    Globals.getInstance().clearCache();
+  void _logout(BuildContext context) {
+    userInfoBloc.clearCache();
 
+    final replacementWidget = LoginScreen();
     Navigator.of(context).pushReplacement(MaterialPageRoute<Null>(
-        builder: (BuildContext context) => LoginScreen()));
+        builder: (BuildContext context) => replacementWidget));
   }
 
   @override
@@ -119,19 +86,19 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           children: <Widget>[
             ListTile(
               title: Text(
-                'Name: ${(_name == null ? '' : _name)}',
+                'Name: ${(userInfoBloc.user.name)}',
                 style: Theme.of(context).textTheme.headline,
               ),
             ),
             ListTile(
               title: Text(
-                'Username: ${(_username == null ? '' : _username)}',
+                'Username: ${(userInfoBloc.user.username)}',
                 style: Theme.of(context).textTheme.headline,
               ),
             ),
             ListTile(
               title: Text(
-                'Email: ${(_email == null ? '' : _email)}',
+                'Email: ${(userInfoBloc.user.email)}',
                 style: Theme.of(context).textTheme.headline,
               ),
             ),

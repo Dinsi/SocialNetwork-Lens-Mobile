@@ -1,4 +1,4 @@
-import 'package:aperture/models/topic.dart';
+import 'topic.dart';
 
 class User {
   final int _id;
@@ -44,11 +44,8 @@ class User {
   }
 
   static List<Topic> setTopics(List topics) {
-    List<Topic> topicList = List<Topic>(topics.length);
-    for (int i = 0; i < topicList.length; i++) {
-      topicList[i] = Topic.fromJson(topics[i]);
-    }
-
+    List<Topic> topicList = List<Topic>();
+    topics.forEach((topic) => topicList.add(Topic.fromJson(topic)));
     return topicList;
   }
 

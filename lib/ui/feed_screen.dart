@@ -1,9 +1,8 @@
-import 'package:aperture/globals.dart';
-import 'package:aperture/widgets/loading_list_view.dart';
-import 'package:aperture/network/api.dart';
-import 'package:aperture/models/post.dart';
-import 'package:aperture/widgets/posts/basic_post.dart';
 import 'package:flutter/material.dart';
+
+import '../blocs/feed_bloc.dart';
+import 'sub_widgets/basic_post.dart';
+import 'loading_list_view.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key key}) : super(key: key);
@@ -13,24 +12,30 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  Globals globalsInstance;
+  bool userIsConfirmed;
 
   @override
   void initState() {
     super.initState();
-    globalsInstance = Globals.getInstance();
+    userIsConfirmed = feedBloc.userIsConfirmed;
+  }
+
+  @override
+  void dispose() {
+    feedBloc.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     LoadingListView postsList = LoadingListView(
-      pageRequest: Api.feed,
-      widgetAdapter: (Post post) => BasicPost(post: post),
+      widgetAdapter: (dynamic post) => BasicPost(post: post),
+      bloc: feedBloc,
     );
 
     return SafeArea(
       child: Scaffold(
-        body: (globalsInstance.user.isConfirmed
+        body: (userIsConfirmed
             ? postsList
             : Column(
                 children: <Widget>[

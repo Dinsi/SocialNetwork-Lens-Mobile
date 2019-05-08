@@ -3,26 +3,27 @@ library aperture.globals;
 import 'dart:async' show Future;
 import 'dart:convert' show jsonDecode, jsonEncode;
 
-import 'package:aperture/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/user.dart';
 
 class Globals {
-  static Globals _singleton;
+  static Globals _instance;
   SharedPreferences prefs;
 
-  Globals._internal();
-
   factory Globals.getInstance() {
-    if (_singleton == null) {
-      _singleton = new Globals._internal();
+    if (_instance == null) {
+      _instance = Globals._internal();
     }
-    return _singleton;
+
+    return _instance;
   }
 
   Future init() async {
     prefs = await SharedPreferences.getInstance();
   }
+  
+  Globals._internal();
 
   bool isLoggedIn() {
     return loggedIn != null;
@@ -42,14 +43,20 @@ class Globals {
   }
 
   bool get loggedIn => prefs.getBool('loggedIn');
-  Future setLoggedIn(bool value) async => await prefs.setBool('loggedIn', value);
+  Future setLoggedIn(bool value) async =>
+      await prefs.setBool('loggedIn', value);
 
   String get accessToken => prefs.getString('accessToken');
-  Future setAccessToken(String value) async => await prefs.setString('accessToken', value);
+  Future setAccessToken(String value) async =>
+      await prefs.setString('accessToken', value);
 
   String get refreshToken => prefs.getString('refreshToken');
-  Future setRefreshToken(String value) async => await prefs.setString('refreshToken', value);
+  Future setRefreshToken(String value) async =>
+      await prefs.setString('refreshToken', value);
 
-  User get user => prefs.getString('user') == null ? null : User.fromJson(jsonDecode(prefs.getString('user')));
-  Future setUser(Map<String, dynamic> value) async => await prefs.setString('user', jsonEncode(value));
+  User get user => prefs.getString('user') == null
+      ? null
+      : User.fromJson(jsonDecode(prefs.getString('user')));
+  Future setUser(Map<String, dynamic> value) async =>
+      await prefs.setString('user', jsonEncode(value));
 }

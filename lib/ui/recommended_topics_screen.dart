@@ -1,13 +1,13 @@
-import 'package:aperture/globals.dart';
-import 'package:aperture/models/topic.dart';
-import 'package:aperture/network/api.dart';
-import 'package:aperture/screens/user_info_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'user_info_screen.dart';
+import '../models/topic.dart';
+import '../blocs/recommended_topics_bloc.dart';
 
 const double _itemHeight = 70.0;
 
 class RecommendedTopicsScreen extends StatefulWidget {
-  RecommendedTopicsScreen({Key key}) : super(key: key);
+  const RecommendedTopicsScreen({Key key}) : super(key: key);
 
   _RecommendedTopicsScreenState createState() =>
       _RecommendedTopicsScreenState();
@@ -24,16 +24,18 @@ class _RecommendedTopicsScreenState extends State<RecommendedTopicsScreen> {
   @override
   void initState() {
     super.initState();
-    _onPressedFunction = () => _sendTopics();
     _getRecommendedTopics();
   }
 
   Future _getRecommendedTopics() async {
-    List<Topic> topics = await Api.recommendedTopics();
+    List<Topic> topics = await recommendedTopicsBloc.recommendedTopics();
     _colorVariables = List<Color>(topics.length);
     _colorVariables.fillRange(0, topics.length, Colors.white);
 
-    setState(() => _recommendedTopics = topics);
+    setState(() {
+      _onPressedFunction = () => _sendTopics();
+      _recommendedTopics = topics;
+    });
   }
 
   List<Widget> _getTopicWidgets() {
@@ -84,11 +86,12 @@ class _RecommendedTopicsScreenState extends State<RecommendedTopicsScreen> {
 
   Future _sendTopics() async {
     setState(() => _onPressedFunction = null);
-    int code = await Api.finishRegister(_selectedTopics);
+    int code = await recommendedTopicsBloc.finishRegister(_selectedTopics);
     if (code == 0) {
+      final replacementWidget = UserInfoScreen();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<Null>(
-          builder: (context) => UserInfoScreen(),
+          builder: (context) => replacementWidget,
         ),
       );
     }
@@ -96,8 +99,6 @@ class _RecommendedTopicsScreenState extends State<RecommendedTopicsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Globals globals = Globals.getInstance();
-
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -107,7 +108,7 @@ class _RecommendedTopicsScreenState extends State<RecommendedTopicsScreen> {
                 height: 150.0,
                 child: Center(
                   child: Text(
-                    'Welcome ${globals.user.username}!\nTo get you started, select a few topics of your interest!',
+                    'Welcome ${recommendedTopicsBloc.userUsername}!\nTo get you started, select a few topics of your interest!',
                     style: TextStyle(
                       fontSize: 20.0,
                     ),

@@ -1,15 +1,14 @@
 import 'dart:async';
+import 'dart:io' show HttpException;
 
-import 'package:aperture/globals.dart';
-import 'package:aperture/screens/recommended_topics_screen.dart';
-import 'package:aperture/utils/transition_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:aperture/screens/user_info_screen.dart';
-import 'package:aperture/utils/login_theme.dart' as Theme;
-import 'package:aperture/utils/login_bubble_indication_painter.dart';
-import 'package:aperture/network/api.dart';
+
+import 'utils/login_theme.dart' as Theme;
+import 'utils/login_bubble_indication_painter.dart';
+import 'sub_widgets/transition_widget.dart';
+import '../blocs/login_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -149,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen>
       });
     }
 
-    int code = await Api.login(username, password);
+    int code = await loginBloc.login(username, password);
 
     if (code == 0) {
       Navigator.of(context).pushReplacement(
@@ -157,7 +156,6 @@ class _LoginScreenState extends State<LoginScreen>
           builder: (context) => TransitionWidget(),
         ),
       );
-      
     } else {
       setState(() {
         showInSnackBar('Error: Could not login');
@@ -195,13 +193,24 @@ class _LoginScreenState extends State<LoginScreen>
       'password': password
     };
 
-    int code = await Api.register(fields);
+    int code = await loginBloc.register(fields);
 
     if (code == 0) {
-      showInSnackBar('Sign up successful. You can now log in.');
-    } else {
-      showInSnackBar('Error: Could not sign up');
+      code = await loginBloc.login(username, password);
+      if (code == 0) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<Null>(
+            builder: (BuildContext context) =>
+                TransitionWidget(),
+          ),
+        );
+
+        return;
+      }
     }
+
+    showInSnackBar('Error: Could not sign up');
+    //TODO implement alternatives results
   }
 
   void showInSnackBar(String value) {
