@@ -11,18 +11,24 @@ import 'package:path/path.dart';
 
 import '../models/post.dart';
 import 'base_provider.dart';
-import 'globals.dart';
 
 class PostApiProvider extends BaseProvider {
   Client client = Client();
 
-  Future<List<Post>> fetchPostList(int lastPostId) async {
+  Future<List<Post>> fetchList(int lastPostId) async {
     print("fetchPostList");
-    final response = await client.get(
-        "${super.baseUrl}feed/${(lastPostId != null ? "?after=$lastPostId" : "")}",
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
-        });
+    return await fetchPosts("${super.baseUrl}feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
+  }
+
+  Future<List<Post>> fetchListByTopic(int lastPostId, String topic) async {
+    print("fetchPostListByTopic");
+    return await fetchPosts("${super.baseUrl}topics/$topic/feed/${(lastPostId != null ? "?after=$lastPostId" : "")}"); 
+  }
+
+  Future<List<Post>> fetchPosts(String uri) async {
+    final response = await client.get(uri, headers: {
+      HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+    });
 
     print(response.body.toString());
 
@@ -40,11 +46,11 @@ class PostApiProvider extends BaseProvider {
       return posts;
     } else {
       // If that call was not successful, throw an error.
-      throw HttpException('fetchPostList');
+      throw HttpException('fetchPosts');
     }
   }
 
-  Future<Post> fetchSinglePost(int postId) async {
+  Future<Post> fetchSingle(int postId) async {
     print("fetchSinglePost");
     final response = await client.get("${super.baseUrl}posts/$postId/",
         headers: {
@@ -111,7 +117,7 @@ class PostApiProvider extends BaseProvider {
   Future<int> changeVote(int postId, String change) async {
     print(change);
 
-    var response = await client.post('${super.baseUrl}posts/$postId/$change',
+    var response = await client.post('${super.baseUrl}posts/$postId/$change/',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
         });

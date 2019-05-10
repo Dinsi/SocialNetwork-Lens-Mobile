@@ -6,6 +6,7 @@ import 'dart:convert' show jsonDecode, jsonEncode;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
+import '../models/topic.dart';
 
 class Globals {
   static Globals _instance;
@@ -22,12 +23,12 @@ class Globals {
   Future init() async {
     prefs = await SharedPreferences.getInstance();
   }
-  
+
   Globals._internal();
 
   bool isLoggedIn() {
     return loggedIn != null;
-  } 
+  }
 
   Future clearCache() async {
     await prefs.clear();
@@ -40,6 +41,18 @@ class Globals {
     await loggedInResult;
     await accessResult;
     await refreshResult;
+  }
+
+  Future<void> addTopicToUser(Topic topic) async {
+    final user = User.fromJson(jsonDecode(prefs.getString('user')));
+    user.topics.add(topic);
+    await setUserFromUser(user);
+  }
+
+  Future<void> removeTopicFromUser(String topicName) async {
+    final user = User.fromJson(jsonDecode(prefs.getString('user')));
+    user.topics.removeWhere((topic) => topic.name == topicName);
+    await setUserFromUser(user);
   }
 
   bool get loggedIn => prefs.getBool('loggedIn');
@@ -57,6 +70,10 @@ class Globals {
   User get user => prefs.getString('user') == null
       ? null
       : User.fromJson(jsonDecode(prefs.getString('user')));
-  Future setUser(Map<String, dynamic> value) async =>
+
+  Future setUserFromMap(Map<String, dynamic> value) async =>
       await prefs.setString('user', jsonEncode(value));
+
+  Future setUserFromUser(User value) async =>
+      await prefs.setString('user', jsonEncode(value.toJson()));
 }

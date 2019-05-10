@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../models/post.dart';
-import '../blocs/feed_bloc.dart';
+import '../../models/post.dart';
+import '../../blocs/base_feed_bloc.dart';
 
 typedef WidgetAdapter = Widget Function(Post t);
 typedef FetchRequester = Future Function(int lastId);
@@ -12,7 +12,7 @@ class LoadingListView extends StatefulWidget {
   /// the fetched data
   final WidgetAdapter widgetAdapter;
 
-  final FeedBloc bloc;
+  final BaseFeedBloc bloc;
 
   /// The number of "left over" elements in list which
   /// will trigger loading the next page
@@ -28,8 +28,6 @@ class LoadingListView extends StatefulWidget {
 }
 
 class _LoadingListViewState extends State<LoadingListView> {
-  int _latestPageSize;
-
   /// A Future returned by loadNext() if there
   /// is currently a request running
   /// or null, if no request is performed.
@@ -62,7 +60,7 @@ class _LoadingListViewState extends State<LoadingListView> {
     return ListView.builder(
       itemCount: posts.length,
       itemBuilder: (BuildContext context, int index) {
-        if (this._latestPageSize == 20) {
+        if (widget.bloc.listLength == 20) {
           if (index + widget.pageThreshold - 1 == posts.length) {
             lockedLoadNext();
             return widget.widgetAdapter(posts[index]);
@@ -93,8 +91,7 @@ class _LoadingListViewState extends State<LoadingListView> {
 
   void lockedLoadNext() {
     if (this.request == null) {
-      this.request = widget.bloc.fetchPosts().then((pageSize) {
-        this._latestPageSize = pageSize;
+      this.request = widget.bloc.fetch().then((_) {
         this.request = null;
       }).catchError((error) => this.request = null);
     }
@@ -105,12 +102,9 @@ class _LoadingListViewState extends State<LoadingListView> {
 
     widget.bloc.clear();
 
-    if (this.request == null) {
-      this.request = widget.bloc.fetchPosts();
-      int pageSize = await this.request;
-      this._latestPageSize = pageSize;
-      this.request = null;
-    }
+    this.request = widget.bloc.fetch();
+    await this.request;
+    this.request = null;
 
     return true;
   }

@@ -9,6 +9,7 @@ import 'topic_api_provider.dart';
 import '../models/topic.dart';
 import '../models/post.dart';
 import '../models/user.dart';
+import '../models/comment.dart';
 
 class Repository {
   final postsApiProvider = PostApiProvider();
@@ -18,15 +19,17 @@ class Repository {
   final topicsApiProvider = TopicApiProvider();
 
   Future<List<Post>> fetchPosts(int lastPostId) =>
-      postsApiProvider.fetchPostList(lastPostId);
+      postsApiProvider.fetchList(lastPostId);
+
+  Future<List<Post>> fetchPostsByTopic(int lastPostId, String topic) =>
+      postsApiProvider.fetchListByTopic(lastPostId, topic);
 
   Future<Post> fetchSinglePost(int postId) =>
-      postsApiProvider.fetchSinglePost(postId);
+      postsApiProvider.fetchSingle(postId);
 
   Future<dynamic> fetchComments(
           int commentLimit, int postId, String nextLink) =>
-      commentsApiProvider.fetchCommentList(
-          commentLimit, postId, nextLink);
+      commentsApiProvider.fetchList(commentLimit, postId, nextLink);
 
   Future<int> changeVote(int postId, String change) =>
       postsApiProvider.changeVote(postId, change);
@@ -38,15 +41,24 @@ class Repository {
       tokenApiProvider.register(fields);
 
   Future<List<Topic>> recommendedTopics() =>
-      topicsApiProvider.fetchRecommendedTopics();
+      topicsApiProvider.fetchRecommended();
 
   Future<int> finishRegister(List<int> topicIds) =>
       userApiProvider.finishRegister(topicIds);
 
-  Future<User> fetchUserInfo() => userApiProvider.fetchUserInfo();
+  Future<User> fetchUserInfo() => userApiProvider.fetchInfo();
 
   Future<int> uploadPost(File image, String title, String description) =>
       postsApiProvider.uploadPost(image, title, description);
 
-  Future<bool> verifyToken() => tokenApiProvider.verifyToken();
+  Future<bool> verifyToken() => tokenApiProvider.verify();
+
+  Future<int> toggleTopicSubscription(
+          String topic, String subscriptionIntent) =>
+      topicsApiProvider.toggleSubscription(topic, subscriptionIntent);
+
+  Future<Comment> postComment(int postId, String comment) =>
+      commentsApiProvider.post(postId, comment);
+
+  Future<Topic> fetchSingleTopic(String topic) => topicsApiProvider.fetchSingle(topic);
 }

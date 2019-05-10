@@ -9,7 +9,7 @@ import 'base_provider.dart';
 class CommentApiProvider extends BaseProvider {
   Client client = Client();
 
-  Future<dynamic> fetchCommentList(
+  Future<dynamic> fetchList(
       int commentLimit, int postId, String nextLink) async {
     print("fetchCommentList");
     final response = await client.get(
@@ -40,7 +40,7 @@ class CommentApiProvider extends BaseProvider {
     }
   }
 
-  Future<Comment> postComment(int postId, String comment) async {
+  Future<Comment> post(int postId, String comment) async {
     print('postComment');
 
     var response = await client.post(

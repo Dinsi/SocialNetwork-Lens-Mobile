@@ -17,10 +17,6 @@ class PostDetailsBloc {
   PostDetailsBloc(this._postId);
 
   Future fetchComments() async {
-    if (_commentsFetcher.isClosed) {
-      _commentsFetcher = StreamController<List<Comment>>.broadcast();
-    }
-
     var fetched =
         await _repository.fetchComments(_commentLimit, _postId, _nextLink);
     if (fetched is Map) {
@@ -33,6 +29,19 @@ class PostDetailsBloc {
     if (!_commentsFetcher.isClosed) {
       _commentsFetcher.sink.add(_commentsList);
     }
+  }
+
+  Future<Comment> postComment(String comment) async {
+    Comment result = await _repository.postComment(
+        _postId, comment); //TODO assuming result is valid
+
+    this._commentsList.insert(0, result);
+
+    if (!_commentsFetcher.isClosed) {
+      _commentsFetcher.sink.add(_commentsList);
+    }
+
+    return result;
   }
 
   void dispose() {

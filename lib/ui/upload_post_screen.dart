@@ -47,12 +47,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Post'),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: BackButton(),
       ),
       body: ListView(
         children: <Widget>[

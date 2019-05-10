@@ -6,6 +6,7 @@ import 'upload_post_screen.dart';
 import 'feed_screen.dart';
 import 'login_screen.dart';
 import '../blocs/user_info_screen_bloc.dart';
+import '../blocs/providers/feed_bloc_provider.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key key}) : super(key: key);
@@ -64,7 +65,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   void _feed(BuildContext context) {
-    final replacementWidget = FeedScreen();
+    final replacementWidget = FeedBlocProvider(
+      child: FeedScreen(),
+    );
     Navigator.of(context).push(MaterialPageRoute<Null>(
         builder: (BuildContext context) => replacementWidget));
   }

@@ -2,7 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'utils/post_shared_functions.dart';
-
+import '../ui/topic_feed_screen.dart';
+import '../blocs/providers/topic_feed_bloc_provider.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
   final String text;
@@ -16,14 +17,12 @@ class DescriptionTextWidget extends StatefulWidget {
 class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
     with SingleTickerProviderStateMixin<DescriptionTextWidget> {
   List<String> _textSplits;
-  TapGestureRecognizer _tapGestureRecognizer;
   bool flag = true;
 
   @override
   void initState() {
     super.initState();
     _textSplits = detectHashtags(widget.text);
-    _tapGestureRecognizer = TapGestureRecognizer()..onTap = () => print('k');
     /*if (widget.text.length > 100) {
       firstHalf = widget.text.substring(0, 100);
       secondHalf = widget.text.substring(100, widget.text.length);
@@ -37,19 +36,25 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
   Widget build(BuildContext context) {
     TextSpan descriptionTextSpan = TextSpan(
       children: <TextSpan>[],
-      style: TextStyle(
-        fontSize: 16.0,
-        color: Colors.black
-      ),
+      style: TextStyle(fontSize: 16.0, color: Colors.black),
     );
 
     _textSplits.forEach((textSplit) {
       if (textSplit.startsWith('#')) {
         descriptionTextSpan.children.add(
           TextSpan(
-              text: textSplit,
-              style: TextStyle(color: Colors.blue),
-              recognizer: _tapGestureRecognizer),
+            text: textSplit,
+            style: TextStyle(color: Colors.blue),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => Navigator.of(context).push(
+                    MaterialPageRoute<Null>(
+                      builder: (BuildContext context) => TopicFeedBlocProvider(
+                            topic: textSplit.replaceFirst('#', ''),
+                            child: TopicFeedScreen(),
+                          ),
+                    ),
+                  ),
+          ),
         );
       } else {
         descriptionTextSpan.children.add(

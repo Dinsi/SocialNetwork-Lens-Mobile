@@ -5,8 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../../blocs/feed_bloc.dart';
-import '../../blocs/post_details_bloc_provider.dart';
+import '../../blocs/base_feed_bloc.dart';
+import '../../blocs/providers/post_details_bloc_provider.dart';
 import '../../models/post.dart';
 import '../../ui/detailed_post_screen.dart';
 import '../utils/post_shared_functions.dart';
@@ -15,10 +15,13 @@ import 'image_container.dart';
 const double _iconSideSize = 45.0;
 const double _defaultHeight = 55.0;
 
+//TODO needs proper refactor to BLOC
+
 class BasicPost extends StatefulWidget {
   final Post post;
+  final BaseFeedBloc bloc;
 
-  const BasicPost({Key key, @required this.post}) : super(key: key);
+  const BasicPost({Key key, @required this.post, @required this.bloc}) : super(key: key);
 
   @override
   _BasicPostState createState() => _BasicPostState(this.post);
@@ -210,7 +213,7 @@ class _BasicPostState extends State<BasicPost> {
           _post.votes++;
         });
 
-        int result = await feedBloc.removeVote(widget.post.id);
+        int result = await widget.bloc.removeVote(widget.post.id);
         if (!mounted) {
           return;
         }
@@ -235,7 +238,7 @@ class _BasicPostState extends State<BasicPost> {
         _post.userVote == 1 ? _post.votes -= 2 : _post.votes--;
       });
 
-      int result = await feedBloc.downVote(widget.post.id);
+      int result = await widget.bloc.downVote(widget.post.id);
       if (!mounted) {
         return;
       }
@@ -262,7 +265,7 @@ class _BasicPostState extends State<BasicPost> {
           _post.votes--;
         });
 
-        int result = await feedBloc.removeVote(widget.post.id);
+        int result = await widget.bloc.removeVote(widget.post.id);
         if (!mounted) {
           return;
         }
@@ -288,7 +291,7 @@ class _BasicPostState extends State<BasicPost> {
         _post.userVote == -1 ? _post.votes += 2 : _post.votes++;
       });
 
-      int result = await feedBloc.upVote(widget.post.id);
+      int result = await widget.bloc.upVote(widget.post.id);
       if (!mounted) {
         return;
       }

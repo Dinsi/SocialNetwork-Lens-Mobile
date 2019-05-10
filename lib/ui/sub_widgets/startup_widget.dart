@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../blocs/startup_bloc.dart';
+import '../../blocs/providers/transition_widget_bloc_provider.dart';
 import '../login_screen.dart';
 import '../sub_widgets/transition_widget.dart';
 
@@ -29,11 +30,15 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         stream: startUpBloc.tokenStream,
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData) {
-            return snapshot.data ? TransitionWidget() : LoginScreen();
+            final transitionWidget = TransitionWidgetBlocProvider(
+              child: TransitionWidget(),
+            );
+
+            return snapshot.data ? transitionWidget : LoginScreen();
           } else {
-            return const Scaffold(
-              body: const SafeArea(
-                child: const Center(
+            return const SafeArea(
+              child: const Scaffold(
+                body: const Center(
                   child: const CircularProgressIndicator(),
                 ),
               ),

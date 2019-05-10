@@ -1,30 +1,30 @@
 import 'topic.dart';
 
 class User {
-  final int _id;
-  final String _username;
-  final String _firstName;
-  final String _lastName;
-  final String _name;
-  final String _email;
-  final bool _isActive;
-  final bool _isConfirmed;
-  final bool _finishedRegister;
-  final String _avatar;
-  final List<Topic> _topics;
+  final int id;
+  final String username;
+  final String firstName;
+  final String lastName;
+  final String name;
+  final String email;
+  final bool isActive;
+  final bool isConfirmed;
+  final bool hasFinishedRegister;
+  final String avatar;
+  final List<Topic> topics;
 
   User(
-      this._id,
-      this._username,
-      this._firstName,
-      this._lastName,
-      this._name,
-      this._email,
-      this._isActive,
-      this._isConfirmed,
-      this._finishedRegister,
-      this._avatar,
-      this._topics);
+      this.id,
+      this.username,
+      this.firstName,
+      this.lastName,
+      this.name,
+      this.email,
+      this.isActive,
+      this.isConfirmed,
+      this.hasFinishedRegister,
+      this.avatar,
+      this.topics);
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -51,29 +51,17 @@ class User {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this._id;
-    data['username'] = this._username;
-    data['first_name'] = this._firstName;
-    data['last_name'] = this._lastName;
-    data['name'] = this._name;
-    data['email'] = this._email;
-    data['is_active'] = this._isActive;
-    data['is_confirmed'] = this._isConfirmed;
-    data['finished_register'] = this._finishedRegister;
-    data['avatar'] = this._avatar;
-    data['topics'] = this._topics.map((v) => v.toJson()).toList();
+    data['id'] = this.id;
+    data['username'] = this.username;
+    data['first_name'] = this.firstName;
+    data['last_name'] = this.lastName;
+    data['name'] = this.name;
+    data['email'] = this.email;
+    data['is_active'] = this.isActive;
+    data['is_confirmed'] = this.isConfirmed;
+    data['finished_register'] = this.hasFinishedRegister;
+    data['avatar'] = this.avatar;
+    data['topics'] = this.topics.map((v) => v.toJson()).toList();
     return data;
   }
-
-  int get id => _id;
-  String get username => _username;
-  String get firstName => _firstName;
-  String get lastName => _lastName;
-  String get name => _name;
-  String get email => _email;
-  bool get isActive => _isActive;
-  bool get isConfirmed => _isConfirmed;
-  bool get hasFinishedRegister => _finishedRegister;
-  String get avatar => _avatar;
-  List<Topic> get topics => _topics;
 }

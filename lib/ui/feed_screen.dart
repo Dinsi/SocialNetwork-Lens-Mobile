@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../blocs/feed_bloc.dart';
+import '../blocs/providers/feed_bloc_provider.dart';
 import 'sub_widgets/basic_post.dart';
-import 'loading_list_view.dart';
+import 'sub_widgets/loading_list_view.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key key}) : super(key: key);
@@ -13,29 +14,33 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   bool userIsConfirmed;
+  FeedBloc bloc;
 
   @override
-  void initState() {
-    super.initState();
-    userIsConfirmed = feedBloc.userIsConfirmed;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    bloc = FeedBlocProvider.of(context);
   }
 
   @override
   void dispose() {
-    feedBloc.dispose();
+    bloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     LoadingListView postsList = LoadingListView(
-      widgetAdapter: (dynamic post) => BasicPost(post: post),
-      bloc: feedBloc,
+      widgetAdapter: (dynamic post) => BasicPost(
+            post: post,
+            bloc: bloc,
+          ),
+      bloc: bloc,
     );
 
     return SafeArea(
       child: Scaffold(
-        body: (userIsConfirmed
+        body: (bloc.userIsConfirmed
             ? postsList
             : Column(
                 children: <Widget>[

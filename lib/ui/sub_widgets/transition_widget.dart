@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../user_info_screen.dart';
 import '../recommended_topics_screen.dart';
+import '../../blocs/providers/transition_widget_bloc_provider.dart';
 import '../../models/user.dart';
-import '../../blocs/transition_widget_bloc.dart';
 
 class TransitionWidget extends StatefulWidget {
   const TransitionWidget({Key key}) : super(key: key);
@@ -13,21 +13,28 @@ class TransitionWidget extends StatefulWidget {
 }
 
 class _TransitionWidgetState extends State<TransitionWidget> {
+  bool _isInit = false;
+  TransitionWidgetBloc bloc;
+
   @override
-  void initState() {
-    super.initState();
-    transitionWidgetBloc.fetchUserInfo();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInit) {
+      bloc = TransitionWidgetBlocProvider.of(context);
+      bloc.fetchUserInfo();
+      _isInit = true;
+    }
   }
 
   @override
-  void dispose() { 
-    transitionWidgetBloc.dispose();
+  void dispose() {
+    bloc.dispose();
     super.dispose();
   }
 
   Widget build(BuildContext context) {
     return StreamBuilder<User>(
-      stream: transitionWidgetBloc.stream,
+      stream: bloc.stream,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.hasFinishedRegister) {
@@ -36,9 +43,9 @@ class _TransitionWidgetState extends State<TransitionWidget> {
 
           return const RecommendedTopicsScreen();
         } else {
-          return const Scaffold(
-            body: const SafeArea(
-              child: const Center(
+          return const SafeArea(
+            child: const Scaffold(
+              body: const Center(
                 child: const CircularProgressIndicator(),
               ),
             ),

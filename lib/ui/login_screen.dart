@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' show HttpException;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +8,7 @@ import 'utils/login_theme.dart' as Theme;
 import 'utils/login_bubble_indication_painter.dart';
 import 'sub_widgets/transition_widget.dart';
 import '../blocs/login_bloc.dart';
+import '../blocs/providers/transition_widget_bloc_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -151,9 +151,13 @@ class _LoginScreenState extends State<LoginScreen>
     int code = await loginBloc.login(username, password);
 
     if (code == 0) {
+      final replacementWidget = TransitionWidgetBlocProvider(
+        child: TransitionWidget(),
+      );
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<Null>(
-          builder: (context) => TransitionWidget(),
+          builder: (context) => replacementWidget,
         ),
       );
     } else {
@@ -198,10 +202,13 @@ class _LoginScreenState extends State<LoginScreen>
     if (code == 0) {
       code = await loginBloc.login(username, password);
       if (code == 0) {
+        final replacementWidget = TransitionWidgetBlocProvider(
+          child: TransitionWidget(),
+        );
+        
         Navigator.of(context).pushReplacement(
           MaterialPageRoute<Null>(
-            builder: (BuildContext context) =>
-                TransitionWidget(),
+            builder: (BuildContext context) => replacementWidget,
           ),
         );
 

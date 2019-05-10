@@ -49,8 +49,8 @@ class TokenApiProvider extends BaseProvider {
     return 1;
   }
 
-  Future<bool> verifyToken() async {
-    //TODO fix verifyToken, returns false on other functions and does nothing
+  Future<bool> verify() async {
+    //TODO fix verify, returns false on other functions and does nothing
     print('verifyToken');
     
     var response = await client.post('${super.baseUrl}token/verify/',

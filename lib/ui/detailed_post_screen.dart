@@ -5,7 +5,8 @@ import 'package:synchronized/synchronized.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'utils/post_shared_functions.dart';
-import '../blocs/post_details_bloc_provider.dart';
+import '../blocs/post_details_bloc.dart';
+import '../blocs/providers/post_details_bloc_provider.dart';
 import '../models/comment.dart';
 import '../models/post.dart';
 import 'sub_widgets/comment_tile.dart';
@@ -16,6 +17,7 @@ const double _votesTabHeight = 55.0;
 const double _iconSideSize = 60.0;
 const double _defaultHeight = 75.0;
 const double _commentBoxHeight = 65.0;
+const double _heightOfInitialCircularIndicator = 100.0;
 
 class DetailedPostScreen extends StatefulWidget {
   final Post post;
@@ -44,6 +46,7 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
   bool _enabledBackButton;
 
   PostDetailsBloc bloc;
+  bool _isInit;
 
   @override
   void initState() {
@@ -55,54 +58,62 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
     _commentController = TextEditingController();
     _commentNode = FocusNode();
     _commentController.addListener(_checkButtonStatus);
-    _scrollController.addListener(() {
-      if (_scrollController.offset ==
-              _scrollController.position.maxScrollExtent &&
-          bloc.existsNext) {
-        bloc.fetchComments();
-      }
-    });
 
     _setIconColors();
 
     if (widget.toComments) {
       WidgetsBinding.instance.addPostFrameCallback(_getInitialHeight);
     }
+
+    _isInit = false;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    bloc = PostDetailsBlocProvider.of(context);
-    bloc.fetchComments().then((_) {
-      if (mounted && bloc.hasComments && widget.toComments) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    if (!_isInit) {
+      bloc = PostDetailsBlocProvider.of(context);
+      bloc.fetchComments().then((_) {
+        _scrollController.addListener(() {
+          if (_scrollController.offset ==
+                  _scrollController.position.maxScrollExtent &&
+              bloc.existsNext) {
+            bloc.fetchComments();
+          }
+        });
+
+        if (mounted && bloc.hasComments && widget.toComments) {
           if (_scrollController.position.maxScrollExtent <= _initialHeight) {
             _scrollController
                 .jumpTo(_scrollController.position.maxScrollExtent);
           } else {
             _scrollController.jumpTo(_initialHeight);
           }
-        });
-      }
-    });
+        }
+      });
+
+      _isInit = true;
+    }
   }
 
   void _getInitialHeight(_) {
     final RenderBox renderBoxColumn =
         _columnKey.currentContext.findRenderObject();
-    _initialHeight = renderBoxColumn.size.height;
+    _initialHeight =
+        renderBoxColumn.size.height - _heightOfInitialCircularIndicator;
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController?.dispose();
     _commentNode.dispose();
     _commentController.removeListener(_checkButtonStatus);
     _commentController.dispose();
+    bloc.dispose();
     super.dispose();
   }
-  
+
   Future _onRefresh() async {
     Post updatedPost = await bloc.clearAndFetch();
     setState(() => _post = updatedPost);
@@ -281,7 +292,7 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       stream: bloc.comments,
       builder: (BuildContext context, AsyncSnapshot<List<Comment>> snapshot) {
         SizedBox sizedIndicator = SizedBox(
-          height: 100.0,
+          height: _heightOfInitialCircularIndicator,
           child: Center(
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
@@ -323,21 +334,6 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       comments
     ];
 
-    /*if (_comments.isNotEmpty) {
-      listOfWidgets = _addCommentWidgets(listOfWidgets);
-    } else if (_isLoading == true) {
-      listOfWidgets.add(
-        SizedBox(
-          height: 200.0,
-          width: MediaQuery.of(context).size.width,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      );
-    }*/
-
-    //TODO new comment textbox / respective API calling
     var newCommentContainer = Column(
       children: <Widget>[
         Divider(height: 10.0, color: Colors.black45),
@@ -538,56 +534,6 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
     });
   }
 
-  /*Future _getComments() async {
-    List<Comment> comments = await Api.comments(_post.id);
-    if (!mounted) {
-      return;
-    }
-
-    if (comments.isNotEmpty) {
-      setState(() {
-        _post.commentsLength = comments.length;
-        _comments = comments;
-        _isLoading = false;
-      });
-
-      if (widget.toComments) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_scrollController.position.maxScrollExtent <= _initialHeight) {
-              _scrollController
-                  .jumpTo(_scrollController.position.maxScrollExtent);
-            } else {
-              _scrollController.jumpTo(_initialHeight);
-            }
-        });
-      }
-
-      return;
-    }
-
-    setState(() {
-      _post.commentsLength = 0;
-      _isLoading = false;
-    });
-  }*/
-
-  /*List<Widget> _addCommentWidgets(List<Widget> listOfWidgets) {
-    listOfWidgets.add(
-      Divider(
-        height: 10.0,
-        color: Colors.transparent,
-      ),
-    );
-
-    listOfWidgets.addAll(_comments.map(
-      (comment) => CommentTile(
-            comment: comment,
-          ),
-    ));
-
-    return listOfWidgets;
-  }*/
-
   void _checkButtonStatus() {
     String trimmedComment = _commentController.text.trim();
     if (trimmedComment.isEmpty) {
@@ -596,28 +542,22 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       }
     } else {
       if (_onPressedButtonFunction == null) {
-        //setState(() => _onPressedButtonFunction = _onPressed);
+        setState(() => _onPressedButtonFunction = _onPressed);
       }
     }
   }
 
-  /*Future _onPressed() async {
+  Future _onPressed() async {
     FocusScope.of(context).requestFocus(new FocusNode());
     String comment = _commentController.text.trim();
     _commentController.clear();
 
-    print("postCommentUI");
+    await bloc.postComment(comment); // TODO assuming result is valid
 
-    Comment newComment = await Api.postComment(_post.id, comment);
-    if (!mounted) {
-      return;
+    if (mounted) {
+      setState(() {
+        _post.commentsLength++;
+      });
     }
-
-    setState(() {
-      _post.commentsLength++;
-      _comments.insert(0, newComment);
-    });
-
-    print("done");
-  }*/
+  }
 }

@@ -5,11 +5,11 @@ import '../resources/repository.dart';
 
 class TransitionWidgetBloc {
   final Repository _repository = Repository();
-  StreamController<User> _streamController = StreamController<User>();
+  StreamController<User> _streamController = StreamController<User>.broadcast();
 
   Future fetchUserInfo() async {
-      User user = await _repository.fetchUserInfo();
-      _streamController.sink.add(user);
+    User user = await _repository.fetchUserInfo();
+    _streamController.sink.add(user);
   }
 
   void dispose() {
@@ -18,5 +18,3 @@ class TransitionWidgetBloc {
 
   Stream<User> get stream => _streamController.stream;
 }
-
-final transitionWidgetBloc = TransitionWidgetBloc();

@@ -9,7 +9,7 @@ import '../models/user.dart';
 class UserApiProvider extends BaseProvider {
   Client client = Client();
 
-  Future<User> fetchUserInfo() async {
+  Future<User> fetchInfo() async {
     print('fetchUserInfo');
 
     var response = await client.get('${super.baseUrl}users/self/', headers: {
@@ -19,7 +19,7 @@ class UserApiProvider extends BaseProvider {
     if (response.statusCode == HttpStatus.ok) {
       print(response.body);
       dynamic body = jsonDecode(response.body);
-      await globals.setUser(body);
+      await globals.setUserFromMap(body);
       return User.fromJson(body);
     }
 
@@ -41,7 +41,7 @@ class UserApiProvider extends BaseProvider {
     print('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      await globals.setUser(jsonDecode(response.body));
+      await globals.setUserFromMap(jsonDecode(response.body));
       return 0;
     }
 
