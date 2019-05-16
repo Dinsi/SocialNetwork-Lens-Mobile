@@ -4,7 +4,6 @@ import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
 import 'package:http/http.dart' show Client;
 
 import 'base_provider.dart';
-import '../models/user.dart';
 
 class TokenApiProvider extends BaseProvider {
   Client client = Client();
@@ -27,7 +26,7 @@ class TokenApiProvider extends BaseProvider {
         return 1;
 
       default:
-        throw HttpException('login'); //TODO add more errors as necessary
+        throw HttpException('login');
     }
   }
 
@@ -41,12 +40,16 @@ class TokenApiProvider extends BaseProvider {
     print(response.statusCode);
     print(response.body);
 
-    if (response.statusCode == HttpStatus.created) {
-      return 0;
-    }
+    switch (response.statusCode) {
+      case HttpStatus.created:
+        return 0;
 
-    //throw HttpException('register'); TODO add more errors as necessary
-    return 1;
+      case HttpStatus.badRequest:
+        return 1; // Username is taken
+
+      default:
+        throw HttpException('register');
+    }
   }
 
   Future<bool> verify() async {

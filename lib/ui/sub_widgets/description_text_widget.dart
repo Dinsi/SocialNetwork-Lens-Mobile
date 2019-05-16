@@ -1,9 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'utils/post_shared_functions.dart';
-import '../ui/topic_feed_screen.dart';
-import '../blocs/providers/topic_feed_bloc_provider.dart';
+import '../utils/post_shared_functions.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
   final String text;
@@ -46,13 +44,9 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
             text: textSplit,
             style: TextStyle(color: Colors.blue),
             recognizer: TapGestureRecognizer()
-              ..onTap = () => Navigator.of(context).push(
-                    MaterialPageRoute<Null>(
-                      builder: (BuildContext context) => TopicFeedBlocProvider(
-                            topic: textSplit.replaceFirst('#', ''),
-                            child: TopicFeedScreen(),
-                          ),
-                    ),
+              ..onTap = () => Navigator.of(context).pushNamed(
+                    '/topicFeed',
+                    arguments: textSplit.replaceFirst('#', ''),
                   ),
           ),
         );

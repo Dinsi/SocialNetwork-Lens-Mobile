@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import '../../blocs/topic_feed_bloc.dart';
 
 class TopicFeedBlocProvider extends InheritedWidget {
-  TopicFeedBlocProvider(
-      {Key key, @required String topic, @required Widget child})
-      : bloc = TopicFeedBloc(topic),
-        super(key: key, child: child);
+  TopicFeedBlocProvider(this.bloc,
+      {Key key, @required Widget child})
+      : super(key: key, child: child);
 
   final TopicFeedBloc bloc;
 
   static TopicFeedBloc of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(TopicFeedBlocProvider)
-            as TopicFeedBlocProvider).bloc;
+            as TopicFeedBlocProvider)
+        .bloc;
   }
 
   @override

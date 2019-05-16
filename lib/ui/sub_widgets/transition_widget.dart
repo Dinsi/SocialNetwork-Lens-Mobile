@@ -13,16 +13,16 @@ class TransitionWidget extends StatefulWidget {
 }
 
 class _TransitionWidgetState extends State<TransitionWidget> {
-  bool _isInit = false;
+  bool _isInit = true;
   TransitionWidgetBloc bloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_isInit) {
+    if (_isInit) {
       bloc = TransitionWidgetBlocProvider.of(context);
       bloc.fetchUserInfo();
-      _isInit = true;
+      _isInit = false;
     }
   }
 
@@ -43,11 +43,9 @@ class _TransitionWidgetState extends State<TransitionWidget> {
 
           return const RecommendedTopicsScreen();
         } else {
-          return const SafeArea(
-            child: const Scaffold(
-              body: const Center(
-                child: const CircularProgressIndicator(),
-              ),
+          return const Scaffold(
+            body: const Center(
+              child: const CircularProgressIndicator(),
             ),
           );
         }

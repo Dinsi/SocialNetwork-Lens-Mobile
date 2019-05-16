@@ -6,9 +6,7 @@ import 'package:synchronized/synchronized.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../blocs/base_feed_bloc.dart';
-import '../../blocs/providers/post_details_bloc_provider.dart';
 import '../../models/post.dart';
-import '../../ui/detailed_post_screen.dart';
 import '../utils/post_shared_functions.dart';
 import 'image_container.dart';
 
@@ -21,7 +19,8 @@ class BasicPost extends StatefulWidget {
   final Post post;
   final BaseFeedBloc bloc;
 
-  const BasicPost({Key key, @required this.post, @required this.bloc}) : super(key: key);
+  const BasicPost({Key key, @required this.post, @required this.bloc})
+      : super(key: key);
 
   @override
   _BasicPostState createState() => _BasicPostState(this.post);
@@ -52,7 +51,7 @@ class _BasicPostState extends State<BasicPost> {
             imageUrl: widget.post.image,
             imageHeight: widget.post.height,
             imageWidth: widget.post.width,
-            onTap: () => _toDetailedPostScreen(toComments: false),
+            onTap: () => _toDetailedPostScreen(false),
             onDoubleTap: () => _upvoteOrRemove(),
           ),
           Container(
@@ -133,7 +132,7 @@ class _BasicPostState extends State<BasicPost> {
                   ),
                   Material(
                     child: InkWell(
-                      onTap: () => _toDetailedPostScreen(toComments: true),
+                      onTap: () => _toDetailedPostScreen(true),
                       child: Padding(
                         padding: const EdgeInsetsDirectional.only(
                             start: 20.0, end: 20.0),
@@ -188,19 +187,13 @@ class _BasicPostState extends State<BasicPost> {
     );
   }
 
-  Future _toDetailedPostScreen({@required bool toComments}) async {
-    final screen = PostDetailsBlocProvider(
-      postId: widget.post.id,
-      child: DetailedPostScreen(
-          post: _post,
-          toComments: toComments),
-    );
-
-    Post updatedPost = await Navigator.of(context).push(
-      MaterialPageRoute<Post>(
-        builder: (BuildContext context) => screen,
-      ),
-    );
+  Future _toDetailedPostScreen(bool toComments) async {
+    Post updatedPost = await Navigator.of(context).pushNamed('/detailedPost',
+        arguments: {
+          'postId': widget.post.id,
+          'post': _post,
+          'toComments': toComments
+        }) as Post;
 
     setState(() => _post = updatedPost);
   }

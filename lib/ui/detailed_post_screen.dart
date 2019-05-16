@@ -10,13 +10,12 @@ import '../blocs/providers/post_details_bloc_provider.dart';
 import '../models/comment.dart';
 import '../models/post.dart';
 import 'sub_widgets/comment_tile.dart';
-import 'description_text_widget.dart';
+import 'sub_widgets/description_text_widget.dart';
 import 'sub_widgets/image_container.dart';
 
 const double _votesTabHeight = 55.0;
 const double _iconSideSize = 60.0;
 const double _defaultHeight = 75.0;
-const double _commentBoxHeight = 65.0;
 const double _heightOfInitialCircularIndicator = 100.0;
 
 class DetailedPostScreen extends StatefulWidget {
@@ -65,14 +64,14 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       WidgetsBinding.instance.addPostFrameCallback(_getInitialHeight);
     }
 
-    _isInit = false;
+    _isInit = true;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (!_isInit) {
+    if (_isInit && mounted) {
       bloc = PostDetailsBlocProvider.of(context);
       bloc.fetchComments().then((_) {
         _scrollController.addListener(() {
@@ -83,7 +82,7 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
           }
         });
 
-        if (mounted && bloc.hasComments && widget.toComments) {
+        if (bloc.hasComments && widget.toComments) {
           if (_scrollController.position.maxScrollExtent <= _initialHeight) {
             _scrollController
                 .jumpTo(_scrollController.position.maxScrollExtent);
@@ -93,7 +92,7 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
         }
       });
 
-      _isInit = true;
+      _isInit = false;
     }
   }
 
@@ -334,12 +333,11 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       comments
     ];
 
-    var newCommentContainer = Column(
-      children: <Widget>[
-        Divider(height: 10.0, color: Colors.black45),
-        Container(
-          height: _commentBoxHeight,
-          child: Padding(
+    var newCommentContainer = Container(
+      child: Column(
+        children: <Widget>[
+          Divider(height: 10.0, color: Colors.black45),
+          Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 12.0,
               vertical: 9.0,
@@ -389,13 +387,13 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
 
-    return SafeArea(
-      child: Scaffold(
-        body: Theme(
+    return Scaffold(
+      body: SafeArea(
+        child: Theme(
           data: Theme.of(context).copyWith(
             iconTheme: Theme.of(context).iconTheme.copyWith(
                   color: Colors.grey[600],

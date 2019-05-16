@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io' show File, HttpException, HttpHeaders, HttpStatus;
-import 'dart:convert' show jsonDecode;
+import 'dart:convert' show jsonDecode, utf8;
 
 import 'package:async/async.dart';
 import 'package:http/http.dart'
@@ -102,10 +102,10 @@ class PostApiProvider extends BaseProvider {
         {HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken});
 
     var response = await request.send();
-    /*print(response.statusCode);
+    print(response.statusCode);
     response.stream.transform(utf8.decoder).listen((value) {
       print(value);
-    });*/
+    });
 
     if (response.statusCode == HttpStatus.created) {
       return 0;

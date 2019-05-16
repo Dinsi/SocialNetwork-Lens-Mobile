@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'user_info_screen.dart';
 import '../models/topic.dart';
 import '../blocs/recommended_topics_bloc.dart';
 
@@ -88,20 +87,15 @@ class _RecommendedTopicsScreenState extends State<RecommendedTopicsScreen> {
     setState(() => _onPressedFunction = null);
     int code = await recommendedTopicsBloc.finishRegister(_selectedTopics);
     if (code == 0) {
-      final replacementWidget = UserInfoScreen();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute<Null>(
-          builder: (context) => replacementWidget,
-        ),
-      );
+      Navigator.of(context).pushReplacementNamed('/userInfo');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -148,13 +142,3 @@ class _RecommendedTopicsScreenState extends State<RecommendedTopicsScreen> {
     );
   }
 }
-/*Center(
-        child: FlatButton(
-          child: Text("Click to continue..."),
-          onPressed: () => Navigator.of(context).pushReplacement(
-                MaterialPageRoute<Null>(
-                  builder: (context) => UserInfoScreen(),
-                ),
-              ),
-        ),
-      ),*/

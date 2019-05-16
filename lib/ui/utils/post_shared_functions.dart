@@ -66,3 +66,7 @@ String nFormatter(double num, int digits) {
       }) +
       si[i]["symbol"];
 }
+
+CircularProgressIndicator getWhiteCircularIndicator() => CircularProgressIndicator(
+      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+    );

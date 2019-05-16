@@ -2,11 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'upload_post_screen.dart';
-import 'feed_screen.dart';
-import 'login_screen.dart';
 import '../blocs/user_info_screen_bloc.dart';
-import '../blocs/providers/feed_bloc_provider.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key key}) : super(key: key);
@@ -21,70 +17,61 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     super.initState();
   }
 
-  Future<void> _getPostDetails(BuildContext context) async {
-    final replacementWidget = UploadPostScreen();
-    int result = await Navigator.of(context).push(
-      MaterialPageRoute<int>(
-        builder: (BuildContext context) => replacementWidget,
-      ),
-    );
+  Future<void> _uploadPost() async {
+    int result = await Navigator.of(context).pushNamed('/uploadPost') as int;
 
-    if (result == 0) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Uploaded post'),
-            content: const Text('The post has been uploaded successfully.'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          );
-        },
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Uploaded post'),
-            content: const Text('An error has occurred.'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          );
-        },
-      );
+    switch (result) {
+      case 0:
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Uploaded post'),
+              content: const Text('The post has been uploaded successfully.'),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('OK'),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            );
+          },
+        );
+        break;
+
+      case -1: //TODO not implemented
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Uploaded post'),
+              content: const Text('An error has occurred.'),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('OK'),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            );
+          },
+        );
     }
   }
 
-  void _feed(BuildContext context) {
-    final replacementWidget = FeedBlocProvider(
-      child: FeedScreen(),
-    );
-    Navigator.of(context).push(MaterialPageRoute<Null>(
-        builder: (BuildContext context) => replacementWidget));
+  void _feed() {
+    Navigator.of(context).pushNamed('/feed');
   }
 
-  void _logout(BuildContext context) {
+  void _logout() {
     userInfoBloc.clearCache();
-
-    final replacementWidget = LoginScreen();
-    Navigator.of(context).pushReplacement(MaterialPageRoute<Null>(
-        builder: (BuildContext context) => replacementWidget));
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ListTile(
@@ -125,7 +112,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         ),
                         child: RaisedButton(
                           elevation: 5.0,
-                          onPressed: () => _getPostDetails(context),
+                          onPressed: () => _uploadPost(),
                           child: Text(
                             'Upload Post',
                             style: Theme.of(context)
@@ -148,7 +135,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         ),
                         child: RaisedButton(
                           elevation: 5.0,
-                          onPressed: () => _feed(context),
+                          onPressed: () => _feed(),
                           child: Text(
                             'Feed',
                             style: Theme.of(context)
@@ -179,7 +166,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 ),
                 child: RaisedButton(
                   elevation: 5.0,
-                  onPressed: () => _logout(context),
+                  onPressed: () => _logout(),
                   child: Text(
                     'Logout',
                     style: Theme.of(context)

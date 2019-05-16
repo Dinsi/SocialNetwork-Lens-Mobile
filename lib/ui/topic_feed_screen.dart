@@ -20,17 +20,18 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
   @override
   void initState() {
     super.initState();
-    _isInit = false;
+    _isInit = true;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (!_isInit) {
+    if (_isInit) {
       bloc = TopicFeedBlocProvider.of(context);
       WidgetsBinding.instance
           .addPostFrameCallback((_) => bloc.initSubscribeButton());
+      _isInit = false;
     }
   }
 
@@ -42,81 +43,79 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('#${bloc.topic}'),
-          leading: BackButton(),
-          actions: <Widget>[
-            StreamBuilder<SubscribeButton>(
-              stream: bloc.subscriptionButton,
-              builder: (BuildContext context,
-                  AsyncSnapshot<SubscribeButton> snapshot) {
-                if (snapshot.hasData) {
-                  switch (snapshot.data) {
-                    case SubscribeButton.subscribe:
-                      return MaterialButton(
-                        child: Text(
-                          'SUBSCRIBE',
-                          style: Theme.of(context).textTheme.button.merge(
-                                TextStyle(color: Colors.blue),
-                              ),
-                        ),
-                        onPressed: () => bloc.toggleSubscribe('subscribe'),
-                      );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('#${bloc.topic}'),
+        leading: BackButton(),
+        actions: <Widget>[
+          StreamBuilder<SubscribeButton>(
+            stream: bloc.subscriptionButton,
+            builder: (BuildContext context,
+                AsyncSnapshot<SubscribeButton> snapshot) {
+              if (snapshot.hasData) {
+                switch (snapshot.data) {
+                  case SubscribeButton.subscribe:
+                    return MaterialButton(
+                      child: Text(
+                        'SUBSCRIBE',
+                        style: Theme.of(context).textTheme.button.merge(
+                              TextStyle(color: Colors.blue),
+                            ),
+                      ),
+                      onPressed: () => bloc.toggleSubscribe('subscribe'),
+                    );
 
-                    case SubscribeButton.subscribeInactive:
-                      return MaterialButton(
-                        child: Text(
-                          'SUBSCRIBE',
-                          style: Theme.of(context).textTheme.button.merge(
-                                TextStyle(color: Colors.grey),
-                              ),
-                        ),
-                        onPressed: null,
-                      );
+                  case SubscribeButton.subscribeInactive:
+                    return MaterialButton(
+                      child: Text(
+                        'SUBSCRIBE',
+                        style: Theme.of(context).textTheme.button.merge(
+                              TextStyle(color: Colors.grey),
+                            ),
+                      ),
+                      onPressed: null,
+                    );
 
-                    case SubscribeButton.unsubscribe:
-                      return FlatButton.icon(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.blue,
-                        ),
-                        label: Text(
-                          'SUBSCRIBED',
-                          style: Theme.of(context).textTheme.button.merge(
-                                TextStyle(color: Colors.blue),
-                              ),
-                        ),
-                        onPressed: () => bloc.toggleSubscribe('unsubscribe'),
-                      );
+                  case SubscribeButton.unsubscribe:
+                    return FlatButton.icon(
+                      icon: Icon(
+                        Icons.check,
+                        color: Colors.blue,
+                      ),
+                      label: Text(
+                        'SUBSCRIBED',
+                        style: Theme.of(context).textTheme.button.merge(
+                              TextStyle(color: Colors.blue),
+                            ),
+                      ),
+                      onPressed: () => bloc.toggleSubscribe('unsubscribe'),
+                    );
 
-                    case SubscribeButton.unsubscribeInactive:
-                      return FlatButton.icon(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.grey,
-                        ),
-                        label: Text(
-                          'SUBSCRIBED',
-                          style: Theme.of(context).textTheme.button.merge(
-                                TextStyle(color: Colors.grey),
-                              ),
-                        ),
-                        onPressed: null,
-                      );
-                  }
-                } else {
-                  return Container();
+                  case SubscribeButton.unsubscribeInactive:
+                    return FlatButton.icon(
+                      icon: Icon(
+                        Icons.check,
+                        color: Colors.grey,
+                      ),
+                      label: Text(
+                        'SUBSCRIBED',
+                        style: Theme.of(context).textTheme.button.merge(
+                              TextStyle(color: Colors.grey),
+                            ),
+                      ),
+                      onPressed: null,
+                    );
                 }
-              },
-            ),
-          ],
-        ),
-        body: LoadingListView(
-          widgetAdapter: (dynamic post) => BasicPost(post: post, bloc: bloc),
-          bloc: bloc,
-        ),
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ],
+      ),
+      body: LoadingListView(
+        widgetAdapter: (dynamic post) => BasicPost(post: post, bloc: bloc),
+        bloc: bloc,
       ),
     );
   }

@@ -38,32 +38,30 @@ class _FeedScreenState extends State<FeedScreen> {
       bloc: bloc,
     );
 
-    return SafeArea(
-      child: Scaffold(
-        body: (bloc.userIsConfirmed
-            ? postsList
-            : Column(
-                children: <Widget>[
-                  Container(
-                    height: 50.0,
-                    color: Colors.blue,
-                    child: Center(
-                      child: Text(
-                        "Please confirm your email address",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                          color: Colors.white,
-                        ),
+    return Scaffold(
+      body: (bloc.userIsConfirmed
+          ? postsList
+          : Column(
+              children: <Widget>[
+                Container(
+                  height: 50.0,
+                  color: Colors.blue,
+                  child: Center(
+                    child: Text(
+                      "Please confirm your email address",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: postsList,
-                  ),
-                ],
-              )),
-      ),
+                ),
+                Expanded(
+                  child: postsList,
+                ),
+              ],
+            )),
     );
   }
 }
