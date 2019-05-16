@@ -3,6 +3,7 @@ import 'dart:io' show File, HttpException, HttpHeaders, HttpStatus;
 import 'dart:convert' show jsonDecode, utf8;
 
 import 'package:async/async.dart';
+import 'package:flutter/foundation.dart' show compute;
 import 'package:http/http.dart'
     show ByteStream, Client, MultipartFile, MultipartRequest;
 import 'package:http_parser/http_parser.dart';
@@ -17,12 +18,14 @@ class PostApiProvider extends BaseProvider {
 
   Future<List<Post>> fetchList(int lastPostId) async {
     print("fetchPostList");
-    return await fetchPosts("${super.baseUrl}feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
+    return await fetchPosts(
+        "${super.baseUrl}feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
   }
 
   Future<List<Post>> fetchListByTopic(int lastPostId, String topic) async {
     print("fetchPostListByTopic");
-    return await fetchPosts("${super.baseUrl}topics/$topic/feed/${(lastPostId != null ? "?after=$lastPostId" : "")}"); 
+    return await fetchPosts(
+        "${super.baseUrl}topics/$topic/feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
   }
 
   Future<List<Post>> fetchPosts(String uri) async {
@@ -90,7 +93,9 @@ class PostApiProvider extends BaseProvider {
     );
     request.files.add(multipartFile);
 
-    Image image = decodeImage(imageFile.readAsBytesSync());
+    Image image = await compute<List<int>, Image>(
+        decodeImage, imageFile.readAsBytesSync());
+
     request.fields.addAll({
       'title': title,
       'description': description,
