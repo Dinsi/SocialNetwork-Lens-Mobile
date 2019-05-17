@@ -391,22 +391,22 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
       ),
     );
 
-    return Scaffold(
-      body: SafeArea(
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            iconTheme: Theme.of(context).iconTheme.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-          child: WillPopScope(
-            onWillPop: () {
-              if (_enabledBackButton) {
-                Navigator.of(context).pop(_post);
-              }
+    return WillPopScope(
+      onWillPop: () {
+        if (_enabledBackButton) {
+          Navigator.of(context).pop(_post);
+        }
 
-              return Future<bool>.value(false);
-            },
+        return Future<bool>.value(false);
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              iconTheme: Theme.of(context).iconTheme.copyWith(
+                    color: Colors.grey[600],
+                  ),
+            ),
             child: RefreshIndicator(
               onRefresh: _onRefresh,
               child: Column(

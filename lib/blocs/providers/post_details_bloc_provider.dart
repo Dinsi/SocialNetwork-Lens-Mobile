@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 import '../post_details_bloc.dart';
 
 class PostDetailsBlocProvider extends InheritedWidget {
-  final PostDetailsBloc bloc;
-
-  PostDetailsBlocProvider(this.bloc,
-      {Key key, @required Widget child})
+  PostDetailsBlocProvider(this.bloc, {Key key, this.child})
       : super(key: key, child: child);
 
-  @override
-  bool updateShouldNotify(PostDetailsBlocProvider oldWidget) {
-    return true;
-  }
+  final Widget child;
+  final PostDetailsBloc bloc;
 
   static PostDetailsBloc of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(PostDetailsBlocProvider)
             as PostDetailsBlocProvider)
         .bloc;
   }
+
+  @override
+  bool updateShouldNotify(PostDetailsBlocProvider oldWidget) => false;
 }

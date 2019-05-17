@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show DeviceOrientation, SystemChrome, SystemUiOverlayStyle;
 
+import 'blocs/edit_profile_bloc.dart';
 import 'blocs/feed_bloc.dart';
 import 'blocs/post_details_bloc.dart';
+import 'blocs/providers/edit_profile_bloc_provider.dart';
 import 'blocs/providers/feed_bloc_provider.dart';
 import 'blocs/providers/post_details_bloc_provider.dart';
 import 'blocs/providers/topic_feed_bloc_provider.dart';
@@ -14,6 +16,7 @@ import 'blocs/topic_feed_bloc.dart';
 import 'models/post.dart';
 import 'resources/globals.dart';
 import 'ui/detailed_post_screen.dart';
+import 'ui/edit_profile_screen.dart';
 import 'ui/feed_screen.dart';
 import 'ui/recommended_topics_screen.dart';
 import 'ui/startup_widget.dart';
@@ -106,7 +109,14 @@ class MyApp extends StatelessWidget {
               toComments: arguments['toComments'] as bool,
             ),
           );
-        }
+        },
+        '/editUser': (context) {
+          final bloc = EditProfileBloc();
+          return EditProfileBlocProvider(
+            bloc,
+            child: EditProfileScreen(),
+          );
+        },
       },
     );
   }

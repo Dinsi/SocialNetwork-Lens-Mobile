@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 
+bool isUrl(String input) {
+  return RegExp(
+          r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)')
+      .hasMatch(input);
+}
+
+bool isEmail(String input) {
+  return RegExp(r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$').hasMatch(input);
+}
+
 List<String> detectHashtags(String description) {
   int currentIndex = 0;
   List<String> splits = List<String>();
@@ -67,6 +77,7 @@ String nFormatter(double num, int digits) {
       si[i]["symbol"];
 }
 
-CircularProgressIndicator getWhiteCircularIndicator() => CircularProgressIndicator(
+CircularProgressIndicator getWhiteCircularIndicator() =>
+    CircularProgressIndicator(
       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
     );

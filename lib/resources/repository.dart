@@ -61,4 +61,8 @@ class Repository {
       commentsApiProvider.post(postId, comment);
 
   Future<Topic> fetchSingleTopic(String topic) => topicsApiProvider.fetchSingle(topic);
+
+  Future<int> patchUser(Map<String, String> fields) => userApiProvider.patch(fields);
+
+  Future<int> patchUserMultiPart(File imageFile, Map<String, String> fields) => userApiProvider.patchMultiPart(imageFile, fields);
 }

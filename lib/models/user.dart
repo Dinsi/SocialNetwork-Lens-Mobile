@@ -1,17 +1,22 @@
 import 'topic.dart';
 
 class User {
-  final int id;
-  final String username;
-  final String firstName;
-  final String lastName;
-  final String name;
-  final String email;
-  final bool isActive;
-  final bool isConfirmed;
-  final bool hasFinishedRegister;
-  final String avatar;
+  int id;
+  String username;
+  String firstName;
+  String lastName;
+  String name;
+  String email;
+  bool isActive;
+  bool isConfirmed;
+  bool hasFinishedRegister;
+  String avatar;
   final List<Topic> topics;
+  String headline;
+  String location;
+  String bio;
+  String publicEmail;
+  String website;
 
   User(
       this.id,
@@ -24,7 +29,12 @@ class User {
       this.isConfirmed,
       this.hasFinishedRegister,
       this.avatar,
-      this.topics);
+      this.topics,
+      this.headline,
+      this.location,
+      this.bio,
+      this.publicEmail,
+      this.website);
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -40,7 +50,12 @@ class User {
         json['avatar'],
         (json['topics'] as List).isEmpty
             ? List<Topic>()
-            : setTopics((json['topics'] as List)));
+            : setTopics((json['topics'] as List)),
+        json['headline'],
+        json['location'],
+        json['bio'],
+        json['public_email'],
+        json['website']);
   }
 
   static List<Topic> setTopics(List topics) {
@@ -62,6 +77,11 @@ class User {
     data['finished_register'] = this.hasFinishedRegister;
     data['avatar'] = this.avatar;
     data['topics'] = this.topics.map((v) => v.toJson()).toList();
+    data['headline'] = this.headline;
+    data['location'] = this.location;
+    data['bio'] = this.bio;
+    data['public_email'] = this.publicEmail;
+    data['website'] = this.website;
     return data;
   }
 }

@@ -19,7 +19,7 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    bloc = FeedBlocProvider.of(context);
+    bloc ??= FeedBlocProvider.of(context);
   }
 
   @override

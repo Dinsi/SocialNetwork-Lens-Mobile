@@ -15,12 +15,12 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => new _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController _loginUsernameController;
   TextEditingController _loginPasswordController;
@@ -73,8 +73,8 @@ class _LoginScreenState extends State<LoginScreen>
             height: MediaQuery.of(context).size.height >= 950.0
                 ? MediaQuery.of(context).size.height
                 : 950.0,
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
                   colors: [
                     Theme.Colors.loginGradientStart,
                     Theme.Colors.loginGradientEnd
@@ -118,11 +118,11 @@ class _LoginScreenState extends State<LoginScreen>
                       }
                     },
                     children: <Widget>[
-                      new ConstrainedBox(
+                      ConstrainedBox(
                         constraints: const BoxConstraints.expand(),
                         child: _buildSignIn(context),
                       ),
-                      new ConstrainedBox(
+                      ConstrainedBox(
                         constraints: const BoxConstraints.expand(),
                         child: _buildSignUp(context),
                       ),
@@ -254,9 +254,7 @@ class _LoginScreenState extends State<LoginScreen>
       return;
     }
 
-    if (!RegExp(
-            r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-        .hasMatch(email)) {
+    if (!isEmail(email)) {
       showInSnackBar('Invalid email address');
       return;
     }
@@ -305,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen>
     FocusScope.of(context).requestFocus(new FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
+      content: Text(
         value,
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -394,6 +392,9 @@ class _LoginScreenState extends State<LoginScreen>
                           focusNode: _loginUsernameFocusNode,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(150)
+                          ],
                           onFieldSubmitted: (term) {
                             _loginUsernameFocusNode.unfocus();
                             FocusScope.of(context)
@@ -429,6 +430,9 @@ class _LoginScreenState extends State<LoginScreen>
                           focusNode: _loginPasswordFocusNode,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.done,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(16),
+                          ],
                           onFieldSubmitted: (term) {
                             _loginPasswordFocusNode.unfocus();
                             _login();
@@ -465,7 +469,7 @@ class _LoginScreenState extends State<LoginScreen>
               ),
               Container(
                 margin: EdgeInsets.only(top: 170.0),
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
@@ -479,7 +483,7 @@ class _LoginScreenState extends State<LoginScreen>
                       blurRadius: 20.0,
                     ),
                   ],
-                  gradient: new LinearGradient(
+                  gradient: LinearGradient(
                       colors: [
                         Theme.Colors.loginGradientEnd,
                         Theme.Colors.loginGradientStart
@@ -524,7 +528,7 @@ class _LoginScreenState extends State<LoginScreen>
                   children: <Widget>[
                     Container(
                       decoration: BoxDecoration(
-                        gradient: new LinearGradient(
+                        gradient: LinearGradient(
                             colors: [
                               Colors.white10,
                               Colors.white,
@@ -549,7 +553,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        gradient: new LinearGradient(
+                        gradient: LinearGradient(
                             colors: [
                               Colors.white,
                               Colors.white10,
@@ -574,11 +578,11 @@ class _LoginScreenState extends State<LoginScreen>
                       onTap: () => showInSnackBar("Facebook button pressed"),
                       child: Container(
                         padding: const EdgeInsets.all(15.0),
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
-                        child: new Icon(
+                        child: Icon(
                           FontAwesomeIcons.facebookF,
                           color: Color(0xFF0084ff),
                         ),
@@ -591,11 +595,11 @@ class _LoginScreenState extends State<LoginScreen>
                       onTap: () => showInSnackBar("Google button pressed"),
                       child: Container(
                         padding: const EdgeInsets.all(15.0),
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
-                        child: new Icon(
+                        child: Icon(
                           FontAwesomeIcons.google,
                           color: Color(0xFF0084ff),
                         ),
@@ -637,6 +641,9 @@ class _LoginScreenState extends State<LoginScreen>
                           focusNode: _signUpUsernameFocusNode,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(150)
+                          ],
                           onFieldSubmitted: (term) {
                             _signUpUsernameFocusNode.unfocus();
                             FocusScope.of(context)
@@ -671,6 +678,9 @@ class _LoginScreenState extends State<LoginScreen>
                           focusNode: _signUpFirstNameFocusNode,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(30)
+                          ],
                           onFieldSubmitted: (term) {
                             _signUpFirstNameFocusNode.unfocus();
                             FocusScope.of(context)
@@ -705,6 +715,9 @@ class _LoginScreenState extends State<LoginScreen>
                           focusNode: _signUpLastNameFocusNode,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(150)
+                          ],
                           onFieldSubmitted: (term) {
                             _signUpLastNameFocusNode.unfocus();
                             FocusScope.of(context)
@@ -857,7 +870,7 @@ class _LoginScreenState extends State<LoginScreen>
               ),
               Container(
                 margin: EdgeInsets.only(top: 500.0),
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
@@ -871,7 +884,7 @@ class _LoginScreenState extends State<LoginScreen>
                       blurRadius: 20.0,
                     ),
                   ],
-                  gradient: new LinearGradient(
+                  gradient: LinearGradient(
                       colors: [
                         Theme.Colors.loginGradientEnd,
                         Theme.Colors.loginGradientStart
