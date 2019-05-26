@@ -14,6 +14,8 @@ class LoadingListView extends StatefulWidget {
 
   final BaseFeedBloc bloc;
 
+  final bool clamped;
+
   /// The number of "left over" elements in list which
   /// will trigger loading the next page
   final int pageThreshold;
@@ -21,7 +23,8 @@ class LoadingListView extends StatefulWidget {
   LoadingListView(
       {this.pageThreshold: 3,
       @required this.widgetAdapter,
-      @required this.bloc});
+      @required this.bloc,
+      this.clamped = false});
 
   @override
   _LoadingListViewState createState() => _LoadingListViewState();
@@ -35,19 +38,27 @@ class _LoadingListViewState extends State<LoadingListView> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: StreamBuilder<List<Post>>(
-        stream: widget.bloc.posts,
-        builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
-          if (snapshot.hasData) {
-            return _buildList(snapshot.data);
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+    StreamBuilder streamBldr = StreamBuilder<List<Post>>(
+      stream: widget.bloc.posts,
+      builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
+        if (snapshot.hasData) {
+          return _buildList(snapshot.data);
+        } else {
+          return const Center(
+            child: const SizedBox(
+              height: 70.0,
+              child: const Center(
+                child: const CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+      },
     );
+
+    return widget.clamped
+        ? RefreshIndicator(onRefresh: onRefresh, child: streamBldr)
+        : streamBldr;
   }
 
   @override
@@ -70,12 +81,12 @@ class _LoadingListViewState extends State<LoadingListView> {
             return Column(
               children: <Widget>[
                 widget.widgetAdapter(posts[index]),
-                Padding(
+                const Padding(
                   padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
-                  child: Center(
-                    child: CircularProgressIndicator(
+                  child: const Center(
+                    child: const CircularProgressIndicator(
                       valueColor:
-                          AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                          const AlwaysStoppedAnimation<Color>(Colors.blueGrey),
                     ),
                   ),
                 ),
@@ -86,6 +97,10 @@ class _LoadingListViewState extends State<LoadingListView> {
 
         return widget.widgetAdapter(posts[index]);
       },
+      physics: (widget.clamped
+          ? const ClampingScrollPhysics()
+          : const AlwaysScrollableScrollPhysics()),
+      shrinkWrap: widget.clamped,
     );
   }
 

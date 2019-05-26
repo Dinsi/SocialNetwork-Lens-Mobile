@@ -392,9 +392,6 @@ class _LoginScreenState extends State<LoginScreen>
                           focusNode: _loginUsernameFocusNode,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(150)
-                          ],
                           onFieldSubmitted: (term) {
                             _loginUsernameFocusNode.unfocus();
                             FocusScope.of(context)
@@ -430,9 +427,6 @@ class _LoginScreenState extends State<LoginScreen>
                           focusNode: _loginPasswordFocusNode,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.done,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(16),
-                          ],
                           onFieldSubmitted: (term) {
                             _loginPasswordFocusNode.unfocus();
                             _login();

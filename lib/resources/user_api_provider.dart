@@ -3,11 +3,9 @@ import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
 import 'dart:io';
 
 import 'package:async/async.dart' show DelegatingStream;
-import 'package:flutter/foundation.dart' show compute;
 import 'package:http/http.dart'
     show ByteStream, Client, MultipartFile, MultipartRequest;
 import 'package:http_parser/http_parser.dart' show MediaType;
-import 'package:image/image.dart' show Image, decodeImage;
 import 'package:path/path.dart';
 
 import 'base_provider.dart';
@@ -17,20 +15,37 @@ class UserApiProvider extends BaseProvider {
   Client client = Client();
 
   Future<User> fetchInfo() async {
-    print('fetchUserInfo');
+    print('fetchInfo');
 
     var response = await client.get('${super.baseUrl}users/self/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ${globals.accessToken}'
     });
 
+    print('${response.statusCode.toString()}\n${response.body}');
+
     if (response.statusCode == HttpStatus.ok) {
-      print(response.body);
       dynamic body = jsonDecode(response.body);
       await globals.setUserFromMap(body);
       return User.fromJson(body);
     }
 
-    throw HttpException('fetchUserInfo');
+    throw HttpException('fetchInfo');
+  }
+
+  Future<User> fetchInfoById(int userId) async {
+    print('fetchInfoById');
+
+    var response = await client.get('${super.baseUrl}users/$userId/', headers: {
+      HttpHeaders.authorizationHeader: 'Bearer ${globals.accessToken}'
+    });
+
+    print('${response.statusCode.toString()}\n${response.body}');
+
+    if (response.statusCode == HttpStatus.ok) {
+      return User.fromJson(jsonDecode(response.body));
+    }
+
+    throw HttpException('fetchInfoById');
   }
 
   Future<int> finishRegister(List<int> desiredTopics) async {

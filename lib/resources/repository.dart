@@ -24,6 +24,9 @@ class Repository {
   Future<List<Post>> fetchPostsByTopic(int lastPostId, String topic) =>
       postsApiProvider.fetchListByTopic(lastPostId, topic);
 
+  Future<List<Post>> fetchPostsByUser(int lastPostId, String userUsername) =>
+      postsApiProvider.fetchListByUser(lastPostId, userUsername);
+
   Future<Post> fetchSinglePost(int postId) =>
       postsApiProvider.fetchSingle(postId);
 
@@ -60,9 +63,15 @@ class Repository {
   Future<Comment> postComment(int postId, String comment) =>
       commentsApiProvider.post(postId, comment);
 
-  Future<Topic> fetchSingleTopic(String topic) => topicsApiProvider.fetchSingle(topic);
+  Future<Topic> fetchSingleTopic(String topic) =>
+      topicsApiProvider.fetchSingle(topic);
 
-  Future<int> patchUser(Map<String, String> fields) => userApiProvider.patch(fields);
+  Future<int> patchUser(Map<String, String> fields) =>
+      userApiProvider.patch(fields);
 
-  Future<int> patchUserMultiPart(File imageFile, Map<String, String> fields) => userApiProvider.patchMultiPart(imageFile, fields);
+  Future<int> patchUserMultiPart(File imageFile, Map<String, String> fields) =>
+      userApiProvider.patchMultiPart(imageFile, fields);
+
+  Future<User> fetchUserInfoById(int userId) =>
+      userApiProvider.fetchInfoById(userId);
 }

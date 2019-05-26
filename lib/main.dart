@@ -12,6 +12,7 @@ import 'blocs/providers/feed_bloc_provider.dart';
 import 'blocs/providers/post_details_bloc_provider.dart';
 import 'blocs/providers/topic_feed_bloc_provider.dart';
 import 'blocs/providers/transition_widget_bloc_provider.dart';
+import 'blocs/providers/user_profile_bloc_provider.dart';
 import 'blocs/topic_feed_bloc.dart';
 import 'models/post.dart';
 import 'resources/globals.dart';
@@ -25,6 +26,7 @@ import 'ui/sub_widgets/transition_widget.dart';
 import 'ui/topic_feed_screen.dart';
 import 'ui/upload_post_screen.dart';
 import 'ui/user_info_screen.dart';
+import 'ui/user_profile_screen.dart';
 
 Future<void> main() async {
   //TODO remove for full view pictures
@@ -33,7 +35,7 @@ Future<void> main() async {
     SystemUiOverlayStyle.light.copyWith(
       systemNavigationBarIconBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark,
-      statusBarColor: Colors.red, // Note RED here
+      statusBarColor: Colors.blue,
     ),
   );
 
@@ -83,7 +85,8 @@ class MyApp extends StatelessWidget {
           );
         },
         '/topicFeed': (context) {
-          final bloc = TopicFeedBloc(ModalRoute.of(context).settings.arguments);
+          final bloc = TopicFeedBloc(
+              ModalRoute.of(context).settings.arguments as String);
           return TopicFeedBlocProvider(
             bloc,
             child: TopicFeedScreen(),
@@ -110,11 +113,22 @@ class MyApp extends StatelessWidget {
             ),
           );
         },
-        '/editUser': (context) {
+        '/editProfile': (context) {
           final bloc = EditProfileBloc();
           return EditProfileBlocProvider(
             bloc,
             child: EditProfileScreen(),
+          );
+        },
+        '/userProfile': (context) {
+          Map<String, dynamic> arguments =
+              ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+
+          final bloc = UserProfileBloc(arguments['id'] as int,
+              arguments['name'] as String, arguments['username'] as String);
+          return UserProfileBlocProvider(
+            bloc,
+            child: UserProfileScreen(),
           );
         },
       },

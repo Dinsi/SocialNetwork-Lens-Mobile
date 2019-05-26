@@ -5,8 +5,9 @@ import '../utils/post_shared_functions.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
   final String text;
+  final bool withHashtags;
 
-  DescriptionTextWidget({@required this.text});
+  DescriptionTextWidget({@required this.text, @required this.withHashtags});
 
   @override
   _DescriptionTextWidgetState createState() => _DescriptionTextWidgetState();
@@ -15,23 +16,79 @@ class DescriptionTextWidget extends StatefulWidget {
 class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
     with SingleTickerProviderStateMixin<DescriptionTextWidget> {
   List<String> _textSplits;
-  bool flag = true;
+  bool showAll = false;
 
   @override
   void initState() {
     super.initState();
-    _textSplits = detectHashtags(widget.text);
-    /*if (widget.text.length > 100) {
-      firstHalf = widget.text.substring(0, 100);
-      secondHalf = widget.text.substring(100, widget.text.length);
+    if (widget.withHashtags) {
+      _textSplits = detectHashtags(widget.text);
     } else {
-      firstHalf = widget.text;
-      secondHalf = "";
-    }*/
+      _textSplits = List<String>();
+      if (widget.text.length > 100) {
+        _textSplits.add(widget.text.substring(0, 100));
+        _textSplits.add(widget.text.substring(100, widget.text.length));
+      } else {
+        _textSplits.add(widget.text);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.withHashtags) {
+      return _buildTextSpans();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: (_textSplits.length == 1
+          ? Text(
+              _textSplits.first,
+              style: TextStyle(fontSize: 16.0),
+            )
+          : Column(
+              children: (showAll
+                  ? <Widget>[
+                      Text(
+                        _textSplits.first,
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: FlatButton(
+                          child: Text(
+                            'show more',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                          onPressed: () => setState(() {
+                                showAll = true;
+                              }),
+                        ),
+                      )
+                    ]
+                  : <Widget>[
+                      Text(
+                        _textSplits.join(),
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: FlatButton(
+                          child: Text(
+                            'show less',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                          onPressed: () => setState(() {
+                                showAll = false;
+                              }),
+                        ),
+                      )
+                    ]))),
+    );
+  }
+
+  Widget _buildTextSpans() {
     TextSpan descriptionTextSpan = TextSpan(
       children: <TextSpan>[],
       style: TextStyle(fontSize: 16.0, color: Colors.black),

@@ -67,15 +67,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     Navigator.of(context).pushReplacementNamed('/login');
   }
 
-  Future<void> _editUser() async {
-    int code = await Navigator.of(context).pushNamed('/editUser') as int;
+  Future<void> _editProfile() async {
+    int code = await Navigator.of(context).pushNamed('/editProfile') as int;
     if (code != null) {
       showDialog(
         context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Edit User'),
-              content: const Text('User has been edited successfully'),
+              title: const Text('Edit Profile'),
+              content: const Text('Profile has been edited successfully'),
               actions: <Widget>[
                 FlatButton(
                   child: const Text('OK'),
@@ -183,9 +183,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     ),
                     child: RaisedButton(
                       elevation: 5.0,
-                      onPressed: () => _editUser(),
+                      onPressed: () => _editProfile(),
                       child: Text(
-                        'Edit User',
+                        'Edit Profile',
                         style: Theme.of(context)
                             .textTheme
                             .headline

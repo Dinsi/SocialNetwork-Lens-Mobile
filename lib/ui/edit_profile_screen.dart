@@ -281,7 +281,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "First Name",
+                    labelText: "First Name (mandatory)",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
@@ -308,7 +308,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Last Name",
+                    labelText: "Last Name (mandatory)",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
@@ -335,7 +335,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Headline (optional)",
+                    labelText: "Headline",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
@@ -362,7 +362,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Location (optional)",
+                    labelText: "Location",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
@@ -390,7 +390,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Bio (optional)",
+                    labelText: "Bio",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
@@ -417,7 +417,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Public Email (optional)",
+                    labelText: "Public Email",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
@@ -444,7 +444,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Website (optional)",
+                    labelText: "Website",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline

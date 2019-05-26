@@ -17,15 +17,22 @@ class PostApiProvider extends BaseProvider {
   Client client = Client();
 
   Future<List<Post>> fetchList(int lastPostId) async {
-    print("fetchPostList");
+    print("fetchList");
     return await fetchPosts(
         "${super.baseUrl}feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
   }
 
   Future<List<Post>> fetchListByTopic(int lastPostId, String topic) async {
-    print("fetchPostListByTopic");
+    print("fetchListByTopic");
     return await fetchPosts(
         "${super.baseUrl}topics/$topic/feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
+  }
+
+  Future<List<Post>> fetchListByUser(
+      int lastPostId, String userUsername) async {
+    print("fetchListByUser");
+    return await fetchPosts(
+        "${super.baseUrl}topics/$userUsername/feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
   }
 
   Future<List<Post>> fetchPosts(String uri) async {
