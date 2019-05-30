@@ -1,10 +1,12 @@
-import 'dart:convert' show jsonDecode;
+import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:io' show HttpException, HttpHeaders, HttpStatus;
+import 'dart:io';
 
 import 'package:http/http.dart' show Client;
 
 import 'base_provider.dart';
 import '../models/topic.dart';
+import '../models/search_result.dart';
 
 class TopicApiProvider extends BaseProvider {
   Client client = Client();
@@ -65,5 +67,33 @@ class TopicApiProvider extends BaseProvider {
     }
 
     throw HttpException('toggleSubscription');
+  }
+
+  Future<List<SearchResult>> fetchSearchResults(String query) async {
+    print('fetchSearchResults');
+
+    var response = await client.post(
+      '${super.baseUrl}topics/search/',
+      headers: {
+        HttpHeaders.contentTypeHeader: ContentType.json.value,
+        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+      },
+      body: jsonEncode({"q": query}),
+    );
+
+    print('${response.statusCode.toString()}\n${response.body}');
+
+    if (response.statusCode == HttpStatus.ok) {
+      List<dynamic> body = jsonDecode(response.body) as List;
+      List<SearchResult> results = List<SearchResult>(body.length);
+
+      for (var i = 0; i < body.length; i++) {
+        results[i] = SearchResult.fromJson(body[i]);
+      }
+
+      return results;
+    }
+
+    throw HttpException('fetchSearchResults');
   }
 }

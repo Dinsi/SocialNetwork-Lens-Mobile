@@ -12,11 +12,6 @@ class UserInfoScreen extends StatefulWidget {
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<void> _uploadPost() async {
     int result = await Navigator.of(context).pushNamed('/uploadPost') as int;
 
@@ -60,6 +55,10 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   void _feed() {
     Navigator.of(context).pushNamed('/feed');
+  }
+
+  void _search() {
+    Navigator.of(context).pushNamed('/search');
   }
 
   void _logout() {
@@ -186,6 +185,33 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       onPressed: () => _editProfile(),
                       child: Text(
                         'Edit Profile',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline
+                            .copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              SizedBox(
+                height: 60.0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                  child: ButtonTheme(
+                    buttonColor: Colors.blue[600],
+                    splashColor: Colors.blueGrey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9.0),
+                    ),
+                    child: RaisedButton(
+                      elevation: 5.0,
+                      onPressed: () => _search(),
+                      child: Text(
+                        'Search',
                         style: Theme.of(context)
                             .textTheme
                             .headline

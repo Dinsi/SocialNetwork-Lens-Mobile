@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../blocs/startup_bloc.dart';
 import '../blocs/providers/transition_widget_bloc_provider.dart';
 import 'login_screen.dart';
-import 'sub_widgets/transition_widget.dart';
+import 'shared/transition_widget.dart';
 
 class StartUpWidget extends StatefulWidget {
   @override

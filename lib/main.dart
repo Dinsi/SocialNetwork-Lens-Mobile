@@ -20,9 +20,10 @@ import 'ui/detailed_post_screen.dart';
 import 'ui/edit_profile_screen.dart';
 import 'ui/feed_screen.dart';
 import 'ui/recommended_topics_screen.dart';
+import 'ui/search_screen.dart';
 import 'ui/startup_widget.dart';
 import 'ui/login_screen.dart';
-import 'ui/sub_widgets/transition_widget.dart';
+import 'ui/shared/transition_widget.dart';
 import 'ui/topic_feed_screen.dart';
 import 'ui/upload_post_screen.dart';
 import 'ui/user_info_screen.dart';
@@ -124,13 +125,16 @@ class MyApp extends StatelessWidget {
           Map<String, dynamic> arguments =
               ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
 
-          final bloc = UserProfileBloc(arguments['id'] as int,
-              arguments['name'] as String, arguments['username'] as String);
+          final bloc = UserProfileBloc(
+            arguments['id'] as int,
+            arguments['username'] as String,
+          );
           return UserProfileBlocProvider(
             bloc,
             child: UserProfileScreen(),
           );
         },
+        '/search': (context) => SearchScreen(),
       },
     );
   }

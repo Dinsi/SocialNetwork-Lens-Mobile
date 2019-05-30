@@ -1,9 +1,10 @@
+import 'package:aperture/blocs/base_feed_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../blocs/feed_bloc.dart';
 import '../blocs/providers/feed_bloc_provider.dart';
-import 'sub_widgets/basic_post.dart';
-import 'sub_widgets/loading_list_view.dart';
+import 'shared/basic_post.dart';
+import 'shared/loading_lists/scroll_loading_list_view.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key key}) : super(key: key);
@@ -30,12 +31,18 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    LoadingListView postsList = LoadingListView(
-      widgetAdapter: (dynamic post) => BasicPost(
-            post: post,
-            bloc: bloc,
-          ),
-      bloc: bloc,
+    Widget postsList = RefreshIndicator(
+      onRefresh: bloc.onRefresh,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: bloc.onNotification,
+        child: ScrollLoadingListView(
+          widgetAdapter: (dynamic post) => BasicPost(
+                post: post,
+                bloc: bloc,
+              ),
+          bloc: bloc,
+        ),
+      ),
     );
 
     return Scaffold(

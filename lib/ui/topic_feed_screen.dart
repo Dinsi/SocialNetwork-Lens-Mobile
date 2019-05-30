@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../blocs/topic_feed_bloc.dart';
 import '../blocs/providers/topic_feed_bloc_provider.dart';
 import '../blocs/enums/subscribe_button.dart';
-import 'sub_widgets/basic_post.dart';
-import 'sub_widgets/loading_list_view.dart';
+import 'shared/basic_post.dart';
+import 'shared/loading_lists/scroll_loading_list_view.dart';
 
 class TopicFeedScreen extends StatefulWidget {
   const TopicFeedScreen({Key key}) : super(key: key);
@@ -29,8 +29,8 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
 
     if (_isInit) {
       bloc = TopicFeedBlocProvider.of(context);
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => bloc.initSubscribeButton());
+      /*WidgetsBinding.instance
+          .addPostFrameCallback((_) => bloc.initSubscribeButton());*/
       _isInit = false;
     }
   }
@@ -50,6 +50,7 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
         actions: <Widget>[
           StreamBuilder<SubscribeButton>(
             stream: bloc.subscriptionButton,
+            initialData: bloc.initSubscribeButton(),
             builder: (BuildContext context,
                 AsyncSnapshot<SubscribeButton> snapshot) {
               if (snapshot.hasData) {
@@ -113,7 +114,7 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
           ),
         ],
       ),
-      body: LoadingListView(
+      body: ScrollLoadingListView(
         widgetAdapter: (dynamic post) => BasicPost(post: post, bloc: bloc),
         bloc: bloc,
       ),

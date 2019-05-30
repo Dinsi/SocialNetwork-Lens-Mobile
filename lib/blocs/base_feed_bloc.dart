@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart' show protected;
 
 import '../resources/repository.dart';
 import '../models/post.dart';
 import '../resources/globals.dart';
+
+const double loadingOffset = 100.0;
 
 abstract class BaseFeedBloc {
   @protected
@@ -14,7 +17,12 @@ abstract class BaseFeedBloc {
   final Globals globals = Globals.getInstance();
 
   @protected
+  Future request;
+
   final List<Post> postsList = List<Post>();
+
+  bool existsNext = true;
+  bool isLoading = false;
 
   @protected
   StreamController<List<Post>> postsFetcher =
@@ -38,6 +46,52 @@ abstract class BaseFeedBloc {
 
   void clear() {
     postsList.clear();
+    existsNext = true;
+  }
+
+  Future<void> lockedLoadNext() {
+    if (request == null) {
+      request = fetch().then((_) {
+        isLoading = false;
+        request = null;
+      }).catchError((_) {
+        isLoading = false;
+        request = null;
+      });
+      return request;
+    }
+
+    return null;
+  }
+
+  bool onNotification(ScrollNotification notification) {
+    if (existsNext) {
+      if ((notification is OverscrollNotification &&
+              notification.overscroll > 0) ||
+          (notification is ScrollUpdateNotification &&
+              notification.metrics.maxScrollExtent >
+                  notification.metrics.pixels &&
+              notification.metrics.maxScrollExtent -
+                      notification.metrics.pixels <=
+                  loadingOffset)) {
+        if (!isLoading) {
+          isLoading = true;
+          lockedLoadNext();
+        }
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Future<void> onRefresh() {
+    request?.timeout(const Duration());
+
+    clear();
+
+    return lockedLoadNext();
   }
 
   Future<void> fetch();

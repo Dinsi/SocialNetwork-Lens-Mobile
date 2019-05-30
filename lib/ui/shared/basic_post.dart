@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aperture/resources/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synchronized/synchronized.dart';
@@ -94,7 +93,6 @@ class _BasicPostState extends State<BasicPost> {
                                 Navigator.of(context)
                                     .pushNamed('/userProfile', arguments: {
                                   'id': widget.post.user.id,
-                                  'name': widget.post.user.name,
                                   'username': widget.post.user.username,
                                 });
                               },

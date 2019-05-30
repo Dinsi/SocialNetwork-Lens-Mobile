@@ -10,6 +10,7 @@ import '../models/topic.dart';
 import '../models/post.dart';
 import '../models/user.dart';
 import '../models/comment.dart';
+import '../models/search_result.dart';
 
 class Repository {
   final postsApiProvider = PostApiProvider();
@@ -74,4 +75,7 @@ class Repository {
 
   Future<User> fetchUserInfoById(int userId) =>
       userApiProvider.fetchInfoById(userId);
+
+  Future<List<SearchResult>> fetchSearchResults(String query) =>
+      topicsApiProvider.fetchSearchResults(query);
 }

@@ -10,6 +10,12 @@ class FeedBloc extends BaseFeedBloc {
         .fetchPosts(postsList.isNotEmpty ? postsList.last.id : null);
     postsList.addAll(fetchedList);
 
+    if (fetchedList.length != 20 || fetchedList.isEmpty) {
+      existsNext = false;
+    }
+
+    print(fetchedList.length);
+
     if (!postsFetcher.isClosed) {
       postsFetcher.sink.add(postsList);
     }

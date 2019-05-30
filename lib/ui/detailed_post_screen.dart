@@ -9,9 +9,9 @@ import '../blocs/post_details_bloc.dart';
 import '../blocs/providers/post_details_bloc_provider.dart';
 import '../models/comment.dart';
 import '../models/post.dart';
-import 'sub_widgets/comment_tile.dart';
-import 'sub_widgets/description_text_widget.dart';
-import 'sub_widgets/image_container.dart';
+import 'shared/comment_tile.dart';
+import 'shared/description_text_widget.dart';
+import 'shared/image_container.dart';
 
 const double _votesTabHeight = 55.0;
 const double _iconSideSize = 60.0;
@@ -167,7 +167,6 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
                     onTap: () => Navigator.of(context)
                             .pushNamed('/userProfile', arguments: {
                           'id': widget.post.user.id,
-                          'name': widget.post.user.name,
                           'username': widget.post.user.username,
                         }),
                   ),
