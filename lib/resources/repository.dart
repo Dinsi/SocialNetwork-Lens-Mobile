@@ -78,4 +78,12 @@ class Repository {
 
   Future<List<SearchResult>> fetchSearchResults(String query) =>
       topicsApiProvider.fetchSearchResults(query);
+
+  Future<int> bulkUpdateTopics(List<Topic> changedTopics) =>
+      topicsApiProvider.bulkUpdate(changedTopics);
+
+  Future<int> changeUserEmail(Map<String, String> fields) =>
+      userApiProvider.updateEmail(fields);
+
+  Future<int> changeUserPassword(Map<String, String> fields) => userApiProvider.updatePassword(fields);
 }

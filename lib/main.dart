@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show DeviceOrientation, SystemChrome, SystemUiOverlayStyle;
 
+import 'blocs/change_email_bloc.dart';
+import 'blocs/change_password_bloc.dart';
 import 'blocs/edit_profile_bloc.dart';
 import 'blocs/feed_bloc.dart';
 import 'blocs/post_details_bloc.dart';
@@ -11,20 +13,25 @@ import 'blocs/providers/edit_profile_bloc_provider.dart';
 import 'blocs/providers/feed_bloc_provider.dart';
 import 'blocs/providers/post_details_bloc_provider.dart';
 import 'blocs/providers/topic_feed_bloc_provider.dart';
-import 'blocs/providers/transition_widget_bloc_provider.dart';
+import 'blocs/providers/start_up_transition_bloc_provider.dart';
 import 'blocs/providers/user_profile_bloc_provider.dart';
 import 'blocs/topic_feed_bloc.dart';
 import 'models/post.dart';
 import 'resources/globals.dart';
+import 'ui/settings_screen.dart';
 import 'ui/detailed_post_screen.dart';
+import 'ui/account_settings_screen.dart';
+import 'ui/change_email_screen.dart';
+import 'ui/change_password_screen.dart';
 import 'ui/edit_profile_screen.dart';
 import 'ui/feed_screen.dart';
 import 'ui/recommended_topics_screen.dart';
 import 'ui/search_screen.dart';
-import 'ui/startup_widget.dart';
+import 'ui/transition_widgets/start_up_widget.dart';
 import 'ui/login_screen.dart';
-import 'ui/shared/transition_widget.dart';
+import 'ui/transition_widgets/start_up_transition_widget.dart';
 import 'ui/topic_feed_screen.dart';
+import 'ui/topic_list_screen.dart';
 import 'ui/upload_post_screen.dart';
 import 'ui/user_info_screen.dart';
 import 'ui/user_profile_screen.dart';
@@ -94,10 +101,10 @@ class MyApp extends StatelessWidget {
           );
         },
         '/transitionWidget': (context) {
-          final bloc = TransitionWidgetBloc();
-          return TransitionWidgetBlocProvider(
+          final bloc = StartUpTransitionBloc();
+          return StartUpTransitionBlocProvider(
             bloc,
-            child: TransitionWidget(),
+            child: StartUpTransitionWidget(),
           );
         },
         '/detailedPost': (context) {
@@ -135,6 +142,17 @@ class MyApp extends StatelessWidget {
           );
         },
         '/search': (context) => SearchScreen(),
+        '/topicList': (context) => TopicListScreen(),
+        '/settings': (context) => SettingsScreen(),
+        '/accountSettings': (context) => AccountSettingsScreen(),
+        '/changeEmail': (context) {
+          final bloc = ChangeEmailBloc();
+          return ChangeEmailScreen(bloc: bloc);
+        },
+        '/changePassword': (context) {
+          final bloc = ChangePasswordBloc();
+          return ChangePasswordScreen(bloc: bloc);
+        },
       },
     );
   }

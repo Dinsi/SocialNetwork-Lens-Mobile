@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../user_info_screen.dart';
 import '../recommended_topics_screen.dart';
-import '../../blocs/providers/transition_widget_bloc_provider.dart';
+import '../../blocs/providers/start_up_transition_bloc_provider.dart';
 import '../../models/user.dart';
 
-class TransitionWidget extends StatefulWidget {
-  const TransitionWidget({Key key}) : super(key: key);
+class StartUpTransitionWidget extends StatefulWidget {
+  const StartUpTransitionWidget({Key key}) : super(key: key);
 
   @override
-  _TransitionWidgetState createState() => _TransitionWidgetState();
+  _StartUpTransitionWidgetState createState() => _StartUpTransitionWidgetState();
 }
 
-class _TransitionWidgetState extends State<TransitionWidget> {
+class _StartUpTransitionWidgetState extends State<StartUpTransitionWidget> {
   bool _isInit = true;
-  TransitionWidgetBloc bloc;
+  StartUpTransitionBloc bloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_isInit) {
-      bloc = TransitionWidgetBlocProvider.of(context);
+      bloc = StartUpTransitionBlocProvider.of(context);
       bloc.fetchUserInfo();
       _isInit = false;
     }

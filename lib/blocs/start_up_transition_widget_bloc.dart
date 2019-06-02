@@ -3,7 +3,7 @@ import 'dart:async';
 import '../models/user.dart';
 import '../resources/repository.dart';
 
-class TransitionWidgetBloc {
+class StartUpTransitionBloc {
   final Repository _repository = Repository();
   StreamController<User> _streamController = StreamController<User>.broadcast();
 

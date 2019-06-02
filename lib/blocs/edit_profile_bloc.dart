@@ -11,7 +11,7 @@ import '../resources/repository.dart';
 class EditProfileBloc {
   final Repository _repository = Repository();
   final User _userInfo = Globals.getInstance().user;
-  StreamController<String> _buttonController = StreamController.broadcast();
+  StreamController<bool> _buttonController = StreamController.broadcast();
   StreamController<String> _imageController = StreamController.broadcast();
 
   void dispose() {
@@ -31,52 +31,54 @@ class EditProfileBloc {
   void notifyImageStream() => _imageController.sink.add('image');
 
   Future<int> saveProfile(dynamic image, Map<String, String> fields) async {
-    _buttonController.sink.add('saveInactive');
+    _buttonController.sink.add(false);
 
     Map<String, String> newFields = Map<String, String>();
 
     // select new fields
     fields.forEach((key, field) {
+      final trimmedField = field.trimRight();
+
       switch (key) {
         case 'first_name':
-          if (field != firstName) {
-            newFields['first_name'] = field;
+          if (trimmedField != firstName) {
+            newFields['first_name'] = trimmedField;
           }
           break;
 
         case 'last_name':
-          if (field != lastName) {
-            newFields['last_name'] = field;
+          if (trimmedField != lastName) {
+            newFields['last_name'] = trimmedField;
           }
           break;
 
         case 'headline':
-          if (field != headline) {
-            newFields['headline'] = field;
+          if (trimmedField != headline) {
+            newFields['headline'] = trimmedField;
           }
           break;
 
         case 'location':
-          if (field != location) {
-            newFields['location'] = field;
+          if (trimmedField != location) {
+            newFields['location'] = trimmedField;
           }
           break;
 
         case 'bio':
-          if (field != bio) {
-            newFields['bio'] = field;
+          if (trimmedField != bio) {
+            newFields['bio'] = trimmedField;
           }
           break;
 
         case 'public_email':
-          if (field != publicEmail) {
-            newFields['public_email'] = field;
+          if (trimmedField != publicEmail) {
+            newFields['public_email'] = trimmedField;
           }
           break;
 
         case 'website':
           if (field != website) {
-            newFields['website'] = field;
+            newFields['website'] = trimmedField;
           }
       }
     });
@@ -86,21 +88,21 @@ class EditProfileBloc {
             newFields['first_name'].isEmpty) ||
         (newFields.containsKey('last_name') &&
             newFields['last_name'].isEmpty)) {
-      _buttonController.sink.add('save');
+      _buttonController.sink.add(true);
       return -1;
     }
 
     if (newFields.containsKey('public_email')) {
       if (newFields['public_email'].isNotEmpty &&
           !isEmail(newFields['public_email'])) {
-        _buttonController.sink.add('save');
+        _buttonController.sink.add(true);
         return -2;
       }
     }
 
     if (newFields.containsKey('website')) {
       if (newFields['website'].isNotEmpty && !isUrl(newFields['website'])) {
-        _buttonController.sink.add('save');
+        _buttonController.sink.add(true);
         return -3;
       }
     }
@@ -119,7 +121,7 @@ class EditProfileBloc {
     }
   }
 
-  Stream<String> get saveButton => _buttonController.stream;
+  Stream<bool> get saveButton => _buttonController.stream;
   Stream<String> get image => _imageController.stream;
   String get avatar => _userInfo.avatar ?? '';
   String get firstName => _userInfo.firstName;

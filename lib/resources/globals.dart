@@ -55,6 +55,14 @@ class Globals {
     await setUserFromUser(user);
   }
 
+  Future<void> bulkRemoveTopicsFromUser(List<Topic> topicList) async {
+    final user = User.fromJson(jsonDecode(prefs.getString('user')));
+    for (Topic targetTopic in topicList) {
+      user.topics.removeWhere((topic) => topic.id == targetTopic.id);
+    }
+    await setUserFromUser(user);
+  }
+
   bool get loggedIn => prefs.getBool('loggedIn');
   Future setLoggedIn(bool value) async =>
       await prefs.setBool('loggedIn', value);

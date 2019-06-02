@@ -12,9 +12,9 @@ class EditProfileScreen extends StatefulWidget {
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _headlineController = TextEditingController();
@@ -61,27 +61,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _headlineController.dispose();
-    _locationController.dispose();
-    _bioController.dispose();
-    _publicEmailController.dispose();
-    _websiteController.dispose();
+    _firstNameController?.dispose();
+    _lastNameController?.dispose();
+    _headlineController?.dispose();
+    _locationController?.dispose();
+    _bioController?.dispose();
+    _publicEmailController?.dispose();
+    _websiteController?.dispose();
 
-    _firstNameFocusNode.dispose();
-    _lastNameFocusNode.dispose();
-    _headlineFocusNode.dispose();
-    _locationFocusNode.dispose();
-    _bioFocusNode.dispose();
-    _publicEmailFocusNode.dispose();
-    _websiteFocusNode.dispose();
+    _firstNameFocusNode?.dispose();
+    _lastNameFocusNode?.dispose();
+    _headlineFocusNode?.dispose();
+    _locationFocusNode?.dispose();
+    _bioFocusNode?.dispose();
+    _publicEmailFocusNode?.dispose();
+    _websiteFocusNode?.dispose();
 
     bloc.dispose();
     super.dispose();
   }
 
-  void showInSnackBar(String value) {
+  void _showInSnackBar(String value) {
     FocusScope.of(context).requestFocus(new FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
@@ -102,13 +102,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _enabledBackButton = false;
 
     int resultCode = await bloc.saveProfile(_image, {
-      'first_name': _firstNameController.text,
-      'last_name': _lastNameController.text,
-      'headline': _headlineController.text,
-      'location': _locationController.text,
-      'bio': _bioController.text,
-      'public_email': _publicEmailController.text,
-      'website': _websiteController.text,
+      'first_name': _firstNameController.text.trimRight(),
+      'last_name': _lastNameController.text.trimRight(),
+      'headline': _headlineController.text.trimRight(),
+      'location': _locationController.text.trimRight(),
+      'bio': _bioController.text.trimRight(),
+      'public_email': _publicEmailController.text.trimRight(),
+      'website': _websiteController.text.trimRight(),
     });
 
     switch (resultCode) {
@@ -117,17 +117,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         break;
 
       case -1:
-        showInSnackBar('All mandatory fields must not be empty');
+        _showInSnackBar('All mandatory fields must be filled');
         _enabledBackButton = true;
         break;
 
       case -2:
-        showInSnackBar('Invalid public email address');
+        _showInSnackBar('Invalid public email address');
         _enabledBackButton = true;
         break;
 
       case -3:
-        showInSnackBar('Invalid website URL');
+        _showInSnackBar('Invalid website URL');
         _enabledBackButton = true;
     }
   }
@@ -148,27 +148,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           title: Text('Edit Profile'),
           leading: BackButton(),
           actions: <Widget>[
-            StreamBuilder<String>(
+            StreamBuilder<bool>(
               stream: bloc.saveButton,
-              initialData: 'save',
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              initialData: true,
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 return FlatButton.icon(
                   icon: Icon(
                     Icons.check,
-                    color: snapshot.data == 'save' ? Colors.blue : Colors.grey,
+                    color: snapshot.data ? Colors.blue : Colors.grey,
                   ),
                   label: Text(
                     'SAVE',
                     style: Theme.of(context).textTheme.button.merge(
                           TextStyle(
-                            color: snapshot.data == 'save'
-                                ? Colors.blue
-                                : Colors.grey,
+                            color: snapshot.data ? Colors.blue : Colors.grey,
                           ),
                         ),
                   ),
-                  onPressed:
-                      snapshot.data == 'save' ? () => _saveProfile() : null,
+                  onPressed: snapshot.data ? () => _saveProfile() : null,
                 );
               },
             ),

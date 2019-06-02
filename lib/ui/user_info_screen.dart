@@ -66,23 +66,27 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     Navigator.of(context).pushReplacementNamed('/login');
   }
 
+  void _settings() {
+    Navigator.of(context).pushNamed('/settings');
+  }
+
   Future<void> _editProfile() async {
     int code = await Navigator.of(context).pushNamed('/editProfile') as int;
     if (code != null) {
       showDialog(
         context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Edit Profile'),
-              content: const Text('Profile has been edited successfully'),
-              actions: <Widget>[
-                FlatButton(
-                  child: const Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              ],
-            );
-          },
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Edit Profile'),
+            content: const Text('Profile has been edited successfully'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        },
       );
     }
   }
@@ -116,138 +120,80 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               const SizedBox(
                 height: 10.0,
               ),
-              SizedBox(
-                height: 60.0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: ButtonTheme(
-                    buttonColor: Colors.blue[600],
-                    splashColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0),
-                    ),
-                    child: RaisedButton(
-                      elevation: 5.0,
-                      onPressed: () => _uploadPost(),
-                      child: Text(
-                        'Upload Post',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline
-                            .copyWith(color: Colors.white, fontSize: 23.0),
-                      ),
-                    ),
-                  ),
-                ),
+              _buildButton(
+                title: 'Upload Post',
+                onPressed: () => _uploadPost(),
               ),
               const SizedBox(
                 height: 10.0,
               ),
-              SizedBox(
-                height: 60.0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: ButtonTheme(
-                    buttonColor: Colors.blue[600],
-                    splashColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0),
-                    ),
-                    child: RaisedButton(
-                      elevation: 5.0,
-                      onPressed: _feed,
-                      child: Text(
-                        'Feed',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline
-                            .copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
+              _buildButton(
+                title: 'Feed',
+                onPressed: _feed,
               ),
               const SizedBox(
                 height: 10.0,
               ),
-              SizedBox(
-                height: 60.0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: ButtonTheme(
-                    buttonColor: Colors.blue[600],
-                    splashColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0),
-                    ),
-                    child: RaisedButton(
-                      elevation: 5.0,
-                      onPressed: () => _editProfile(),
-                      child: Text(
-                        'Edit Profile',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline
-                            .copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
+              _buildButton(
+                title: 'Edit Profile',
+                onPressed: () => _editProfile(),
               ),
               const SizedBox(
                 height: 10.0,
               ),
-              SizedBox(
-                height: 60.0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: ButtonTheme(
-                    buttonColor: Colors.blue[600],
-                    splashColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0),
-                    ),
-                    child: RaisedButton(
-                      elevation: 5.0,
-                      onPressed: () => _search(),
-                      child: Text(
-                        'Search',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline
-                            .copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
+              _buildButton(
+                title: 'Search',
+                onPressed: _search,
               ),
               const SizedBox(
                 height: 10.0,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                child: ButtonTheme(
-                  minWidth: double.infinity,
-                  height: 60.0,
-                  buttonColor: Colors.red[600],
-                  splashColor: Colors.red[800],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(9.0),
-                  ),
-                  child: RaisedButton(
-                    elevation: 5.0,
-                    onPressed: _logout,
-                    child: Text(
-                      'Logout',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline
-                          .copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
+              _buildButton(
+                title: 'Settings',
+                onPressed: _settings,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              _buildButton(
+                title: 'Logout',
+                onPressed: _logout,
+                dangerButton: true,
+              ),
+              const SizedBox(
+                height: 10.0,
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(
+      {@required String title,
+      @required VoidCallback onPressed,
+      bool dangerButton = false}) {
+    return SizedBox(
+      height: 60.0,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+        child: ButtonTheme(
+          buttonColor: dangerButton ? Colors.red[600] : Colors.blue[600],
+          splashColor: dangerButton ? Colors.red[800] : Colors.blueGrey,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(9.0),
+          ),
+          child: RaisedButton(
+            elevation: 5.0,
+            onPressed: onPressed,
+            child: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline
+                  .copyWith(color: Colors.white),
+            ),
           ),
         ),
       ),

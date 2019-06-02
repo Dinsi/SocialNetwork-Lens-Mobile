@@ -14,8 +14,6 @@ class FeedBloc extends BaseFeedBloc {
       existsNext = false;
     }
 
-    print(fetchedList.length);
-
     if (!postsFetcher.isClosed) {
       postsFetcher.sink.add(postsList);
     }

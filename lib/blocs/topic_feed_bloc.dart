@@ -1,5 +1,5 @@
-import 'subscription_bloc.dart';
+import 'single_subscription_bloc.dart';
 
-class TopicFeedBloc extends SubscriptionBloc {
+class TopicFeedBloc extends SingleSubscriptionBloc {
   TopicFeedBloc(String topic) : super(topic);
 }

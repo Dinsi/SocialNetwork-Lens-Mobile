@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:core';
 
-import '../blocs/subscription_bloc.dart';
+import '../blocs/single_subscription_bloc.dart';
 
 import '../models/user.dart';
 
-class UserProfileBloc extends SubscriptionBloc {
+class UserProfileBloc extends SingleSubscriptionBloc {
   final userId;
   StreamController<User> _userController;
 

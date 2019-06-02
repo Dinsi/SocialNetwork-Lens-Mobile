@@ -33,6 +33,29 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     super.dispose();
   }
 
+  Future<void> _editProfile() async {
+    int result = await Navigator.of(context).pushNamed('/editProfile') as int;
+
+    if (result != null) {
+      bloc.fetchUser();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Edit Profile'),
+            content: const Text('Profile has been edited successfully'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User>(
@@ -53,73 +76,71 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     .copyWith(color: Colors.white),
               ),
               actions: <Widget>[
-                if (!bloc.isSelf)
-                  StreamBuilder<SubscribeButton>(
-                    stream: bloc.subscriptionButton,
-                    initialData: bloc.initSubscribeButton(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<SubscribeButton> snapshot) {
-                      if (snapshot.hasData) {
-                        switch (snapshot.data) {
-                          case SubscribeButton.subscribe:
-                            return MaterialButton(
-                              child: Text(
-                                'SUBSCRIBE',
-                                style: Theme.of(context).textTheme.button.merge(
-                                      TextStyle(color: Colors.white),
-                                    ),
-                              ),
-                              onPressed: () =>
-                                  bloc.toggleSubscribe('subscribe'),
-                            );
+                StreamBuilder<SubscribeButton>(
+                  stream: bloc.subscriptionButton,
+                  initialData: bloc.initSubscribeButton(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<SubscribeButton> snapshot) {
+                    if (snapshot.hasData) {
+                      switch (snapshot.data) {
+                        case SubscribeButton.subscribe:
+                          return MaterialButton(
+                            child: Text(
+                              'SUBSCRIBE',
+                              style: Theme.of(context).textTheme.button.merge(
+                                    TextStyle(color: Colors.white),
+                                  ),
+                            ),
+                            onPressed: () => bloc.toggleSubscribe('subscribe'),
+                          );
 
-                          case SubscribeButton.subscribeInactive:
-                            return MaterialButton(
-                              child: Text(
-                                'SUBSCRIBE',
-                                style: Theme.of(context).textTheme.button.merge(
-                                      TextStyle(color: Colors.grey[400]),
-                                    ),
-                              ),
-                              onPressed: null,
-                            );
+                        case SubscribeButton.subscribeInactive:
+                          return MaterialButton(
+                            child: Text(
+                              'SUBSCRIBE',
+                              style: Theme.of(context).textTheme.button.merge(
+                                    TextStyle(color: Colors.grey[400]),
+                                  ),
+                            ),
+                            onPressed: null,
+                          );
 
-                          case SubscribeButton.unsubscribe:
-                            return FlatButton.icon(
-                              icon: Icon(
-                                Icons.check,
-                                color: Colors.white,
-                              ),
-                              label: Text(
-                                'SUBSCRIBED',
-                                style: Theme.of(context).textTheme.button.merge(
-                                      TextStyle(color: Colors.white),
-                                    ),
-                              ),
-                              onPressed: () =>
-                                  bloc.toggleSubscribe('unsubscribe'),
-                            );
+                        case SubscribeButton.unsubscribe:
+                          return FlatButton.icon(
+                            icon: Icon(
+                              Icons.check,
+                              color: Colors.white,
+                            ),
+                            label: Text(
+                              'SUBSCRIBED',
+                              style: Theme.of(context).textTheme.button.merge(
+                                    TextStyle(color: Colors.white),
+                                  ),
+                            ),
+                            onPressed: () =>
+                                bloc.toggleSubscribe('unsubscribe'),
+                          );
 
-                          case SubscribeButton.unsubscribeInactive:
-                            return FlatButton.icon(
-                              icon: Icon(
-                                Icons.check,
-                                color: Colors.grey[400],
-                              ),
-                              label: Text(
-                                'SUBSCRIBED',
-                                style: Theme.of(context).textTheme.button.merge(
-                                      TextStyle(color: Colors.grey[400]),
-                                    ),
-                              ),
-                              onPressed: null,
-                            );
-                        }
-                      } else {
-                        return Container();
+                        case SubscribeButton.unsubscribeInactive:
+                          return FlatButton.icon(
+                            icon: Icon(
+                              Icons.check,
+                              color: Colors.grey[400],
+                            ),
+                            label: Text(
+                              'SUBSCRIBED',
+                              style: Theme.of(context).textTheme.button.merge(
+                                    TextStyle(color: Colors.grey[400]),
+                                  ),
+                            ),
+                            onPressed: null,
+                          );
                       }
-                    },
-                  ),
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
               ],
             ),
             body: SafeArea(
@@ -165,13 +186,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         ),
                                         alignment: Alignment.center,
                                         onPressed: () {
-                                          Navigator.of(context)
-                                              .pushNamed('/editProfile')
-                                              .then((_) {
-                                            if (bloc.isSelf) {
-                                              bloc.fetchUser();
-                                            }
-                                          });
+                                          _editProfile();
                                         },
                                       ),
                                     )

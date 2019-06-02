@@ -5,13 +5,13 @@ import 'enums/subscribe_button.dart';
 import '../models/topic.dart';
 import '../models/post.dart';
 
-abstract class SubscriptionBloc extends BaseFeedBloc {
+abstract class SingleSubscriptionBloc extends BaseFeedBloc {
   StreamController<SubscribeButton> _subscribeButtonFetcher =
       StreamController<SubscribeButton>.broadcast();
 
   final String _topic;
 
-  SubscriptionBloc(this._topic);
+  SingleSubscriptionBloc(this._topic);
 
   @override
   void dispose() {

@@ -96,4 +96,30 @@ class TopicApiProvider extends BaseProvider {
 
     throw HttpException('fetchSearchResults');
   }
+
+  Future<int> bulkUpdate(List<Topic> changedTopics) async {
+    print('bulkUpdate');
+
+    List<int> topicsNames = List<int>(changedTopics.length);
+    for (var i = 0; i < changedTopics.length; i++) {
+      topicsNames[i] = changedTopics[i].id;
+    }
+
+    var response = await client.post(
+      '${super.baseUrl}topics/bulk/',
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.contentTypeHeader: ContentType.json.value
+      },
+      body: jsonEncode({'topics': topicsNames}),
+    );
+
+    print('${response.statusCode.toString()}\n${response.body}');
+
+    if (response.statusCode == HttpStatus.ok) {
+      return 0;
+    } //TODO assuming valid
+
+    throw HttpException('bulkUpdate');
+  }
 }

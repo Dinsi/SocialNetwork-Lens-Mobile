@@ -70,6 +70,54 @@ class UserApiProvider extends BaseProvider {
     throw HttpException('finishRegister');
   }
 
+  Future<int> updateEmail(Map<String, String> fields) async {
+    print('updateEmail');
+
+    var response = await client.post(
+      '${super.baseUrl}users/update_email/',
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.contentTypeHeader: ContentType.json.value,
+      },
+      body: jsonEncode(fields),
+    );
+
+    print('${response.statusCode.toString()}\n${response.body}');
+
+    switch (response.statusCode) {
+      case HttpStatus.ok:
+        return 0;
+      case HttpStatus.badRequest:
+        return 1;
+      default:
+        throw HttpException('updateEmail');
+    }
+  }
+
+  Future<int> updatePassword(Map<String, String> fields) async {
+    print('updateEmail');
+
+    var response = await client.post(
+      '${super.baseUrl}users/update_password/',
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.contentTypeHeader: ContentType.json.value,
+      },
+      body: jsonEncode(fields),
+    );
+
+    print('${response.statusCode.toString()}\n${response.body}');
+
+    switch (response.statusCode) {
+      case HttpStatus.ok:
+        return 0;
+      case HttpStatus.badRequest:
+        return 1;
+      default:
+        throw HttpException('updateEmail');
+    }
+  }
+
   Future<int> patch(Map<String, String> fields) async {
     print('patch');
 
