@@ -70,27 +70,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     Navigator.of(context).pushNamed('/settings');
   }
 
-  Future<void> _editProfile() async {
-    int code = await Navigator.of(context).pushNamed('/editProfile') as int;
-    if (code != null) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Edit Profile'),
-            content: const Text('Profile has been edited successfully'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          );
-        },
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,13 +109,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               _buildButton(
                 title: 'Feed',
                 onPressed: _feed,
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              _buildButton(
-                title: 'Edit Profile',
-                onPressed: () => _editProfile(),
               ),
               const SizedBox(
                 height: 10.0,

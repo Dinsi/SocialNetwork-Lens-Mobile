@@ -6,6 +6,27 @@ import '../resources/globals.dart';
 class SettingsScreen extends StatelessWidget {
   final Globals _globals = Globals.getInstance();
 
+  Future<void> _editProfile(BuildContext context) async {
+    int code = await Navigator.of(context).pushNamed('/editProfile') as int;
+    if (code != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Edit Profile'),
+            content: const Text('Profile has been edited successfully'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +44,14 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.of(context).pushNamed('/accountSettings');
               },
               iconData: FontAwesomeIcons.userCog,
+            ),
+            _buildListTile(
+              context: context,
+              title: 'Edit Profile',
+              onTap: () {
+                _editProfile(context);
+              },
+              iconData: FontAwesomeIcons.idBadge,
             ),
             _buildListTile(
               context: context,
