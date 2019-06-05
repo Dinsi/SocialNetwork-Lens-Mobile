@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../post_details_bloc.dart';
+export '../post_details_bloc.dart';
 
 class PostDetailsBlocProvider extends InheritedWidget {
   PostDetailsBlocProvider(this.bloc, {Key key, this.child})

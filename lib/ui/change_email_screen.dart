@@ -55,7 +55,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
 
     switch (result) {
       case 0:
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(result);
         break;
       case -1:
         _showInSnackBar('All fields must be filled');
