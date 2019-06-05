@@ -226,7 +226,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         if (userSnapshot.data.location != null)
                           Text(userSnapshot.data.location),
                         if (userSnapshot.data.website != null)
-                          Text(userSnapshot.data.website),
+                          bloc.clickableURL
+                              ? GestureDetector(
+                                  onTap: () {
+                                    bloc.launchURL(userSnapshot.data.website);
+                                  },
+                                  child: Text(
+                                    userSnapshot.data.website,
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                )
+                              : Text(userSnapshot.data.website),
                         if (userSnapshot.data.bio != null) ...[
                           Divider(
                             height: 20.0,
