@@ -117,7 +117,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         break;
 
       case -1:
-        _showInSnackBar('All mandatory fields must be filled');
+        _showInSnackBar('All required fields must be filled');
         _enabledBackButton = true;
         break;
 
@@ -278,7 +278,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "First Name (mandatory)",
+                    labelText: "First Name (required)",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
@@ -305,7 +305,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Last Name (mandatory)",
+                    labelText: "Last Name (required)",
                     labelStyle: Theme.of(context)
                         .textTheme
                         .headline
