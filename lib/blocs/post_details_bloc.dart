@@ -70,7 +70,7 @@ class PostDetailsBloc {
   }
 
   Future<int> upVote() async {
-    return await _repository.changeVote(_postId, "upVote");
+    return await _repository.changeVote(_postId, "upvote");
   }
 
   Stream<List<Comment>> get comments => _commentsFetcher.stream;
