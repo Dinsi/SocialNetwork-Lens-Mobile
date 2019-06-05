@@ -13,7 +13,7 @@ class UserInfoScreen extends StatefulWidget {
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
   Future<void> _uploadPost() async {
-    int result = await Navigator.of(context).pushNamed('/uploadPost') as int;
+    int result = await Navigator.of(context).pushNamed('/uploadPost');
 
     switch (result) {
       case 0:

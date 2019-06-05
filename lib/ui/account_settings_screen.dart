@@ -20,7 +20,7 @@ class AccountSettingsScreen extends StatelessWidget {
               ),
               onTap: () async {
                 int result = await Navigator.of(context)
-                    .pushNamed('/changeEmail') as int;
+                    .pushNamed('/changeEmail');
                 if (result != null) {
                   showDialog(
                     context: context,
@@ -49,7 +49,7 @@ class AccountSettingsScreen extends StatelessWidget {
               ),
               onTap: () async {
                 int result =
-                    await Navigator.of(context).pushNamed('/changePassword') as int;
+                    await Navigator.of(context).pushNamed('/changePassword');
                 if (result != null) {
                   showDialog(
                     context: context,

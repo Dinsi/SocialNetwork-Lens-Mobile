@@ -34,7 +34,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Future<void> _editProfile() async {
-    int result = await Navigator.of(context).pushNamed('/editProfile') as int;
+    int result = await Navigator.of(context).pushNamed('/editProfile');
 
     if (result != null) {
       bloc.fetchUser();

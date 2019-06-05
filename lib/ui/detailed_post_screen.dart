@@ -415,7 +415,11 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
     return WillPopScope(
       onWillPop: () {
         if (_enabledBackButton) {
-          Navigator.of(context).pop(_post);
+          Navigator.of(context).pop({
+            'post': _post,
+            'upIconColor': _upIconColor,
+            'downIconColor': _downIconColor,
+          });
         }
 
         return Future<bool>.value(false);

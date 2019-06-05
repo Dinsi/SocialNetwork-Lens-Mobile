@@ -7,7 +7,7 @@ class SettingsScreen extends StatelessWidget {
   final Globals _globals = Globals.getInstance();
 
   Future<void> _editProfile(BuildContext context) async {
-    int code = await Navigator.of(context).pushNamed('/editProfile') as int;
+    int code = await Navigator.of(context).pushNamed('/editProfile');
     if (code != null) {
       showDialog(
         context: context,

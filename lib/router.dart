@@ -81,7 +81,7 @@ class Router {
             settings.arguments as Map<String, dynamic>;
 
         final bloc = PostDetailsBloc(arguments['postId'] as int);
-        return MaterialPageRoute<Post>(
+        return MaterialPageRoute<Map<String, dynamic>>(
           builder: (context) => PostDetailsBlocProvider(
                 bloc,
                 child: DetailedPostScreen(

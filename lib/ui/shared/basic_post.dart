@@ -208,14 +208,18 @@ class _BasicPostState extends State<BasicPost> {
   }
 
   Future _toDetailedPostScreen(bool toComments) async {
-    Post updatedPost = await Navigator.of(context).pushNamed('/detailedPost',
-        arguments: {
-          'postId': widget.post.id,
-          'post': _post,
-          'toComments': toComments
-        }) as Post;
+    Map<String, dynamic> result = await Navigator.of(context)
+        .pushNamed('/detailedPost', arguments: {
+      'postId': widget.post.id,
+      'post': _post,
+      'toComments': toComments
+    });
 
-    setState(() => _post = updatedPost);
+    setState(() {
+      _post = result['post'];
+      _upIconColor = result['upIconColor'];
+      _downIconColor = result['downIconColor'];
+    });
   }
 
   Future _downvoteOrRemove() async {
