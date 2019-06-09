@@ -56,7 +56,7 @@ class PostApiProvider extends BaseProvider {
       return posts;
     } else {
       // If that call was not successful, throw an error.
-      throw HttpException('_post_fetchList_');
+      throw HttpException('_post_fetchPosts_');
     }
   }
 
