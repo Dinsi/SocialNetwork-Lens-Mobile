@@ -12,7 +12,7 @@ class TopicApiProvider extends BaseProvider {
   Client client = Client();
 
   Future<List<Topic>> fetchRecommended() async {
-    print('fetchRecommendedTopics');
+    print('_topic_fetchRecommended_');
 
     var response = await client.get('${super.baseUrl}topics/recommended/',
         headers: {
@@ -32,11 +32,11 @@ class TopicApiProvider extends BaseProvider {
       return topicsList;
     }
 
-    throw HttpException('fetchRecommendedTopics');
+    throw HttpException('_topic_fetchRecommended_');
   }
 
   Future<Topic> fetchSingle(String topic) async {
-    print('fetchSingle');
+    print('_topic_fetchSingle_');
 
     var response = await client.get('${super.baseUrl}topics/$topic/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
@@ -48,12 +48,12 @@ class TopicApiProvider extends BaseProvider {
       return Topic.fromJson(jsonDecode(response.body));
     }
 
-    throw HttpException('fetchSingle');
+    throw HttpException('_topic_fetchSingle_');
   }
 
   Future<int> toggleSubscription(
       String topic, String subscriptionIntent) async {
-    print('toggleSubscription');
+    print('_topic_toggleSubscription_');
 
     var response = await client
         .post('${super.baseUrl}topics/$topic/$subscriptionIntent/', headers: {
@@ -66,11 +66,11 @@ class TopicApiProvider extends BaseProvider {
       return 0;
     }
 
-    throw HttpException('toggleSubscription');
+    throw HttpException('_topic_toggleSubscription_');
   }
 
   Future<List<SearchResult>> fetchSearchResults(String query) async {
-    print('fetchSearchResults');
+    print('_topic_fetchSearchResults_');
 
     var response = await client.post(
       '${super.baseUrl}topics/search/',
@@ -94,11 +94,11 @@ class TopicApiProvider extends BaseProvider {
       return results;
     }
 
-    throw HttpException('fetchSearchResults');
+    throw HttpException('_topic_fetchSearchResults_');
   }
 
   Future<int> bulkUpdate(List<Topic> changedTopics) async {
-    print('bulkUpdate');
+    print('_topic_bulkUpdate_');
 
     List<int> topicsNames = List<int>(changedTopics.length);
     for (var i = 0; i < changedTopics.length; i++) {
@@ -120,6 +120,6 @@ class TopicApiProvider extends BaseProvider {
       return 0;
     } //TODO assuming valid
 
-    throw HttpException('bulkUpdate');
+    throw HttpException('_topic_bulkUpdate_');
   }
 }

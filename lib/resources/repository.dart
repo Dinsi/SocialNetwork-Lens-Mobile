@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'comment_api_provider.dart';
-import 'token_api_provider.dart';
-import 'post_api_provider.dart';
-import 'user_api_provider.dart';
-import 'topic_api_provider.dart';
-import '../models/topic.dart';
-import '../models/post.dart';
-import '../models/user.dart';
-import '../models/comment.dart';
-import '../models/search_result.dart';
+import 'package:aperture/models/comment.dart';
+import 'package:aperture/models/post.dart';
+import 'package:aperture/models/search_result.dart';
+import 'package:aperture/models/topic.dart';
+import 'package:aperture/models/user.dart';
+import 'package:aperture/resources/comment_api_provider.dart';
+import 'package:aperture/resources/post_api_provider.dart';
+import 'package:aperture/resources/token_api_provider.dart';
+import 'package:aperture/resources/topic_api_provider.dart';
+import 'package:aperture/resources/user_api_provider.dart';
 
 class Repository {
   final postsApiProvider = PostApiProvider();

@@ -17,20 +17,20 @@ class PostApiProvider extends BaseProvider {
   Client client = Client();
 
   Future<List<Post>> fetchList(int lastPostId) async {
-    print("fetchList");
+    print("_post_fetchList_");
     return await fetchPosts(
         "${super.baseUrl}feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
   }
 
   Future<List<Post>> fetchListByTopic(int lastPostId, String topic) async {
-    print("fetchListByTopic");
+    print("_post_fetchListByTopic_");
     return await fetchPosts(
         "${super.baseUrl}topics/$topic/feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
   }
 
   Future<List<Post>> fetchListByUser(
       int lastPostId, String userUsername) async {
-    print("fetchListByUser");
+    print("_post_fetchListByUser_");
     return await fetchPosts(
         "${super.baseUrl}topics/$userUsername/feed/${(lastPostId != null ? "?after=$lastPostId" : "")}");
   }
@@ -56,12 +56,12 @@ class PostApiProvider extends BaseProvider {
       return posts;
     } else {
       // If that call was not successful, throw an error.
-      throw HttpException('fetchPosts');
+      throw HttpException('_post_fetchList_');
     }
   }
 
   Future<Post> fetchSingle(int postId) async {
-    print("fetchSinglePost");
+    print("_post_fetchSingle_");
     final response = await client.get("${super.baseUrl}posts/$postId/",
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
@@ -74,15 +74,15 @@ class PostApiProvider extends BaseProvider {
       return Post.fromJson(body);
     } else {
       // If that call was not successful, throw an error.
-      throw HttpException('fetchSinglePost');
+      throw HttpException('_post_fetchSingle_');
     }
   }
 
-  Future<int> uploadPost(
+  Future<int> upload(
       File imageFile, String title, String description) async {
     //TODO verifyToken();
 
-    print("uploadPost");
+    print("_post_upload_");
 
     ByteStream stream =
         new ByteStream(DelegatingStream.typed(imageFile.openRead()));
@@ -123,11 +123,11 @@ class PostApiProvider extends BaseProvider {
       return 0;
     }
 
-    throw HttpException('uploadPost'); //TODO add more errors as necessary
+    throw HttpException('_post_upload_'); //TODO add more errors as necessary
   }
 
   Future<int> changeVote(int postId, String change) async {
-    print(change);
+    print('_post_${change}_');
 
     var response = await client.post('${super.baseUrl}posts/$postId/$change/',
         headers: {
@@ -140,6 +140,6 @@ class PostApiProvider extends BaseProvider {
       return 0;
     }
 
-    throw HttpException(change);
+    throw HttpException('_post_${change}_');
   }
 }

@@ -11,7 +11,7 @@ class CommentApiProvider extends BaseProvider {
 
   Future<dynamic> fetchList(
       int commentLimit, int postId, String nextLink) async {
-    print("fetchCommentList");
+    print("_comment_fetchList_");
     final response = await client.get(
         nextLink ??
             "${super.baseUrl}posts/$postId/comments/?limit=$commentLimit",
@@ -36,12 +36,12 @@ class CommentApiProvider extends BaseProvider {
       return {"comments": comments, "nextLink": body["next"]};
     } else {
       // If that call was not successful, throw an error.
-      throw HttpException('fetchCommentList');
+      throw HttpException('_comment_fetchList_');
     }
   }
 
   Future<Comment> post(int postId, String comment) async {
-    print('postComment');
+    print('_comment_post_');
 
     var response = await client.post(
       '${super.baseUrl}posts/$postId/comments/',
@@ -57,6 +57,6 @@ class CommentApiProvider extends BaseProvider {
       return Comment.fromJson(jsonDecode(response.body));
     }
 
-    throw HttpException('postComment');
+    throw HttpException('_comment_post_');
   }
 }

@@ -9,7 +9,7 @@ class TokenApiProvider extends BaseProvider {
   Client client = Client();
 
   Future<int> login(String username, String password) async {
-    print('login');
+    print('_token_login_');
 
     var response = await client.post('${super.baseUrl}token/',
         body: jsonEncode({'username': username, 'password': password}),
@@ -26,12 +26,12 @@ class TokenApiProvider extends BaseProvider {
         return 1;
 
       default:
-        throw HttpException('login');
+        throw HttpException('_token_login_');
     }
   }
 
   Future<int> register(Map<String, String> fields) async {
-    print('register');
+    print('_token_register_');
 
     var response = await client.post('${super.baseUrl}users/',
         body: jsonEncode(fields),
@@ -48,13 +48,13 @@ class TokenApiProvider extends BaseProvider {
         return 1; // Username is taken
 
       default:
-        throw HttpException('register');
+        throw HttpException('_token_register_');
     }
   }
 
   Future<bool> verify() async {
     //TODO fix verify, returns false on other functions and does nothing
-    print('verifyToken');
+    print('_token_verify_');
     
     var response = await client.post('${super.baseUrl}token/verify/',
         body: jsonEncode({'token': globals.accessToken}),

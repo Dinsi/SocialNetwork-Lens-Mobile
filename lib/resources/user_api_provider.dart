@@ -15,7 +15,7 @@ class UserApiProvider extends BaseProvider {
   Client client = Client();
 
   Future<User> fetchInfo() async {
-    print('fetchInfo');
+    print('_user_fetchInfo_');
 
     var response = await client.get('${super.baseUrl}users/self/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ${globals.accessToken}'
@@ -29,11 +29,11 @@ class UserApiProvider extends BaseProvider {
       return User.fromJson(body);
     }
 
-    throw HttpException('fetchInfo');
+    throw HttpException('_user_fetchInfo_');
   }
 
   Future<User> fetchInfoById(int userId) async {
-    print('fetchInfoById');
+    print('_user_fetchInfoById_');
 
     var response = await client.get('${super.baseUrl}users/$userId/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ${globals.accessToken}'
@@ -45,11 +45,11 @@ class UserApiProvider extends BaseProvider {
       return User.fromJson(jsonDecode(response.body));
     }
 
-    throw HttpException('fetchInfoById');
+    throw HttpException('_user_fetchInfoById_');
   }
 
   Future<int> finishRegister(List<int> desiredTopics) async {
-    print('finishRegister');
+    print('_user_finishRegister_');
 
     var response = await client.post(
       '${super.baseUrl}users/finish_register/',
@@ -67,11 +67,11 @@ class UserApiProvider extends BaseProvider {
       return 0;
     }
 
-    throw HttpException('finishRegister');
+    throw HttpException('_user_finishRegister_');
   }
 
   Future<int> updateEmail(Map<String, String> fields) async {
-    print('updateEmail');
+    print('_user_updateEmail_');
 
     var response = await client.post(
       '${super.baseUrl}users/update_email/',
@@ -90,12 +90,12 @@ class UserApiProvider extends BaseProvider {
       case HttpStatus.badRequest:
         return 1;
       default:
-        throw HttpException('updateEmail');
+        throw HttpException('_user_updateEmail_');
     }
   }
 
   Future<int> updatePassword(Map<String, String> fields) async {
-    print('updateEmail');
+    print('_user_updatePassword_');
 
     var response = await client.post(
       '${super.baseUrl}users/update_password/',
@@ -114,12 +114,12 @@ class UserApiProvider extends BaseProvider {
       case HttpStatus.badRequest:
         return 1;
       default:
-        throw HttpException('updateEmail');
+        throw HttpException('_user_updatePassword_');
     }
   }
 
   Future<int> patch(Map<String, String> fields) async {
-    print('patch');
+    print('_user_patch_');
 
     var response = await client.patch(
       '${super.baseUrl}users/self/',
@@ -137,11 +137,11 @@ class UserApiProvider extends BaseProvider {
       return 0;
     }
 
-    throw HttpException('patch');
+    throw HttpException('_user_patch_');
   }
 
   Future<int> patchMultiPart(File imageFile, Map<String, String> fields) async {
-    print("patchMultiPart");
+    print("_user_patchMultiPart_");
 
     ByteStream stream =
         new ByteStream(DelegatingStream.typed(imageFile.openRead()));
@@ -177,6 +177,6 @@ class UserApiProvider extends BaseProvider {
       return 0;
     } //TODO assuming success
 
-    throw HttpException('patchMultiPart');
+    throw HttpException('_user_patchMultiPart_');
   }
 }
