@@ -1,8 +1,10 @@
+import 'package:aperture/models/users/compact_user.dart';
+
 class Post {
   int id;
   String title;
   String description;
-  _User user;
+  CompactUser user;
   String image;
   int width;
   int height;
@@ -10,24 +12,15 @@ class Post {
   int userVote;
   int commentsLength;
 
-  Post(
-      this.id,
-      this.title,
-      this.description,
-      this.user,
-      this.image,
-      this.width,
-      this.height,
-      this.votes,
-      this.userVote,
-      this.commentsLength);
+  Post(this.id, this.title, this.description, this.user, this.image, this.width,
+      this.height, this.votes, this.userVote, this.commentsLength);
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
         json['id'],
         json['title'],
         json['description'],
-        _User.fromJson(json['user']),
+        CompactUser.fromJson(json['user']),
         json['image'],
         json['width'],
         json['height'],
@@ -50,32 +43,4 @@ class Post {
     data['comments_length'] = this.commentsLength;
     return data;
   }
-}
-
-
-class _User {
-  final int _id;
-  final String _username;
-  final String _name;
-  final String _avatar;
-
-  _User(this._id, this._username, this._name, this._avatar);
-
-  factory _User.fromJson(Map<String, dynamic> json) {
-    return _User(json['id'], json['username'], json['name'], json['avatar']);
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this._id;
-    data['username'] = this._username;
-    data['name'] = this._name;
-    data['avatar'] = this._avatar;
-    return data;
-  }
-
-  int get id => _id;
-  String get username => _username;
-  String get name => _name;
-  String get avatar => _avatar;
 }

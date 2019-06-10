@@ -1,15 +1,10 @@
 class SearchResult {
-  final int _id;
-  final String _name;
-  final int _type;
-  final int _userId;
+  final int id;
+  final String name;
+  final int type;
+  final int userId;
 
-  const SearchResult(this._id, this._name, this._type, this._userId);
-
-  int get id => _id;
-  String get name => _name;
-  int get type => _type;
-  int get userId => _userId;
+  SearchResult(this.id, this.name, this.type, this.userId);
 
   factory SearchResult.fromJson(Map<String, dynamic> json) {
     return SearchResult(
@@ -18,10 +13,10 @@ class SearchResult {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this._id;
-    data['name'] = this._name;
-    data['type'] = this._type;
-    data['user_id'] = this._userId ?? null;
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['type'] = this.type;
+    data['user_id'] = this.userId ?? null;
     return data;
   }
 }

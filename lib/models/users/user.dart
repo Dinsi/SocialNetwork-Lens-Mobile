@@ -1,4 +1,5 @@
-import 'topic.dart';
+import 'package:aperture/models/collections/compact_collection.dart';
+import 'package:aperture/models/topic.dart';
 
 class User {
   int id;
@@ -17,6 +18,7 @@ class User {
   String bio;
   String publicEmail;
   String website;
+  final List<CompactCollection> collections;
 
   User(
       this.id,
@@ -34,7 +36,8 @@ class User {
       this.location,
       this.bio,
       this.publicEmail,
-      this.website);
+      this.website,
+      this.collections);
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -55,13 +58,10 @@ class User {
         json['location'],
         json['bio'],
         json['public_email'],
-        json['website']);
-  }
-
-  static List<Topic> setTopics(List topics) {
-    List<Topic> topicList = List<Topic>();
-    topics.forEach((topic) => topicList.add(Topic.fromJson(topic)));
-    return topicList;
+        json['website'],
+        (json['collections'] as List).isEmpty
+            ? List<CompactCollection>()
+            : setCollections((json['collections'] as List)));
   }
 
   Map<String, dynamic> toJson() {
@@ -82,6 +82,20 @@ class User {
     data['bio'] = this.bio;
     data['public_email'] = this.publicEmail;
     data['website'] = this.website;
+    data['collections'] = this.collections.map((v) => v.toJson()).toList();
     return data;
+  }
+
+  static List<Topic> setTopics(List topics) {
+    List<Topic> topicList = List<Topic>();
+    topics.forEach((topic) => topicList.add(Topic.fromJson(topic)));
+    return topicList;
+  }
+
+  static List<CompactCollection> setCollections(List collections) {
+    List<CompactCollection> collectionList = List<CompactCollection>();
+    collections.forEach(
+        (topic) => collectionList.add(CompactCollection.fromJson(topic)));
+    return collectionList;
   }
 }
