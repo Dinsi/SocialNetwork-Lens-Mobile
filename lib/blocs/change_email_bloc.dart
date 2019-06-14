@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../models/user.dart';
+import '../models/users/user.dart';
 import '../resources/globals.dart';
 import '../resources/repository.dart';
 import '../ui/utils/post_shared_functions.dart';

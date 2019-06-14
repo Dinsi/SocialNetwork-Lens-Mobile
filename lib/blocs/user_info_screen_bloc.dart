@@ -1,4 +1,4 @@
-import '../models/user.dart';
+import '../models/users/user.dart';
 import '../resources/globals.dart';
 
 class UserInfoScreenBloc {

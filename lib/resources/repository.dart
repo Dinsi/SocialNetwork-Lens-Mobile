@@ -5,7 +5,7 @@ import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/models/topic.dart';
-import 'package:aperture/models/user.dart';
+import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/comment_api_provider.dart';
 import 'package:aperture/resources/post_api_provider.dart';
 import 'package:aperture/resources/token_api_provider.dart';

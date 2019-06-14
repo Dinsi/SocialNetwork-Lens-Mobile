@@ -9,7 +9,7 @@ import 'package:http_parser/http_parser.dart' show MediaType;
 import 'package:path/path.dart';
 
 import 'base_provider.dart';
-import '../models/user.dart';
+import '../models/users/user.dart';
 
 class UserApiProvider extends BaseProvider {
   Client client = Client();

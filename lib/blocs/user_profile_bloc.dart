@@ -4,7 +4,7 @@ import 'dart:core';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../blocs/single_subscription_bloc.dart';
-import '../models/user.dart';
+import '../models/users/user.dart';
 
 class UserProfileBloc extends SingleSubscriptionBloc {
   final userId;

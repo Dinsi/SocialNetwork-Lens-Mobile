@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 import '../ui/utils/post_shared_functions.dart';
-import '../models/user.dart';
+import '../models/users/user.dart';
 import '../resources/globals.dart';
 import '../resources/repository.dart';
 

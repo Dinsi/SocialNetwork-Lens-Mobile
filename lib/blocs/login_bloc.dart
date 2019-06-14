@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../models/user.dart';
+import '../models/users/user.dart';
 import '../resources/repository.dart';
 
 class LoginBloc {

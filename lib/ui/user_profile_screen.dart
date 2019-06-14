@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/user.dart';
+import '../models/users/user.dart';
 import '../blocs/enums/subscribe_button.dart';
 import '../blocs/providers/user_profile_bloc_provider.dart';
 import 'shared/basic_post.dart';

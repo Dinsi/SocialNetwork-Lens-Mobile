@@ -5,7 +5,7 @@ import 'dart:convert' show jsonDecode, jsonEncode;
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/user.dart';
+import '../models/users/user.dart';
 import '../models/topic.dart';
 
 class Globals {
