@@ -1,19 +1,26 @@
 import 'package:aperture/blocs/change_email_bloc.dart';
 import 'package:aperture/blocs/change_password_bloc.dart';
+import 'package:aperture/blocs/collection_list_bloc.dart';
+import 'package:aperture/blocs/collection_posts_bloc.dart';
+import 'package:aperture/blocs/new_collection_bloc.dart';
 import 'package:aperture/blocs/providers/edit_profile_bloc_provider.dart';
 import 'package:aperture/blocs/providers/feed_bloc_provider.dart';
 import 'package:aperture/blocs/providers/post_details_bloc_provider.dart';
 import 'package:aperture/blocs/providers/start_up_transition_bloc_provider.dart';
 import 'package:aperture/blocs/providers/topic_feed_bloc_provider.dart';
 import 'package:aperture/blocs/providers/user_profile_bloc_provider.dart';
+import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
 import 'package:aperture/ui/change_password_screen.dart';
+import 'package:aperture/ui/collection_list_screen.dart';
+import 'package:aperture/ui/collection_posts_screen.dart';
 import 'package:aperture/ui/detailed_post_screen.dart';
 import 'package:aperture/ui/edit_profile_screen.dart';
 import 'package:aperture/ui/feed_screen.dart';
 import 'package:aperture/ui/login_screen.dart';
+import 'package:aperture/ui/new_collection_screen.dart';
 import 'package:aperture/ui/recommended_topics_screen.dart';
 import 'package:aperture/ui/search_screen.dart';
 import 'package:aperture/ui/settings_screen.dart';
@@ -139,6 +146,38 @@ class Router {
         final bloc = ChangePasswordBloc();
         return MaterialPageRoute<int>(
           builder: (context) => ChangePasswordScreen(bloc: bloc),
+        );
+
+      case '/collectionList':
+        final args = settings.arguments as Map<String, dynamic>;
+        final bloc = CollectionListBloc();
+        return MaterialPageRoute<String>(
+          builder: (context) => CollectionListScreen(
+                bloc: bloc,
+                addToCollection: args['addToCollection'],
+                postId: args['postId'] ?? null,
+              ),
+        );
+
+      case '/newCollection':
+        final args = settings.arguments as Map<String, dynamic>;
+        final bloc = NewCollectionBloc();
+        return MaterialPageRoute<CompactCollection>(
+          builder: (context) => NewCollectionScreen(
+                bloc: bloc,
+                addToCollection: args['addToCollection'],
+                postId: args['postId'] ?? null,
+              ),
+        );
+
+      case '/collectionPosts':
+        final args = settings.arguments as Map<String, dynamic>;
+        final bloc = CollectionPostsBloc(args['collId']);
+        return MaterialPageRoute<Null>(
+          builder: (context) => CollectionPostsScreen(
+                bloc: bloc,
+                collName: args['collName'],
+              ),
         );
 
       default:

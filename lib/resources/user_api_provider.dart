@@ -1,6 +1,5 @@
 import 'dart:convert' show jsonDecode, jsonEncode, utf8;
-import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
-import 'dart:io';
+import 'dart:io' show ContentType, File, HttpException, HttpHeaders, HttpStatus;
 
 import 'package:async/async.dart' show DelegatingStream;
 import 'package:http/http.dart'

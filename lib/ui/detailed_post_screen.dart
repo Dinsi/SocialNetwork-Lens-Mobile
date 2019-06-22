@@ -282,26 +282,52 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
                 ),
               ),
               PopupMenuButton<int>(
-                onSelected: (int result) {},
+                onSelected: (int value) async {
+                  if (value == 1) {
+                    String collectionName =
+                        await Navigator.of(context).pushNamed(
+                      '/collectionList',
+                      arguments: {
+                        'addToCollection': true,
+                        'postId': widget.post.id,
+                      },
+                    );
+
+                    if (collectionName != null) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Add to collection'),
+                            content:
+                                Text('Post has been added to $collectionName'),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: const Text('OK'),
+                                onPressed: () => Navigator.of(context).pop(),
+                              )
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  }
+                },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                      const PopupMenuItem<int>(
+                      PopupMenuItem<int>(
                         value: 1,
-                        child: Text("1"),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 2,
-                        child: Text("2"),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 3,
-                        child: Text("3"),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 4,
-                        child: Text("4"),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              FontAwesomeIcons.plusSquare,
+                            ),
+                            const SizedBox(width: 15.0),
+                            Text('Add to collection'),
+                          ],
+                        ),
                       ),
                     ],
-              ),
+              )
             ],
           ),
         ),

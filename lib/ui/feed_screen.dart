@@ -1,4 +1,3 @@
-import 'package:aperture/blocs/base_feed_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../blocs/feed_bloc.dart';

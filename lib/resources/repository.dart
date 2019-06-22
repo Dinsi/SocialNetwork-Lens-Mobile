@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/models/topic.dart';
 import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/collection_api_provider.dart';
 import 'package:aperture/resources/comment_api_provider.dart';
 import 'package:aperture/resources/post_api_provider.dart';
 import 'package:aperture/resources/token_api_provider.dart';
@@ -18,6 +20,7 @@ class Repository {
   final tokenApiProvider = TokenApiProvider();
   final userApiProvider = UserApiProvider();
   final topicsApiProvider = TopicApiProvider();
+  final collectionsApiProvider = CollectionApiProvider();
 
   Future<List<Post>> fetchPosts(int lastPostId) =>
       postsApiProvider.fetchList(lastPostId);
@@ -53,7 +56,7 @@ class Repository {
   Future<User> fetchUserInfo() => userApiProvider.fetchInfo();
 
   Future<int> uploadPost(File image, String title, String description) =>
-      postsApiProvider.uploadPost(image, title, description);
+      postsApiProvider.upload(image, title, description);
 
   Future<bool> verifyToken() => tokenApiProvider.verify();
 
@@ -85,5 +88,15 @@ class Repository {
   Future<int> changeUserEmail(Map<String, String> fields) =>
       userApiProvider.updateEmail(fields);
 
-  Future<int> changeUserPassword(Map<String, String> fields) => userApiProvider.updatePassword(fields);
+  Future<int> changeUserPassword(Map<String, String> fields) =>
+      userApiProvider.updatePassword(fields);
+
+  Future<Collection> appendPostToCollection(int collectionId, int postId) =>
+      collectionsApiProvider.appendPost(collectionId, postId);
+
+  Future<Collection> postNewCollection(String collectionName) =>
+      collectionsApiProvider.postNew(collectionName);
+
+  Future<Collection> fetchCollection(int collectionId) =>
+      collectionsApiProvider.fetch(collectionId);
 }

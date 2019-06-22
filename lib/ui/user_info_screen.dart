@@ -70,6 +70,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     Navigator.of(context).pushNamed('/settings');
   }
 
+  void _collections() {
+    Navigator.of(context).pushNamed(
+      '/collectionList',
+      arguments: {
+        'addToCollection': false,
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,6 +132,13 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               _buildButton(
                 title: 'Settings',
                 onPressed: _settings,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              _buildButton(
+                title: 'Collections',
+                onPressed: _collections,
               ),
               const SizedBox(
                 height: 10.0,

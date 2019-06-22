@@ -41,27 +41,32 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-        json['id'],
-        json['username'],
-        json['first_name'],
-        json['last_name'],
-        json['name'],
-        json['email'],
-        json['is_active'],
-        json['is_confirmed'],
-        json['finished_register'],
-        json['avatar'],
-        (json['topics'] as List).isEmpty
-            ? List<Topic>()
-            : setTopics((json['topics'] as List)),
-        json['headline'],
-        json['location'],
-        json['bio'],
-        json['public_email'],
-        json['website'],
-        (json['collections'] as List).isEmpty
-            ? List<CompactCollection>()
-            : setCollections((json['collections'] as List)));
+      json['id'],
+      json['username'],
+      json['first_name'],
+      json['last_name'],
+      json['name'],
+      json['email'],
+      json['is_active'],
+      json['is_confirmed'],
+      json['finished_register'],
+      json['avatar'],
+      (json['topics'] as List).isEmpty
+          ? List<Topic>()
+          : (json['topics'] as List)
+              .map((topic) => Topic.fromJson(topic))
+              .toList(),
+      json['headline'],
+      json['location'],
+      json['bio'],
+      json['public_email'],
+      json['website'],
+      (json['collections'] as List).isEmpty
+          ? List<CompactCollection>()
+          : (json['collections'] as List)
+              .map((topic) => CompactCollection.fromJson(topic))
+              .toList(),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -84,18 +89,5 @@ class User {
     data['website'] = this.website;
     data['collections'] = this.collections.map((v) => v.toJson()).toList();
     return data;
-  }
-
-  static List<Topic> setTopics(List topics) {
-    List<Topic> topicList = List<Topic>();
-    topics.forEach((topic) => topicList.add(Topic.fromJson(topic)));
-    return topicList;
-  }
-
-  static List<CompactCollection> setCollections(List collections) {
-    List<CompactCollection> collectionList = List<CompactCollection>();
-    collections.forEach(
-        (topic) => collectionList.add(CompactCollection.fromJson(topic)));
-    return collectionList;
   }
 }

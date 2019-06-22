@@ -241,7 +241,6 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                               //showInSnackBar("Login button pressed")),
                             ),
                           );
-                          ;
                       }
                     }),
               ),
