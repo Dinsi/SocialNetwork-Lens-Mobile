@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'base_feed_bloc.dart';
-import 'enums/subscribe_button.dart';
-import '../models/topic.dart';
-import '../models/post.dart';
+import 'package:aperture/blocs/base_feed_bloc.dart';
+import 'package:aperture/blocs/enums/subscribe_button.dart';
+import 'package:aperture/models/post.dart';
+import 'package:aperture/models/topic.dart';
 
 abstract class SingleSubscriptionBloc extends BaseFeedBloc {
   StreamController<SubscribeButton> _subscribeButtonFetcher =
@@ -46,15 +46,15 @@ abstract class SingleSubscriptionBloc extends BaseFeedBloc {
       if (subscriptionIntent == 'subscribe') {
         Topic topicObj = await repository.fetchSingleTopic(_topic);
 
-        await globals.addTopicToUser(topicObj);
+        await appInfo.addTopicToUser(topicObj);
 
-        print(globals.user.topics);
+        print(appInfo.user.topics);
 
         _subscribeButtonFetcher.sink.add(SubscribeButton.unsubscribe);
       } else {
-        await globals.removeTopicFromUser(_topic);
+        await appInfo.removeTopicFromUser(_topic);
 
-        print(globals.user.topics);
+        print(appInfo.user.topics);
 
         _subscribeButtonFetcher.sink.add(SubscribeButton.subscribe);
       }
@@ -72,7 +72,7 @@ abstract class SingleSubscriptionBloc extends BaseFeedBloc {
   }
 
   bool userIsSubscribed() {
-    for (Topic topic in globals.user.topics) {
+    for (Topic topic in appInfo.user.topics) {
       if (topic.name == _topic) {
         return true;
       }

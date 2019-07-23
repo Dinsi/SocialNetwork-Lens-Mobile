@@ -37,7 +37,7 @@ class PostApiProvider extends BaseProvider {
 
   Future<List<Post>> fetchPosts(String uri) async {
     final response = await client.get(uri, headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+      HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
     });
 
     print(response.body.toString());
@@ -64,7 +64,7 @@ class PostApiProvider extends BaseProvider {
     print("_post_fetchSingle_");
     final response = await client.get("${super.baseUrl}posts/$postId/",
         headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+          HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
     print(response.body.toString());
@@ -111,7 +111,7 @@ class PostApiProvider extends BaseProvider {
     });
 
     request.headers.addAll(
-        {HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken});
+        {HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken});
 
     var response = await request.send();
     print(response.statusCode);
@@ -131,7 +131,7 @@ class PostApiProvider extends BaseProvider {
 
     var response = await client.post('${super.baseUrl}posts/$postId/$change/',
         headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+          HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
     print(response.body + response.statusCode.toString());

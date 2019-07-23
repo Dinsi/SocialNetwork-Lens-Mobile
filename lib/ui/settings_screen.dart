@@ -1,10 +1,10 @@
+import 'package:aperture/locator.dart';
+import 'package:aperture/resources/AppInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../resources/globals.dart';
-
 class SettingsScreen extends StatelessWidget {
-  final Globals _globals = Globals.getInstance();
+  final AppInfo _globals = locator<AppInfo>();
 
   Future<void> _editProfile(BuildContext context) async {
     int code = await Navigator.of(context).pushNamed('/editProfile');

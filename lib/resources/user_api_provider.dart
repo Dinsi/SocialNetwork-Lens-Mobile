@@ -17,14 +17,14 @@ class UserApiProvider extends BaseProvider {
     print('_user_fetchInfo_');
 
     var response = await client.get('${super.baseUrl}users/self/', headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ${globals.accessToken}'
+      HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
     });
 
     print('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       dynamic body = jsonDecode(response.body);
-      await globals.setUserFromMap(body);
+      await appInfo.setUserFromMap(body);
       return User.fromJson(body);
     }
 
@@ -35,7 +35,7 @@ class UserApiProvider extends BaseProvider {
     print('_user_fetchInfoById_');
 
     var response = await client.get('${super.baseUrl}users/$userId/', headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ${globals.accessToken}'
+      HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
     });
 
     print('${response.statusCode.toString()}\n${response.body}');
@@ -53,7 +53,7 @@ class UserApiProvider extends BaseProvider {
     var response = await client.post(
       '${super.baseUrl}users/finish_register/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
       body: jsonEncode({'topics': desiredTopics}),
@@ -62,7 +62,7 @@ class UserApiProvider extends BaseProvider {
     print('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      await globals.setUserFromMap(jsonDecode(response.body));
+      await appInfo.setUserFromMap(jsonDecode(response.body));
       return 0;
     }
 
@@ -75,7 +75,7 @@ class UserApiProvider extends BaseProvider {
     var response = await client.post(
       '${super.baseUrl}users/update_email/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
       body: jsonEncode(fields),
@@ -99,7 +99,7 @@ class UserApiProvider extends BaseProvider {
     var response = await client.post(
       '${super.baseUrl}users/update_password/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
       body: jsonEncode(fields),
@@ -123,7 +123,7 @@ class UserApiProvider extends BaseProvider {
     var response = await client.patch(
       '${super.baseUrl}users/self/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
       body: jsonEncode(fields),
@@ -132,7 +132,7 @@ class UserApiProvider extends BaseProvider {
     print('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      await globals.setUserFromMap(jsonDecode(response.body));
+      await appInfo.setUserFromMap(jsonDecode(response.body));
       return 0;
     }
 
@@ -163,14 +163,14 @@ class UserApiProvider extends BaseProvider {
     }
 
     request.headers.addAll(
-        {HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken});
+        {HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken});
 
     var response = await request.send();
     print(response.statusCode);
 
     if (response.statusCode == HttpStatus.ok) {
       response.stream.transform(utf8.decoder).listen((value) async {
-        await globals.setUserFromMap(jsonDecode(value));
+        await appInfo.setUserFromMap(jsonDecode(value));
         print(value);
       });
       return 0;

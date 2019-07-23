@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/post.dart';
+import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart' show protected;
-
-import '../resources/repository.dart';
-import '../models/post.dart';
-import '../resources/globals.dart';
 
 const double loadingOffset = 100.0;
 
@@ -14,7 +14,7 @@ abstract class BaseFeedBloc {
   final Repository repository = Repository();
 
   @protected
-  final Globals globals = Globals.getInstance();
+  final AppInfo appInfo = locator<AppInfo>();
 
   @protected
   Future request;

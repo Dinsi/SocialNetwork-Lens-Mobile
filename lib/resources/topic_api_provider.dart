@@ -16,7 +16,7 @@ class TopicApiProvider extends BaseProvider {
 
     var response = await client.get('${super.baseUrl}topics/recommended/',
         headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+          HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
     print('${response.statusCode.toString()}\n${response.body}');
@@ -39,7 +39,7 @@ class TopicApiProvider extends BaseProvider {
     print('_topic_fetchSingle_');
 
     var response = await client.get('${super.baseUrl}topics/$topic/', headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+      HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
     });
 
     print('${response.statusCode.toString()}\n${response.body}');
@@ -57,7 +57,7 @@ class TopicApiProvider extends BaseProvider {
 
     var response = await client
         .post('${super.baseUrl}topics/$topic/$subscriptionIntent/', headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+      HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
     });
 
     print('${response.statusCode.toString()}\n${response.body}');
@@ -76,7 +76,7 @@ class TopicApiProvider extends BaseProvider {
       '${super.baseUrl}topics/search/',
       headers: {
         HttpHeaders.contentTypeHeader: ContentType.json.value,
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
       },
       body: jsonEncode({"q": query}),
     );
@@ -108,7 +108,7 @@ class TopicApiProvider extends BaseProvider {
     var response = await client.post(
       '${super.baseUrl}topics/bulk/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value
       },
       body: jsonEncode({'topics': topicsNames}),

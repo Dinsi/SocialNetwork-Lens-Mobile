@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:aperture/resources/globals.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/resources/AppInfo.dart';
 import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
@@ -17,7 +18,9 @@ Future<void> main() async {
     ),
   );
 
-  await Globals.getInstance().init();
+  setupLocator();
+  await locator<AppInfo>().init();
+
   //TODO insert splash screen so you can use verifyToken there and delete TransitionWidget
   runApp(MyApp());
 }

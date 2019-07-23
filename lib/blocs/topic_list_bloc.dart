@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import '../models/topic.dart';
-import '../resources/repository.dart';
-import '../resources/globals.dart';
-import 'enums/checkbox_state.dart';
+import 'package:aperture/blocs/enums/checkbox_state.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/topic.dart';
+import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
 
 class TopicListBloc {
   final Repository _repository;
-  final Globals _globals;
+  final AppInfo _appInfo;
 
   final List<Topic> _initialTopics;
   List<Topic> _changedTopics;
@@ -19,8 +20,8 @@ class TopicListBloc {
 
   TopicListBloc()
       : _repository = Repository(),
-        _globals = Globals.getInstance(),
-        _initialTopics = Globals.getInstance().user.topics
+        _appInfo = locator<AppInfo>(),
+        _initialTopics = locator<AppInfo>().user.topics
           ..sort(
             (Topic a, Topic b) => a.name.compareTo(b.name),
           ),
@@ -59,7 +60,7 @@ class TopicListBloc {
     int result = await _repository.bulkUpdateTopics(_changedTopics);
 
     if (result == 0) {
-      await _globals.bulkRemoveTopicsFromUser(_changedTopics);
+      await _appInfo.bulkRemoveTopicsFromUser(_changedTopics);
     }
   }
 

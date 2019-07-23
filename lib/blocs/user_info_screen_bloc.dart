@@ -1,13 +1,14 @@
-import '../models/users/user.dart';
-import '../resources/globals.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/app_info.dart';
 
 class UserInfoScreenBloc {
-  final Globals _globals = Globals.getInstance();
+  final AppInfo _appInfo = locator<AppInfo>();
 
-  User get user => _globals.user;
+  User get user => _appInfo.user;
 
   void clearCache() {
-    _globals.clearCache();
+    _appInfo.clearCache();
   }
 }
 

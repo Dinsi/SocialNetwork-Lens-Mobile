@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import '../models/users/user.dart';
-import '../resources/globals.dart';
-import '../resources/repository.dart';
-import '../ui/utils/post_shared_functions.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
+import 'package:aperture/ui/utils/post_shared_functions.dart';
 
 class ChangeEmailBloc {
   final Repository _repository = Repository();
-  final User _userInfo = Globals.getInstance().user;
+  final User _userInfo = locator<AppInfo>().user;
 
   bool _willPop = true;
   StreamController<bool> _saveButtonController = StreamController();
@@ -50,7 +51,7 @@ class ChangeEmailBloc {
     int result = await _repository.changeUserEmail(requestFields);
     if (result == 0) {
       _userInfo.email = requestFields['email'];
-      await Globals.getInstance().setUserFromUser(_userInfo);
+      await locator<AppInfo>().setUserFromUser(_userInfo);
     }
 
     _willPop = true;

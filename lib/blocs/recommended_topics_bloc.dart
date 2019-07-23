@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import '../resources/globals.dart';
-import '../models/topic.dart';
-import '../resources/repository.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/topic.dart';
+import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
 
 class RecommendedTopicsBloc {
-  final Globals _globals  = Globals.getInstance();
+  final AppInfo _appInfo = locator<AppInfo>();
   final Repository _repository = Repository();
 
   Future<List<Topic>> recommendedTopics() async {
@@ -16,7 +17,7 @@ class RecommendedTopicsBloc {
     return await _repository.finishRegister(topicIds);
   }
 
-  String get userUsername => _globals.user.username;
+  String get userUsername => _appInfo.user.username;
 }
 
 final recommendedTopicsBloc = RecommendedTopicsBloc();

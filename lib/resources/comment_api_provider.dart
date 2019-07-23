@@ -16,7 +16,7 @@ class CommentApiProvider extends BaseProvider {
         nextLink ??
             "${super.baseUrl}posts/$postId/comments/?limit=$commentLimit",
         headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken
+          HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
     print(response.body.toString());
@@ -46,7 +46,7 @@ class CommentApiProvider extends BaseProvider {
     var response = await client.post(
       '${super.baseUrl}posts/$postId/comments/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
       body: jsonEncode({'text': comment}),

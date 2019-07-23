@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:core';
 
+import 'package:aperture/blocs/single_subscription_bloc.dart';
+import 'package:aperture/models/users/user.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../blocs/single_subscription_bloc.dart';
-import '../models/users/user.dart';
 
 class UserProfileBloc extends SingleSubscriptionBloc {
   final userId;
@@ -25,7 +24,7 @@ class UserProfileBloc extends SingleSubscriptionBloc {
   Future<void> fetchUser() async {
     User targetUser;
     if (isSelf) {
-      targetUser = globals.user;
+      targetUser = appInfo.user;
     } else {
       targetUser = await repository.fetchUserInfoById(userId);
     }
@@ -45,6 +44,6 @@ class UserProfileBloc extends SingleSubscriptionBloc {
     await launch(url);
   }
 
-  bool get isSelf => globals.user.id == userId;
+  bool get isSelf => appInfo.user.id == userId;
   Stream<User> get userInfo => _userController.stream;
 }

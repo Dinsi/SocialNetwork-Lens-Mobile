@@ -14,7 +14,7 @@ class CollectionApiProvider extends BaseProvider {
     var response = await client.get(
       '${super.baseUrl}collections/$collectionId/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
       },
     );
 
@@ -34,7 +34,7 @@ class CollectionApiProvider extends BaseProvider {
     var response = await client.patch(
       '${super.baseUrl}collections/$collectionId/append/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
       body: jsonEncode({'post': postId}),
@@ -56,7 +56,7 @@ class CollectionApiProvider extends BaseProvider {
     var response = await client.post(
       '${super.baseUrl}collections/',
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ' + globals.accessToken,
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
       body: jsonEncode({'name': collectionName}),

@@ -1,30 +1,16 @@
-library aperture.globals;
-
 import 'dart:async' show Future;
 import 'dart:convert' show jsonDecode, jsonEncode;
 
+import 'package:aperture/models/topic.dart';
+import 'package:aperture/models/users/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/users/user.dart';
-import '../models/topic.dart';
-
-class Globals {
-  static Globals _instance;
+class AppInfo {
   SharedPreferences prefs;
-
-  factory Globals.getInstance() {
-    if (_instance == null) {
-      _instance = Globals._internal();
-    }
-
-    return _instance;
-  }
 
   Future init() async {
     prefs = await SharedPreferences.getInstance();
   }
-
-  Globals._internal();
 
   bool isLoggedIn() {
     return loggedIn != null;

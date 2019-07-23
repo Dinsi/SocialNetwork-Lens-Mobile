@@ -1,6 +1,7 @@
+import 'package:aperture/locator.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/users/user.dart';
-import 'package:aperture/resources/globals.dart';
+import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:meta/meta.dart';
 
@@ -9,10 +10,10 @@ abstract class AppendToCollectionBloc {
   final repository = Repository();
 
   @protected
-  final globals = Globals.getInstance();
+  final AppInfo appInfo = locator<AppInfo>();
 
   @protected
-  User user = Globals.getInstance().user;
+  User user = locator<AppInfo>().user;
 
   Future<Collection> updateCollection(int index, int postId) async {
     Collection result = await repository.appendPostToCollection(
@@ -23,7 +24,7 @@ abstract class AppendToCollectionBloc {
         user.collections[index].cover = result.cover;
       }
       user.collections[index].posts.add(postId);
-      await globals.setUserFromUser(user);
+      await appInfo.setUserFromUser(user);
     }
 
     return result;

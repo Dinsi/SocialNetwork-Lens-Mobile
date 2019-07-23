@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
+import 'package:aperture/ui/utils/post_shared_functions.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../ui/utils/post_shared_functions.dart';
-import '../models/users/user.dart';
-import '../resources/globals.dart';
-import '../resources/repository.dart';
 
 class EditProfileBloc {
   final Repository _repository = Repository();
-  final User _userInfo = Globals.getInstance().user;
+  final User _userInfo = locator<AppInfo>().user;
   StreamController<bool> _buttonController = StreamController.broadcast();
   StreamController<String> _imageController = StreamController.broadcast();
 

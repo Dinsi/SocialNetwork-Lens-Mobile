@@ -23,7 +23,7 @@ class NewCollectionBloc extends AppendToCollectionBloc {
     if (result != null) {
       final newCollection = CompactCollection.fromJson(result.toJson());
       user.collections.add(newCollection);
-      await globals.setUserFromUser(user);
+      await appInfo.setUserFromUser(user);
       Collection result2 =
           await super.updateCollection(user.collections.length - 1, postId);
       return result2 != null ? newCollection : 2;

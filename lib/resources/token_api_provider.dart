@@ -18,7 +18,7 @@ class TokenApiProvider extends BaseProvider {
     switch (response.statusCode) {
       case HttpStatus.ok:
         final body = jsonDecode(response.body);
-        await globals.cacheLogin(body['access'], body['refresh']);
+        await appInfo.cacheLogin(body['access'], body['refresh']);
 
         return 0;
 
@@ -57,21 +57,21 @@ class TokenApiProvider extends BaseProvider {
     print('_token_verify_');
     
     var response = await client.post('${super.baseUrl}token/verify/',
-        body: jsonEncode({'token': globals.accessToken}),
+        body: jsonEncode({'token': appInfo.accessToken}),
         headers: {HttpHeaders.contentTypeHeader: ContentType.json.value});
 
     if (response.statusCode != HttpStatus.ok) {
       response = await client.post('${super.baseUrl}token/refresh/',
-          body: jsonEncode({'refresh': globals.refreshToken}),
+          body: jsonEncode({'refresh': appInfo.refreshToken}),
           headers: {HttpHeaders.contentTypeHeader: ContentType.json.value});
 
       if (response.statusCode != HttpStatus.ok) {
-        globals.clearCache();
+        appInfo.clearCache();
         return false;
       }
 
       dynamic body = jsonDecode(response.body);
-      globals.setAccessToken(body['access']);
+      appInfo.setAccessToken(body['access']);
     }
 
     return true;

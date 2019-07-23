@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import '../models/post.dart';
-import 'base_feed_bloc.dart';
+import 'package:aperture/blocs/base_feed_bloc.dart';
+import 'package:aperture/models/post.dart';
 
 class FeedBloc extends BaseFeedBloc {
   @override
@@ -19,5 +19,5 @@ class FeedBloc extends BaseFeedBloc {
     }
   }
 
-  bool get userIsConfirmed => globals.user.isConfirmed;
+  bool get userIsConfirmed => appInfo.user.isConfirmed;
 }

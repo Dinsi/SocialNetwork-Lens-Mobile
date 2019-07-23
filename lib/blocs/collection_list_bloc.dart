@@ -1,11 +1,12 @@
 import 'package:aperture/blocs/append_to_collection_bloc.dart';
+import 'package:aperture/locator.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
-import 'package:aperture/resources/globals.dart';
+import 'package:aperture/resources/app_info.dart';
 
 class CollectionListBloc extends AppendToCollectionBloc {
   List<CompactCollection> collections =
-      List.from(Globals.getInstance().user.collections);
+      List.from(locator<AppInfo>().user.collections);
 
   @override
   Future<Collection> updateCollection(int index, int postId) async {

@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import '../resources/globals.dart';
-import '../resources/repository.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
 
 class StartUpBloc {
   final Repository _repository = Repository();
-  final Globals _globals = Globals.getInstance();
+ final AppInfo _appInfo = locator<AppInfo>();
   StreamController<bool> _streamController = StreamController<bool>();
 
   void verifyToken() async {
@@ -21,7 +22,7 @@ class StartUpBloc {
     _streamController.close();
   }
 
-  bool get isUserLoggedIn => _globals.isLoggedIn();
+  bool get isUserLoggedIn => _appInfo.isLoggedIn();
 }
 
 final startUpBloc = StartUpBloc();
