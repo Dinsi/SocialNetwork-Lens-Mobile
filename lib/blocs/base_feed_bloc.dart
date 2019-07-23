@@ -11,7 +11,7 @@ const double loadingOffset = 100.0;
 
 abstract class BaseFeedBloc {
   @protected
-  final Repository repository = Repository();
+  final Repository repository = locator<Repository>();
 
   @protected
   final AppInfo appInfo = locator<AppInfo>();

@@ -7,7 +7,7 @@ import 'package:aperture/resources/repository.dart';
 import 'package:aperture/ui/utils/post_shared_functions.dart';
 
 class ChangeEmailBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
   final User _userInfo = locator<AppInfo>().user;
 
   bool _willPop = true;

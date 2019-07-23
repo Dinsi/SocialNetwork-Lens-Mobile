@@ -19,7 +19,7 @@ class TopicListBloc {
   bool willPop = true;
 
   TopicListBloc()
-      : _repository = Repository(),
+      : _repository = locator<Repository>(),
         _appInfo = locator<AppInfo>(),
         _initialTopics = locator<AppInfo>().user.topics
           ..sort(

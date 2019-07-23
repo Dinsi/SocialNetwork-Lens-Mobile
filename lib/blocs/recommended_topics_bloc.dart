@@ -7,7 +7,7 @@ import 'package:aperture/resources/repository.dart';
 
 class RecommendedTopicsBloc {
   final AppInfo _appInfo = locator<AppInfo>();
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
 
   Future<List<Topic>> recommendedTopics() async {
     return await _repository.recommendedTopics();

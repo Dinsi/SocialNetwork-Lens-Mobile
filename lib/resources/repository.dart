@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aperture/locator.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/post.dart';
@@ -15,12 +16,12 @@ import 'package:aperture/resources/topic_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
 
 class Repository {
-  final postsApiProvider = PostApiProvider();
-  final commentsApiProvider = CommentApiProvider();
-  final tokenApiProvider = TokenApiProvider();
-  final userApiProvider = UserApiProvider();
-  final topicsApiProvider = TopicApiProvider();
-  final collectionsApiProvider = CollectionApiProvider();
+  final postsApiProvider = locator<PostApiProvider>();
+  final commentsApiProvider = locator<CommentApiProvider>();
+  final tokenApiProvider = locator<TokenApiProvider>();
+  final userApiProvider = locator<UserApiProvider>();
+  final topicsApiProvider = locator<TopicApiProvider>();
+  final collectionsApiProvider = locator<CollectionApiProvider>();
 
   Future<List<Post>> fetchPosts(int lastPostId) =>
       postsApiProvider.fetchList(lastPostId);

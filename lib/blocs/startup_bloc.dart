@@ -5,7 +5,7 @@ import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 
 class StartUpBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
  final AppInfo _appInfo = locator<AppInfo>();
   StreamController<bool> _streamController = StreamController<bool>();
 

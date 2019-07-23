@@ -9,7 +9,7 @@ import 'package:aperture/ui/utils/post_shared_functions.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
   final User _userInfo = locator<AppInfo>().user;
   StreamController<bool> _buttonController = StreamController.broadcast();
   StreamController<String> _imageController = StreamController.broadcast();

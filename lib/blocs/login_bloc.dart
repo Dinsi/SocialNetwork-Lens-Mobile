@@ -1,10 +1,12 @@
 import 'dart:async';
 
-import '../models/users/user.dart';
-import '../resources/repository.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/repository.dart';
+
 
 class LoginBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
 
   Future<int> login(String username, String password) async {
     return await _repository.login(username, password);

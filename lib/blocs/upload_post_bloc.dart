@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io' show File;
 
-import '../resources/repository.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/resources/repository.dart';
 
 class UploadPostBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
   StreamController<String> _buttonController;
   StreamController<String> _imageController;
 

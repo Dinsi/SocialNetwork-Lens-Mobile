@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import '../resources/repository.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/resources/repository.dart';
 
 class ChangePasswordBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
 
   StreamController<bool> _saveButtonController = StreamController();
   StreamController<bool> _oldPwdController = StreamController();

@@ -1,13 +1,10 @@
 import 'dart:async';
 
+import 'package:aperture/blocs/enums/search_state.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/search_result.dart';
+import 'package:aperture/resources/repository.dart';
 import 'package:flutter/material.dart' show TextEditingController;
-
-import '../resources/repository.dart';
-import 'enums/search_state.dart';
-import '../models/search_result.dart';
-
-export 'enums/search_state.dart';
-export '../models/search_result.dart';
 
 class SearchBloc {
   Repository _repository;
@@ -18,7 +15,7 @@ class SearchBloc {
   int dsa = 0;
 
   SearchBloc()
-      : _repository = Repository(),
+      : _repository = locator<Repository>(),
         _searchController = StreamController<SearchState>.broadcast();
 
   Future<void> fetchSearchResults(

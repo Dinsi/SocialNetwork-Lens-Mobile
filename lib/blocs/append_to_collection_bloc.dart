@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 
 abstract class AppendToCollectionBloc {
   @protected
-  final repository = Repository();
+  final repository = locator<Repository>();
 
   @protected
   final AppInfo appInfo = locator<AppInfo>();

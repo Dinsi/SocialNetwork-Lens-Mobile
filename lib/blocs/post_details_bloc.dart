@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import '../resources/repository.dart';
-import '../models/comment.dart';
-import '../models/post.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/comment.dart';
+import 'package:aperture/models/post.dart';
+import 'package:aperture/resources/repository.dart';
 
 const int _commentLimit = 10;
 
 class PostDetailsBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
   StreamController<List<Comment>> _commentsFetcher =
       StreamController<List<Comment>>.broadcast();
 

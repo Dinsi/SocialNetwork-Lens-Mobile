@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import '../models/users/user.dart';
-import '../resources/repository.dart';
+import 'package:aperture/locator.dart';
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/repository.dart';
 
 class StartUpTransitionBloc {
-  final Repository _repository = Repository();
+  final Repository _repository = locator<Repository>();
   StreamController<User> _streamController = StreamController<User>.broadcast();
 
   Future fetchUserInfo() async {
