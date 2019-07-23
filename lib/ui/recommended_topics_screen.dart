@@ -1,7 +1,6 @@
+import 'package:aperture/models/topic.dart';
+import 'package:aperture/view_models/recommended_topics_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../models/topic.dart';
-import '../blocs/recommended_topics_bloc.dart';
 
 const double _itemHeight = 70.0;
 

@@ -1,5 +1,5 @@
 import 'package:aperture/locator.dart';
-import 'package:aperture/resources/AppInfo.dart';
+import 'package:aperture/resources/app_info.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

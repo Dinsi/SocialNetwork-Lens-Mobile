@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class BaseView<T extends BaseModel> extends StatefulWidget {
   final Widget Function(BuildContext context, T model, Widget child) builder;
-  final Widget Function(T model) onModelReady;
+  final void Function(T model) onModelReady;
 
   const BaseView({Key key, @required this.builder, this.onModelReady})
       : super(key: key);
@@ -29,9 +29,7 @@ class _BaseViewState<T extends BaseModel> extends State<BaseView<T>> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<T>(
       builder: (_) => model,
-      child: Consumer(
-        builder: widget.builder,
-      ),
+      child: Consumer<T>(builder: widget.builder),
     );
   }
 }

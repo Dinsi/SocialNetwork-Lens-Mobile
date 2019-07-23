@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aperture/locator.dart';
-import 'package:aperture/resources/AppInfo.dart';
+import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
               ),
         ),
       ),
-      initialRoute: '/',
+      initialRoute: RouteNames.home,
       onGenerateRoute: Router.routes,
     );
   }
