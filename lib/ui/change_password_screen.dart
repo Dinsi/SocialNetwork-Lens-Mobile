@@ -1,8 +1,7 @@
+import 'package:aperture/view_models/change_password_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../blocs/change_password_bloc.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final ChangePasswordBloc bloc;

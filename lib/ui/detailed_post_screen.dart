@@ -1,17 +1,16 @@
+import 'package:aperture/models/comment.dart';
+import 'package:aperture/models/post.dart';
+import 'package:aperture/ui/shared/comment_tile.dart';
+import 'package:aperture/ui/shared/description_text_widget.dart';
+import 'package:aperture/ui/shared/image_container.dart';
+import 'package:aperture/ui/utils/post_shared_functions.dart';
+import 'package:aperture/view_models/post_details_bloc.dart';
+import 'package:aperture/view_models/providers/post_details_bloc_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:transparent_image/transparent_image.dart';
-
-import 'utils/post_shared_functions.dart';
-import '../blocs/post_details_bloc.dart';
-import '../blocs/providers/post_details_bloc_provider.dart';
-import '../models/comment.dart';
-import '../models/post.dart';
-import 'shared/comment_tile.dart';
-import 'shared/description_text_widget.dart';
-import 'shared/image_container.dart';
 
 const double _votesTabHeight = 55.0;
 const double _iconSideSize = 60.0;

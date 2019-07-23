@@ -1,5 +1,5 @@
-import 'package:aperture/blocs/enums/search_state.dart';
-import 'package:aperture/blocs/search_bloc.dart';
+import 'package:aperture/view_models/enums/search_state.dart';
+import 'package:aperture/view_models/search_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

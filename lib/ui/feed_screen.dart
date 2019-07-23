@@ -1,9 +1,8 @@
+import 'package:aperture/ui/shared/basic_post.dart';
+import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
+import 'package:aperture/view_models/feed_bloc.dart';
+import 'package:aperture/view_models/providers/feed_bloc_provider.dart';
 import 'package:flutter/material.dart';
-
-import '../blocs/feed_bloc.dart';
-import '../blocs/providers/feed_bloc_provider.dart';
-import 'shared/basic_post.dart';
-import 'shared/loading_lists/scroll_loading_list_view.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key key}) : super(key: key);

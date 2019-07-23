@@ -1,11 +1,11 @@
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/ui/shared/basic_post.dart';
+import 'package:aperture/ui/shared/description_text_widget.dart';
+import 'package:aperture/ui/shared/loading_lists/no_scroll_loading_list_view.dart';
+import 'package:aperture/view_models/enums/subscribe_button.dart';
+import 'package:aperture/view_models/providers/user_profile_bloc_provider.dart';
+import 'package:aperture/view_models/user_profile_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../models/users/user.dart';
-import '../blocs/enums/subscribe_button.dart';
-import '../blocs/providers/user_profile_bloc_provider.dart';
-import 'shared/basic_post.dart';
-import 'shared/description_text_widget.dart';
-import 'shared/loading_lists/no_scroll_loading_list_view.dart';
 
 class UserProfileScreen extends StatefulWidget {
   UserProfileScreen({Key key}) : super(key: key);

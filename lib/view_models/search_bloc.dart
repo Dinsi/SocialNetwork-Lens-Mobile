@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aperture/blocs/enums/search_state.dart';
+import 'package:aperture/view_models/enums/search_state.dart';
 import 'package:aperture/locator.dart';
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/resources/repository.dart';

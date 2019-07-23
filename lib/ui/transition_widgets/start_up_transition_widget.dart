@@ -1,9 +1,9 @@
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/ui/recommended_topics_screen.dart';
+import 'package:aperture/ui/user_info_screen.dart';
+import 'package:aperture/view_models/providers/start_up_transition_bloc_provider.dart';
+import 'package:aperture/view_models/start_up_transition_widget_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../user_info_screen.dart';
-import '../recommended_topics_screen.dart';
-import '../../blocs/providers/start_up_transition_bloc_provider.dart';
-import '../../models/users/user.dart';
 
 class StartUpTransitionWidget extends StatefulWidget {
   const StartUpTransitionWidget({Key key}) : super(key: key);

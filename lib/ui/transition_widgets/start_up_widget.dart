@@ -1,9 +1,8 @@
+import 'package:aperture/ui/login_screen.dart';
+import 'package:aperture/ui/transition_widgets/start_up_transition_widget.dart';
+import 'package:aperture/view_models/providers/start_up_transition_bloc_provider.dart';
+import 'package:aperture/view_models/startup_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../../blocs/startup_bloc.dart';
-import '../../blocs/providers/start_up_transition_bloc_provider.dart';
-import '../login_screen.dart';
-import 'start_up_transition_widget.dart';
 
 class StartUpWidget extends StatefulWidget {
   @override

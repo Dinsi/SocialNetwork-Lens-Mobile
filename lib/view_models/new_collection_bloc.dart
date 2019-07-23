@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aperture/blocs/append_to_collection_bloc.dart';
+import 'package:aperture/view_models/append_to_collection_bloc.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
 

@@ -1,4 +1,4 @@
-import 'package:aperture/blocs/base_model.dart';
+import 'package:aperture/view_models/base_model.dart';
 import 'package:aperture/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

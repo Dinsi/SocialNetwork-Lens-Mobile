@@ -1,7 +1,5 @@
+import 'package:aperture/view_models/topic_feed_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../../blocs/topic_feed_bloc.dart';
-export '../../blocs/topic_feed_bloc.dart';
 
 class TopicFeedBlocProvider extends InheritedWidget {
   TopicFeedBlocProvider(this.bloc,

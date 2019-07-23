@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 
-import 'package:aperture/blocs/single_subscription_bloc.dart';
+import 'package:aperture/view_models/single_subscription_bloc.dart';
 import 'package:aperture/models/users/user.dart';
 import 'package:url_launcher/url_launcher.dart';
 

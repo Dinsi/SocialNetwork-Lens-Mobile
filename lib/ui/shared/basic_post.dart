@@ -1,14 +1,13 @@
 import 'dart:async';
 
+import 'package:aperture/models/post.dart';
+import 'package:aperture/ui/shared/image_container.dart';
+import 'package:aperture/ui/utils/post_shared_functions.dart';
+import 'package:aperture/view_models/base_feed_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:transparent_image/transparent_image.dart';
-
-import '../../blocs/base_feed_bloc.dart';
-import '../../models/post.dart';
-import '../utils/post_shared_functions.dart';
-import 'image_container.dart';
 
 const double _iconSideSize = 45.0;
 const double _defaultHeight = 55.0;

@@ -1,7 +1,5 @@
+import 'package:aperture/view_models/feed_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../../blocs/feed_bloc.dart';
-export '../../blocs/feed_bloc.dart';
 
 class FeedBlocProvider extends InheritedWidget {
   FeedBlocProvider(this.bloc, {Key key, this.child})

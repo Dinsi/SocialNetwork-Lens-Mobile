@@ -1,14 +1,13 @@
 import 'dart:async';
 
+import 'package:aperture/ui/utils/login_bubble_indication_painter.dart';
+import 'package:aperture/ui/utils/login_theme.dart' as Theme;
+import 'package:aperture/ui/utils/post_shared_functions.dart';
+import 'package:aperture/view_models/login_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'utils/login_theme.dart' as Theme;
-import 'utils/login_bubble_indication_painter.dart';
-import '../blocs/login_bloc.dart';
-import 'utils/post_shared_functions.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);

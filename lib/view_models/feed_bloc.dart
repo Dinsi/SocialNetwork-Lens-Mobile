@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aperture/blocs/base_feed_bloc.dart';
+import 'package:aperture/view_models/base_feed_bloc.dart';
 import 'package:aperture/models/post.dart';
 
 class FeedBloc extends BaseFeedBloc {

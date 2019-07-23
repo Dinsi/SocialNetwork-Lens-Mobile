@@ -1,4 +1,4 @@
-import 'package:aperture/blocs/new_collection_bloc.dart';
+import 'package:aperture/view_models/new_collection_bloc.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

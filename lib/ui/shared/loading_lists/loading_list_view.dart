@@ -1,12 +1,9 @@
 import 'dart:async';
 
+import 'package:aperture/models/post.dart';
+import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
+import 'package:aperture/view_models/base_feed_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../../../models/post.dart';
-import '../../../blocs/base_feed_bloc.dart';
-import 'scroll_loading_list_view.dart';
-
-export '../../../blocs/base_feed_bloc.dart';
 
 typedef WidgetAdapter = Widget Function(Post t);
 typedef FetchRequester = Future Function(int lastId);

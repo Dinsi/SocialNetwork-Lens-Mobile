@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:aperture/blocs/base_feed_bloc.dart';
-import 'package:aperture/blocs/enums/subscribe_button.dart';
+import 'package:aperture/view_models/base_feed_bloc.dart';
+import 'package:aperture/view_models/enums/subscribe_button.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/topic.dart';
 

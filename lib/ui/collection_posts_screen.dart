@@ -1,4 +1,4 @@
-import 'package:aperture/blocs/collection_posts_bloc.dart';
+import 'package:aperture/view_models/collection_posts_bloc.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:flutter/material.dart';
 

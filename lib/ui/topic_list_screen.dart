@@ -1,9 +1,8 @@
+import 'package:aperture/view_models/enums/checkbox_state.dart';
+import 'package:aperture/view_models/topic_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../blocs/topic_list_bloc.dart';
-import '../blocs/enums/checkbox_state.dart';
 
 class TopicListScreen extends StatefulWidget {
   @override

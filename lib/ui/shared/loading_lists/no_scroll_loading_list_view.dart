@@ -1,6 +1,6 @@
+import 'package:aperture/ui/shared/loading_lists/loading_list_view.dart';
+import 'package:aperture/view_models/base_feed_bloc.dart';
 import 'package:flutter/widgets.dart';
-
-import 'loading_list_view.dart';
 
 class NoScrollLoadingListView extends LoadingListView {
   NoScrollLoadingListView(
