@@ -3,18 +3,33 @@ import 'package:aperture/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BaseView<T extends BaseModel> extends StatefulWidget {
+//* Widgets
+class SimpleBaseView<T extends BaseModel> extends StatefulWidget {
+  final Function(T model) onModelReady;
   final Widget Function(BuildContext context, T model, Widget child) builder;
-  final void Function(T model) onModelReady;
 
-  const BaseView({Key key, @required this.builder, this.onModelReady})
+  const SimpleBaseView({Key key, this.onModelReady, @required this.builder})
       : super(key: key);
 
   @override
-  _BaseViewState<T> createState() => _BaseViewState<T>();
+  _SimpleBaseViewState<T> createState() => _SimpleBaseViewState<T>();
 }
 
-class _BaseViewState<T extends BaseModel> extends State<BaseView<T>> {
+class ChangeNotifierBaseView<TT extends StateModel> extends StatefulWidget {
+  final void Function(TT model) onModelReady;
+  final Widget Function(BuildContext context, TT model, Widget child) builder;
+
+  const ChangeNotifierBaseView(
+      {Key key, this.onModelReady, @required this.builder})
+      : super(key: key);
+
+  @override
+  _ChangeNotifierBaseViewState<TT> createState() =>
+      _ChangeNotifierBaseViewState<TT>();
+}
+
+//* States
+class _SimpleBaseViewState<T extends BaseModel> extends State<SimpleBaseView<T>> {
   T model = locator<T>();
 
   @override
@@ -27,9 +42,31 @@ class _BaseViewState<T extends BaseModel> extends State<BaseView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<T>(
+    return Provider<T>(
       builder: (_) => model,
+      dispose: (_, model) => model.dispose(),
       child: Consumer<T>(builder: widget.builder),
+    );
+  }
+}
+
+class _ChangeNotifierBaseViewState<TT extends StateModel>
+    extends State<ChangeNotifierBaseView<TT>> {
+  TT model = locator<TT>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.onModelReady != null) {
+      widget.onModelReady(model);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<TT>(
+      builder: (_) => model,
+      child: Consumer<TT>(builder: widget.builder),
     );
   }
 }

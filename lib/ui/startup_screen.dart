@@ -7,7 +7,7 @@ class StartUpWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<StartUpModel>(
+    return SimpleBaseView<StartUpModel>(
         onModelReady: (model) => model.getStartRoute().then((routeName) =>
             Navigator.of(context).pushReplacementNamed(routeName)),
         builder: (_, model, __) {
