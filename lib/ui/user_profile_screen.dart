@@ -254,9 +254,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           color: Colors.grey,
                         ),
                         NoScrollLoadingListView(
-                          bloc: bloc,
+                          model: bloc,
                           widgetAdapter: (dynamic post) =>
-                              BasicPost(post: post, bloc: bloc),
+                              BasicPost(post: post),
                         ),
                       ],
                     ),

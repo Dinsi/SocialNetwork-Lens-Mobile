@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aperture/models/post.dart';
 import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
-import 'package:aperture/view_models/base_feed_bloc.dart';
+import 'package:aperture/view_models/feed/base_feed_model.dart';
 import 'package:flutter/material.dart';
 
 typedef WidgetAdapter = Widget Function(Post t);
@@ -13,12 +13,12 @@ abstract class LoadingListView extends StatefulWidget {
   /// the fetched data
   final WidgetAdapter widgetAdapter;
 
-  final BaseFeedBloc bloc;
+  final BaseFeedModel model;
 
   /// The number of "left over" elements in list which
   /// will trigger loading the next page
 
-  LoadingListView({@required this.widgetAdapter, @required this.bloc});
+  LoadingListView({@required this.widgetAdapter, @required this.model});
 }
 
 abstract class LoadingListViewState<T extends LoadingListView>
@@ -26,13 +26,13 @@ abstract class LoadingListViewState<T extends LoadingListView>
   @override
   void initState() {
     super.initState();
-    widget.bloc.fetch();
+    widget.model.fetch(false);
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Post>>(
-      stream: widget.bloc.posts,
+      stream: widget.model.posts,
       builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
         if (snapshot.hasData) {
           return _buildList(snapshot.data);
@@ -54,7 +54,7 @@ abstract class LoadingListViewState<T extends LoadingListView>
     return ListView.builder(
       itemCount: posts.length,
       itemBuilder: (BuildContext context, int index) {
-        if (widget.bloc.existsNext && index == posts.length - 1) {
+        if (widget.model.existsNext && index == posts.length - 1) {
           return Column(
             children: <Widget>[
               widget.widgetAdapter(posts[index]),

@@ -4,12 +4,14 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
+import 'package:aperture/view_models/base_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart' show protected;
+import 'package:rxdart/rxdart.dart';
 
 const double loadingOffset = 100.0;
 
-abstract class BaseFeedBloc {
+abstract class BaseFeedModel extends BaseModel {
   @protected
   final Repository repository = locator<Repository>();
 
@@ -19,39 +21,20 @@ abstract class BaseFeedBloc {
   @protected
   Future request;
 
-  final List<Post> postsList = List<Post>();
-
   bool existsNext = true;
   bool isLoading = false;
 
   @protected
-  StreamController<List<Post>> postsFetcher =
-      StreamController<List<Post>>.broadcast();
+  BehaviorSubject<List<Post>> postsFetcher = BehaviorSubject<List<Post>>();
 
+  @override
   void dispose() {
     postsFetcher.close();
   }
 
-  Future<int> removeVote(int postId) async {
-    return await repository.changeVote(postId, "removevote");
-  }
-
-  Future<int> downVote(int postId) async {
-    return await repository.changeVote(postId, "downvote");
-  }
-
-  Future<int> upVote(int postId) async {
-    return await repository.changeVote(postId, "upvote");
-  }
-
-  void clear() {
-    postsList.clear();
-    existsNext = true;
-  }
-
-  Future<void> lockedLoadNext() {
+  Future<void> lockedLoadNext(bool refresh) {
     if (request == null) {
-      request = fetch().then((_) {
+      request = fetch(refresh).then((_) {
         isLoading = false;
         request = null;
       }).catchError((_) {
@@ -76,7 +59,7 @@ abstract class BaseFeedBloc {
                   loadingOffset)) {
         if (!isLoading) {
           isLoading = true;
-          lockedLoadNext();
+          lockedLoadNext(false);
         }
 
         return true;
@@ -88,14 +71,12 @@ abstract class BaseFeedBloc {
 
   Future<void> onRefresh() {
     request?.timeout(const Duration());
-
-    clear();
-
-    return lockedLoadNext();
+    existsNext = true;
+    return lockedLoadNext(true);
   }
 
-  Future<void> fetch();
+  Future<void> fetch(bool refresh);
 
   Stream<List<Post>> get posts => postsFetcher.stream;
-  int get listLength => postsList.length;
+  int get listLength => postsFetcher.value.length;
 }

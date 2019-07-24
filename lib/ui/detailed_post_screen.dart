@@ -3,7 +3,7 @@ import 'package:aperture/models/post.dart';
 import 'package:aperture/ui/shared/comment_tile.dart';
 import 'package:aperture/ui/shared/description_text_widget.dart';
 import 'package:aperture/ui/shared/image_container.dart';
-import 'package:aperture/ui/utils/post_shared_functions.dart';
+import 'package:aperture/utils/post_shared_functions.dart';
 import 'package:aperture/view_models/post_details_bloc.dart';
 import 'package:aperture/view_models/providers/post_details_bloc_provider.dart';
 import 'package:flutter/material.dart';
@@ -164,10 +164,10 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
                     highlightColor: Colors.transparent,
                     splashColor: Colors.white24,
                     onTap: () => Navigator.of(context)
-                            .pushNamed('/userProfile', arguments: {
-                          'id': widget.post.user.id,
-                          'username': widget.post.user.username,
-                        }),
+                        .pushNamed('/userProfile', arguments: {
+                      'id': widget.post.user.id,
+                      'username': widget.post.user.username,
+                    }),
                   ),
                 ),
               ],
@@ -313,19 +313,19 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                      PopupMenuItem<int>(
-                        value: 1,
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.plusSquare,
-                            ),
-                            const SizedBox(width: 15.0),
-                            Text('Add to collection'),
-                          ],
+                  PopupMenuItem<int>(
+                    value: 1,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          FontAwesomeIcons.plusSquare,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 15.0),
+                        Text('Add to collection'),
+                      ],
+                    ),
+                  ),
+                ],
               )
             ],
           ),

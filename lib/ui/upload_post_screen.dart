@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aperture/ui/utils/post_shared_functions.dart';
+import 'package:aperture/utils/post_shared_functions.dart';
 import 'package:aperture/view_models/upload_post_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';

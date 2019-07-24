@@ -114,8 +114,8 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
         ],
       ),
       body: ScrollLoadingListView(
-        widgetAdapter: (dynamic post) => BasicPost(post: post, bloc: bloc),
-        bloc: bloc,
+        widgetAdapter: (dynamic post) => BasicPost(post: post),
+        model: bloc,
       ),
     );
   }

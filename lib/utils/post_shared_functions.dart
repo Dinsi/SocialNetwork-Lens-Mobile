@@ -7,7 +7,9 @@ bool isUrl(String input) {
 }
 
 bool isEmail(String input) {
-  return RegExp(r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$').hasMatch(input);
+  return RegExp(
+          r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+      .hasMatch(input);
 }
 
 List<String> detectHashtags(String description) {
@@ -52,7 +54,7 @@ TextStyle votesTextStyle([Color color]) {
   );
 }
 
-String nFormatter(double num, int digits) {
+String nFormatter(double number, int digits) {
   final List<Map<dynamic, dynamic>> si = const [
     {"value": 1, "symbol": ""},
     {"value": 1E3, "symbol": "k"},
@@ -65,12 +67,12 @@ String nFormatter(double num, int digits) {
   final rx = RegExp(r"\.0+$|(\.[0-9]*[1-9]*)0+$");
   var i;
   for (i = si.length - 1; i > 0; i--) {
-    if (num >= si[i]["value"]) {
+    if (number >= si[i]["value"]) {
       break;
     }
   }
 
-  return (num / si[i]["value"]).toStringAsFixed(digits).replaceAllMapped(rx,
+  return (number / si[i]["value"]).toStringAsFixed(digits).replaceAllMapped(rx,
           (match) {
         return match.group(1) ?? "";
       }) +

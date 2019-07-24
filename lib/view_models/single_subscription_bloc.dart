@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:aperture/view_models/base_feed_bloc.dart';
+import 'package:aperture/view_models/feed/base_feed_model.dart';
 import 'package:aperture/view_models/enums/subscribe_button.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/topic.dart';
 
-abstract class SingleSubscriptionBloc extends BaseFeedBloc {
+abstract class SingleSubscriptionBloc extends BaseFeedModel {
   StreamController<SubscribeButton> _subscribeButtonFetcher =
       StreamController<SubscribeButton>.broadcast();
 
@@ -20,17 +20,22 @@ abstract class SingleSubscriptionBloc extends BaseFeedBloc {
   }
 
   @override
-  Future<void> fetch() async {
-    List<Post> fetchedList = await repository.fetchPostsByTopic(
-        postsList.isNotEmpty ? postsList.last.id : null, _topic);
-    postsList.addAll(fetchedList);
+  Future<void> fetch(bool refresh) async {
+    List<Post> fetchedList;
+    if (refresh || !postsFetcher.hasValue) {
+      fetchedList = await repository.fetchPostsByTopic(null, _topic);
+    } else {
+      fetchedList = postsFetcher.value
+        ..addAll(await repository.fetchPostsByTopic(
+            postsFetcher.value.last.id, _topic));
+    }
 
     if (fetchedList.length != 20 || fetchedList.isEmpty) {
       existsNext = false;
     }
 
     if (!postsFetcher.isClosed) {
-      postsFetcher.sink.add(postsList);
+      postsFetcher.sink.add(fetchedList);
     }
   }
 

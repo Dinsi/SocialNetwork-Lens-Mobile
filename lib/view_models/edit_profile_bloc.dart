@@ -5,7 +5,7 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
-import 'package:aperture/ui/utils/post_shared_functions.dart';
+import 'package:aperture/utils/post_shared_functions.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileBloc {

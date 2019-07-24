@@ -6,18 +6,22 @@ import 'package:aperture/models/users/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppInfo {
-  SharedPreferences prefs;
+  SharedPreferences _prefs;
+  User _user;
 
   Future init() async {
-    prefs = await SharedPreferences.getInstance();
+    _prefs = await SharedPreferences.getInstance();
+    _user = _prefs.getString('user') == null
+        ? null
+        : User.fromJson(jsonDecode(_prefs.getString('user')));
   }
 
   bool isLoggedIn() {
-    return loggedIn != null;
+    return _prefs.getBool('loggedIn') != null;
   }
 
   Future clearCache() async {
-    await prefs.clear();
+    await _prefs.clear();
   }
 
   Future cacheLogin(String access, String refresh) async {
@@ -30,44 +34,43 @@ class AppInfo {
   }
 
   Future<void> addTopicToUser(Topic topic) async {
-    final user = User.fromJson(jsonDecode(prefs.getString('user')));
-    user.topics.add(topic);
-    await setUserFromUser(user);
+    _user.topics.add(topic);
+    await setUserFromUser(_user);
   }
 
   Future<void> removeTopicFromUser(String topicName) async {
-    final user = User.fromJson(jsonDecode(prefs.getString('user')));
-    user.topics.removeWhere((topic) => topic.name == topicName);
-    await setUserFromUser(user);
+    _user.topics.removeWhere((topic) => topic.name == topicName);
+    await setUserFromUser(_user);
   }
 
   Future<void> bulkRemoveTopicsFromUser(List<Topic> topicList) async {
-    final user = User.fromJson(jsonDecode(prefs.getString('user')));
     for (Topic targetTopic in topicList) {
-      user.topics.removeWhere((topic) => topic.id == targetTopic.id);
+      _user.topics.removeWhere((topic) => topic.id == targetTopic.id);
     }
-    await setUserFromUser(user);
+    await setUserFromUser(_user);
   }
 
-  bool get loggedIn => prefs.getBool('loggedIn');
+  bool get loggedIn => _prefs.getBool('loggedIn');
   Future setLoggedIn(bool value) async =>
-      await prefs.setBool('loggedIn', value);
+      await _prefs.setBool('loggedIn', value);
 
-  String get accessToken => prefs.getString('accessToken');
+  String get accessToken => _prefs.getString('accessToken');
   Future setAccessToken(String value) async =>
-      await prefs.setString('accessToken', value);
+      await _prefs.setString('accessToken', value);
 
-  String get refreshToken => prefs.getString('refreshToken');
+  String get refreshToken => _prefs.getString('refreshToken');
   Future setRefreshToken(String value) async =>
-      await prefs.setString('refreshToken', value);
+      await _prefs.setString('refreshToken', value);
 
-  User get user => prefs.getString('user') == null
-      ? null
-      : User.fromJson(jsonDecode(prefs.getString('user')));
+  User get user => _user;
 
-  Future setUserFromMap(Map<String, dynamic> value) async =>
-      await prefs.setString('user', jsonEncode(value));
+  Future setUserFromMap(Map<String, dynamic> userMap) async {
+    await _prefs.setString('user', jsonEncode(userMap));
+    _user = User.fromJson(userMap);
+  }
 
-  Future setUserFromUser(User value) async =>
-      await prefs.setString('user', jsonEncode(value.toJson()));
+  Future setUserFromUser(User newUserData) async {
+    await _prefs.setString('user', jsonEncode(newUserData.toJson()));
+    _user = newUserData;
+  }
 }

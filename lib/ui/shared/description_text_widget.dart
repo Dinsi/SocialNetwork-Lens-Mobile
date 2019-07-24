@@ -1,7 +1,6 @@
+import 'package:aperture/utils/post_shared_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import '../utils/post_shared_functions.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
   final String text;
@@ -62,8 +61,8 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
                             style: TextStyle(fontSize: 16.0),
                           ),
                           onPressed: () => setState(() {
-                                showAll = true;
-                              }),
+                            showAll = true;
+                          }),
                         ),
                       )
                     ]
@@ -80,8 +79,8 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
                             style: TextStyle(fontSize: 16.0),
                           ),
                           onPressed: () => setState(() {
-                                showAll = false;
-                              }),
+                            showAll = false;
+                          }),
                         ),
                       )
                     ]))),

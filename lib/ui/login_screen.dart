@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aperture/ui/utils/login_bubble_indication_painter.dart';
 import 'package:aperture/ui/utils/login_theme.dart' as Theme;
-import 'package:aperture/ui/utils/post_shared_functions.dart';
+import 'package:aperture/utils/post_shared_functions.dart';
 import 'package:aperture/view_models/login_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

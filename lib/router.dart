@@ -2,10 +2,8 @@ import 'package:aperture/view_models/change_email_bloc.dart';
 import 'package:aperture/view_models/change_password_bloc.dart';
 import 'package:aperture/view_models/collection_list_bloc.dart';
 import 'package:aperture/view_models/collection_posts_bloc.dart';
-import 'package:aperture/view_models/feed_bloc.dart';
 import 'package:aperture/view_models/new_collection_bloc.dart';
 import 'package:aperture/view_models/providers/edit_profile_bloc_provider.dart';
-import 'package:aperture/view_models/providers/feed_bloc_provider.dart';
 import 'package:aperture/view_models/providers/post_details_bloc_provider.dart';
 import 'package:aperture/view_models/providers/topic_feed_bloc_provider.dart';
 import 'package:aperture/view_models/providers/user_profile_bloc_provider.dart';
@@ -69,23 +67,14 @@ abstract class Router {
         return MaterialPageRoute<Null>(builder: (context) => UserInfoScreen());
 
       case RouteNames.uploadPost:
-        return MaterialPageRoute<int>(
-          builder: (context) => UploadPostScreen(),
-        );
+        return MaterialPageRoute<int>(builder: (context) => UploadPostScreen());
 
       case RouteNames.recommendedTopics:
         return MaterialPageRoute<Null>(
-          builder: (context) => RecommendedTopicsScreen(),
-        );
+            builder: (context) => RecommendedTopicsScreen());
 
       case RouteNames.feed:
-        final bloc = FeedBloc();
-        return MaterialPageRoute<Null>(
-          builder: (context) => FeedBlocProvider(
-            bloc,
-            child: FeedScreen(),
-          ),
-        );
+        return MaterialPageRoute<Null>(builder: (context) => FeedScreen());
 
       case RouteNames.topicFeed:
         final bloc = TopicFeedBloc(settings.arguments as String);
