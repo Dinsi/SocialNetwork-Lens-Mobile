@@ -1,17 +1,19 @@
 import 'package:flutter/foundation.dart';
 
-enum ViewState { Idle, Busy }
-
 abstract class BaseModel {
   void dispose() {}
 }
 
-abstract class StateModel extends BaseModel with ChangeNotifier {
-  ViewState _state = ViewState.Idle;
+abstract class StateModel<T> extends BaseModel with ChangeNotifier {
+  StateModel(T initialState)
+      : assert(initialState != null),
+        _state = initialState;
 
-  ViewState get state => _state;
+  T _state;
 
-  void setState(ViewState state) {
+  T get state => _state;
+
+  void setState(T state) {
     _state = state;
     notifyListeners();
   }
