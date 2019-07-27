@@ -105,6 +105,9 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
                       ),
                       onPressed: null,
                     );
+
+                  default:
+                    return Container();
                 }
               } else {
                 return Container();
@@ -114,8 +117,11 @@ class _TopicFeedScreenState extends State<TopicFeedScreen> {
         ],
       ),
       body: ScrollLoadingListView(
-        widgetAdapter: (dynamic post) => BasicPost(post: post),
-        model: bloc,
+        model: bloc, // TODO Change bloc to model
+        widgetAdapter: (dynamic post) => BasicPost(
+          post: post,
+          delegatingToDetail: false,
+        ),
       ),
     );
   }

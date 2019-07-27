@@ -4,7 +4,9 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/topic.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
+import 'package:aperture/router.dart';
 import 'package:aperture/view_models/base_model.dart';
+import 'package:flutter/material.dart' show BuildContext, Navigator;
 
 enum RecTopViewState { Loading, Idle, Busy }
 
@@ -24,7 +26,7 @@ class RecommendedTopicsModel extends StateModel<RecTopViewState> {
     setState(RecTopViewState.Idle);
   }
 
-  Future<bool> sendTopics() async {
+  Future<void> sendTopics(BuildContext context) async {
     setState(RecTopViewState.Busy);
 
     List<int> selectedTopicIds = _recommendedTopics.keys
@@ -34,11 +36,11 @@ class RecommendedTopicsModel extends StateModel<RecTopViewState> {
 
     int code = await _repository.finishRegister(selectedTopicIds);
     if (code == 0) {
-      return true;
+      Navigator.of(context).pushReplacementNamed(RouteName.userInfo);
+      return;
     }
 
     setState(RecTopViewState.Idle);
-    return false;
   }
 
   void toggleTopic(Topic topic) {

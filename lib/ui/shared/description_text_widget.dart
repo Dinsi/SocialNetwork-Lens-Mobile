@@ -1,3 +1,4 @@
+import 'package:aperture/router.dart';
 import 'package:aperture/utils/post_shared_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ class DescriptionTextWidget extends StatefulWidget {
   @override
   _DescriptionTextWidgetState createState() => _DescriptionTextWidgetState();
 }
+
+//TODO fix this IMMEDIATELY
 
 class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
     with SingleTickerProviderStateMixin<DescriptionTextWidget> {
@@ -100,8 +103,10 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
             text: textSplit,
             style: TextStyle(color: Colors.blue),
             recognizer: TapGestureRecognizer()
-              ..onTap = () => Navigator.of(context).pushNamed(
-                    '/topicFeed',
+              ..onTap = () =>
+                  // TODO navigateToTopicFeed
+                  Navigator.of(context).pushNamed(
+                    RouteName.topicFeed,
                     arguments: textSplit.replaceFirst('#', ''),
                   ),
           ),
@@ -116,9 +121,10 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
     });
 
     return Container(
-        padding: const EdgeInsets.all(16.0),
-        child: RichText(
-          text: descriptionTextSpan,
-        ));
+      padding: const EdgeInsets.all(16.0),
+      child: RichText(
+        text: descriptionTextSpan,
+      ),
+    );
   }
 }

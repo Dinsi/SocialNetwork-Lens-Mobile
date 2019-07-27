@@ -4,7 +4,6 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/repository.dart';
 
-
 class LoginBloc {
   final Repository _repository = locator<Repository>();
 

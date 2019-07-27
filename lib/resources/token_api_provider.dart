@@ -3,9 +3,9 @@ import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
 
 import 'package:http/http.dart' show Client;
 
-import 'base_provider.dart';
+import 'base_api_provider.dart';
 
-class TokenApiProvider extends BaseProvider {
+class TokenApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<int> login(String username, String password) async {

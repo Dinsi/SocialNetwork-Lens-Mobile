@@ -1,4 +1,3 @@
-import 'package:aperture/router.dart';
 import 'package:aperture/ui/base_view.dart';
 import 'package:aperture/view_models/recommended_topics_model.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class RecommendedTopicsScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: ChangeNotifierBaseView<RecommendedTopicsModel>(
             onModelReady: (model) => model.getRecommendedTopics(),
-            builder: (_, model, __) {
+            builder: (context, model, _) {
               return Column(
                 children: <Widget>[
                   SizedBox(
@@ -45,12 +44,7 @@ class RecommendedTopicsScreen extends StatelessWidget {
                     child: RaisedButton(
                       disabledColor: Colors.grey,
                       onPressed: model.state != RecTopViewState.Busy
-                          ? () => model.sendTopics().then((success) {
-                                if (success) {
-                                  Navigator.of(context).pushReplacementNamed(
-                                      RouteNames.userInfo);
-                                }
-                              })
+                          ? () => model.sendTopics(context)
                           : null,
                       color: Colors.blue,
                       child: Text(

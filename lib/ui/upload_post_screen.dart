@@ -94,13 +94,15 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                             ],
                           ),
                         );
-                        break;
 
                       case 'image':
                         return Image.file(
                           _image,
                           fit: BoxFit.fitWidth,
                         );
+
+                      default:
+                        return Container();
                     }
                   },
                 ),
@@ -110,8 +112,8 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                 color: Colors.transparent,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: TextField(
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
@@ -130,8 +132,8 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: TextField(
                   style: Theme.of(context).textTheme.headline,
                   decoration: InputDecoration(
@@ -157,8 +159,8 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                 child: StreamBuilder<String>(
                     stream: uploadPostBloc.buttonWidget,
                     initialData: 'textInactive',
-                    builder: (BuildContext context,
-                        AsyncSnapshot<String> snapshot) {
+                    builder:
+                        (BuildContext context, AsyncSnapshot<String> snapshot) {
                       switch (snapshot.data) {
                         case 'text':
                           return Container(
@@ -181,8 +183,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                                       .textTheme
                                       .headline
                                       .copyWith(
-                                          color: Colors.white,
-                                          fontSize: 23.0),
+                                          color: Colors.white, fontSize: 23.0),
                                 ),
                               ),
                               onPressed: () => _uploadPost(),
@@ -211,14 +212,14 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                                       .textTheme
                                       .headline
                                       .copyWith(
-                                          color: Colors.white,
-                                          fontSize: 23.0),
+                                          color: Colors.white, fontSize: 23.0),
                                 ),
                               ),
                               onPressed: null,
                               //showInSnackBar("Login button pressed")),
                             ),
                           );
+
                         case 'indicator':
                           return Container(
                             decoration: BoxDecoration(
@@ -240,6 +241,9 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                               //showInSnackBar("Login button pressed")),
                             ),
                           );
+
+                        default:
+                          return Container();
                       }
                     }),
               ),

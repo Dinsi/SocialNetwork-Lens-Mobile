@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:http/http.dart' show Client;
 
 import '../models/comment.dart';
-import 'base_provider.dart';
+import 'base_api_provider.dart';
 
-class CommentApiProvider extends BaseProvider {
+class CommentApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<dynamic> fetchList(

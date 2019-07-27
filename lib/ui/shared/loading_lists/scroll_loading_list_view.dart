@@ -1,15 +1,21 @@
 import 'package:aperture/ui/shared/loading_lists/loading_list_view.dart';
-import 'package:aperture/view_models/feed/base_feed_model.dart';
+import 'package:aperture/view_models/mixins/base_feed_model.dart';
 import 'package:flutter/widgets.dart';
 
-class ScrollLoadingListView extends LoadingListView {
+class ScrollLoadingListView<T> extends LoadingListView<T> {
   ScrollLoadingListView(
-      {@required WidgetAdapter widgetAdapter, @required BaseFeedModel model})
-      : super(widgetAdapter: widgetAdapter, model: model);
+      {@required BaseFeedMixin<T> model,
+      @required WidgetAdapter<T> widgetAdapter})
+      : super(model: model, widgetAdapter: widgetAdapter);
 
   @override
-  _ScrollLoadingListViewState createState() => _ScrollLoadingListViewState();
+  _ScrollLoadingListViewState<T> createState() =>
+      _ScrollLoadingListViewState<T>(this.model, this.widgetAdapter);
 }
 
-class _ScrollLoadingListViewState
-    extends LoadingListViewState<ScrollLoadingListView> {}
+class _ScrollLoadingListViewState<T>
+    extends LoadingListViewState<ScrollLoadingListView, T> {
+  _ScrollLoadingListViewState(
+      BaseFeedMixin<T> model, WidgetAdapter<T> widgetAdapter)
+      : super(model, widgetAdapter);
+}

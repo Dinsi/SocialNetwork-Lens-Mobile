@@ -11,9 +11,9 @@ import 'package:image/image.dart' show Image, decodeImage;
 import 'package:path/path.dart';
 
 import '../models/post.dart';
-import 'base_provider.dart';
+import 'base_api_provider.dart';
 
-class PostApiProvider extends BaseProvider {
+class PostApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<List<Post>> fetchList(int lastPostId) async {

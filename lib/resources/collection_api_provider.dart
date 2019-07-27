@@ -2,10 +2,10 @@ import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:io';
 
 import 'package:aperture/models/collections/collection.dart';
-import 'package:aperture/resources/base_provider.dart';
+import 'package:aperture/resources/base_api_provider.dart';
 import 'package:http/http.dart';
 
-class CollectionApiProvider extends BaseProvider {
+class CollectionApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<Collection> fetch(int collectionId) async {

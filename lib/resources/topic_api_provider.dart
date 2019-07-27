@@ -4,11 +4,11 @@ import 'dart:io';
 
 import 'package:http/http.dart' show Client;
 
-import 'base_provider.dart';
+import 'base_api_provider.dart';
 import '../models/topic.dart';
 import '../models/search_result.dart';
 
-class TopicApiProvider extends BaseProvider {
+class TopicApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<List<Topic>> fetchRecommended() async {

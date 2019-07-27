@@ -2,13 +2,12 @@ import 'package:aperture/view_models/change_email_bloc.dart';
 import 'package:aperture/view_models/change_password_bloc.dart';
 import 'package:aperture/view_models/collection_list_bloc.dart';
 import 'package:aperture/view_models/collection_posts_bloc.dart';
+import 'package:aperture/view_models/shared/basic_post_model.dart';
 import 'package:aperture/view_models/new_collection_bloc.dart';
 import 'package:aperture/view_models/providers/edit_profile_bloc_provider.dart';
-import 'package:aperture/view_models/providers/post_details_bloc_provider.dart';
 import 'package:aperture/view_models/providers/topic_feed_bloc_provider.dart';
 import 'package:aperture/view_models/providers/user_profile_bloc_provider.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
-import 'package:aperture/models/post.dart';
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
 import 'package:aperture/ui/change_password_screen.dart';
@@ -24,59 +23,64 @@ import 'package:aperture/ui/search_screen.dart';
 import 'package:aperture/ui/settings_screen.dart';
 import 'package:aperture/ui/topic_feed_screen.dart';
 import 'package:aperture/ui/topic_list_screen.dart';
-import 'package:aperture/ui/startup_screen.dart';
 import 'package:aperture/ui/upload_post_screen.dart';
 import 'package:aperture/ui/user_info_screen.dart';
 import 'package:aperture/ui/user_profile_screen.dart';
 import 'package:aperture/view_models/topic_feed_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-abstract class RouteNames {
-  static const String home = '/';
-  static const String login = '/login';
-  static const String userInfo = '/userInfo';
-  static const String uploadPost = '/uploadPost';
-  static const String recommendedTopics = '/recommendedTopics';
-  static const String feed = '/feed';
-  static const String topicFeed = '/topicFeed';
-  static const String detailedPost = '/detailedPost';
-  static const String editProfile = '/editProfile';
-  static const String userProfile = '/userProfile';
-  static const String search = '/search';
-  static const String topicList = '/topicList';
-  static const String settings = '/settings';
-  static const String accountSettings = '/accountSettings';
-  static const String changeEmail = '/changeEmail';
-  static const String changePassword = '/changePassword';
-  static const String collectionList = '/collectionList';
-  static const String newCollection = '/newCollection';
-  static const String collectionPosts = '/collectionPosts';
+abstract class RouteName {
+  static const String login = 'login';
+  static const String userInfo = 'userInfo';
+  static const String uploadPost = 'uploadPost';
+  static const String recommendedTopics = 'recommendedTopics';
+  static const String feed = 'feed';
+  static const String topicFeed = 'topicFeed';
+  static const String detailedPost = 'detailedPost';
+  static const String editProfile = 'editProfile';
+  static const String userProfile = 'userProfile';
+  static const String search = 'search';
+  static const String topicList = 'topicList';
+  static const String settings = 'settings';
+  static const String accountSettings = 'accountSettings';
+  static const String changeEmail = 'changeEmail';
+  static const String changePassword = 'changePassword';
+  static const String collectionList = 'collectionList';
+  static const String newCollection = 'newCollection';
+  static const String collectionPosts = 'collectionPosts';
 }
-
 abstract class Router {
   static Route<dynamic> routes(RouteSettings settings) {
     switch (settings.name) {
-      case RouteNames.home:
-        return MaterialPageRoute<Null>(
-            builder: (context) => const StartUpWidget());
-
-      case RouteNames.login:
+      case RouteName.login:
         return MaterialPageRoute<Null>(builder: (context) => LoginScreen());
 
-      case RouteNames.userInfo:
-        return MaterialPageRoute<Null>(builder: (context) => UserInfoScreen());
-
-      case RouteNames.uploadPost:
-        return MaterialPageRoute<int>(builder: (context) => UploadPostScreen());
-
-      case RouteNames.recommendedTopics:
+      case RouteName.recommendedTopics:
         return MaterialPageRoute<Null>(
             builder: (context) => RecommendedTopicsScreen());
 
-      case RouteNames.feed:
+      case RouteName.userInfo:
+        return MaterialPageRoute<Null>(builder: (context) => UserInfoScreen());
+
+      case RouteName.uploadPost:
+        return MaterialPageRoute<int>(builder: (context) => UploadPostScreen());
+
+      case RouteName.feed:
         return MaterialPageRoute<Null>(builder: (context) => FeedScreen());
 
-      case RouteNames.topicFeed:
+      case RouteName.detailedPost:
+        final data = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute<Null>(
+          builder: (context) {
+            return ChangeNotifierProvider<BasicPostModel>.value(
+                value: data['delegateModel'] as BasicPostModel,
+                child:
+                    DetailedPostScreen(toComments: data['toComments'] as bool));
+          },
+        );
+
+      case RouteName.topicFeed:
         final bloc = TopicFeedBloc(settings.arguments as String);
         return MaterialPageRoute<Null>(
           builder: (context) => TopicFeedBlocProvider(
@@ -85,22 +89,7 @@ abstract class Router {
           ),
         );
 
-      case RouteNames.detailedPost:
-        Map<String, dynamic> arguments =
-            settings.arguments as Map<String, dynamic>;
-
-        final bloc = PostDetailsBloc(arguments['postId'] as int);
-        return MaterialPageRoute<Map<String, dynamic>>(
-          builder: (context) => PostDetailsBlocProvider(
-            bloc,
-            child: DetailedPostScreen(
-              post: arguments['post'] as Post,
-              toComments: arguments['toComments'] as bool,
-            ),
-          ),
-        );
-
-      case RouteNames.editProfile:
+      case RouteName.editProfile:
         final bloc = EditProfileBloc();
         return MaterialPageRoute<int>(
           builder: (context) => EditProfileBlocProvider(
@@ -109,7 +98,7 @@ abstract class Router {
           ),
         );
 
-      case RouteNames.userProfile:
+      case RouteName.userProfile:
         Map<String, dynamic> arguments =
             settings.arguments as Map<String, dynamic>;
 
@@ -124,33 +113,33 @@ abstract class Router {
           ),
         );
 
-      case RouteNames.search:
+      case RouteName.search:
         return MaterialPageRoute<Null>(builder: (context) => SearchScreen());
 
-      case RouteNames.topicList:
+      case RouteName.topicList:
         return MaterialPageRoute<Null>(builder: (context) => TopicListScreen());
 
-      case RouteNames.settings:
+      case RouteName.settings:
         return MaterialPageRoute<Null>(builder: (context) => SettingsScreen());
 
-      case RouteNames.accountSettings:
+      case RouteName.accountSettings:
         return MaterialPageRoute<Null>(
           builder: (context) => AccountSettingsScreen(),
         );
 
-      case RouteNames.changeEmail:
+      case RouteName.changeEmail:
         final bloc = ChangeEmailBloc();
         return MaterialPageRoute<int>(
           builder: (context) => ChangeEmailScreen(bloc: bloc),
         );
 
-      case RouteNames.changePassword:
+      case RouteName.changePassword:
         final bloc = ChangePasswordBloc();
         return MaterialPageRoute<int>(
           builder: (context) => ChangePasswordScreen(bloc: bloc),
         );
 
-      case RouteNames.collectionList:
+      case RouteName.collectionList:
         final args = settings.arguments as Map<String, dynamic>;
         final bloc = CollectionListBloc();
         return MaterialPageRoute<String>(
@@ -161,7 +150,7 @@ abstract class Router {
           ),
         );
 
-      case RouteNames.newCollection:
+      case RouteName.newCollection:
         final args = settings.arguments as Map<String, dynamic>;
         final bloc = NewCollectionBloc();
         return MaterialPageRoute<CompactCollection>(
@@ -172,7 +161,7 @@ abstract class Router {
           ),
         );
 
-      case RouteNames.collectionPosts:
+      case RouteName.collectionPosts:
         final args = settings.arguments as Map<String, dynamic>;
         final bloc = CollectionPostsBloc(args['collId']);
         return MaterialPageRoute<Null>(

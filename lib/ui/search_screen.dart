@@ -127,25 +127,25 @@ class _SearchScreenState extends State<SearchScreen> {
               return ListView.builder(
                 itemCount: bloc.results.length,
                 itemBuilder: (context, index) => ListTile(
-                      title: Text(bloc.results[index].name),
-                      leading: Icon(
-                        bloc.results[index].type == 0
-                            ? FontAwesomeIcons.hashtag
-                            : FontAwesomeIcons.userAlt,
-                      ),
-                      onTap: () => (bloc.results[index].type == 0
-                          ? Navigator.of(context).pushNamed(
-                              '/topicFeed',
-                              arguments: bloc.results[index].name,
-                            )
-                          : Navigator.of(context).pushNamed(
-                              '/userProfile',
-                              arguments: {
-                                'id': bloc.results[index].userId,
-                                'username': bloc.results[index].name,
-                              },
-                            )),
-                    ),
+                  title: Text(bloc.results[index].name),
+                  leading: Icon(
+                    bloc.results[index].type == 0
+                        ? FontAwesomeIcons.hashtag
+                        : FontAwesomeIcons.userAlt,
+                  ),
+                  onTap: () => (bloc.results[index].type == 0
+                      ? Navigator.of(context).pushNamed(
+                          '/topicFeed',
+                          arguments: bloc.results[index].name,
+                        )
+                      : Navigator.of(context).pushNamed(
+                          '/userProfile',
+                          arguments: {
+                            'id': bloc.results[index].userId,
+                            'username': bloc.results[index].name,
+                          },
+                        )),
+                ),
               );
           }
         },

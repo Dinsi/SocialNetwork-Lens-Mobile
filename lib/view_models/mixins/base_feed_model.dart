@@ -1,17 +1,15 @@
 import 'dart:async';
 
 import 'package:aperture/locator.dart';
-import 'package:aperture/models/post.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
-import 'package:aperture/view_models/base_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart' show protected;
 import 'package:rxdart/rxdart.dart';
 
-const double loadingOffset = 100.0;
+const double loadingOffset = 50.0;
 
-abstract class BaseFeedModel extends BaseModel {
+mixin BaseFeedMixin<T> {
   @protected
   final Repository repository = locator<Repository>();
 
@@ -25,19 +23,16 @@ abstract class BaseFeedModel extends BaseModel {
   bool isLoading = false;
 
   @protected
-  BehaviorSubject<List<Post>> postsFetcher = BehaviorSubject<List<Post>>();
+  BehaviorSubject<List<T>> listSubject = BehaviorSubject<List<T>>();
 
-  @override
+  @mustCallSuper
   void dispose() {
-    postsFetcher.close();
+    listSubject.close();
   }
 
   Future<void> lockedLoadNext(bool refresh) {
     if (request == null) {
-      request = fetch(refresh).then((_) {
-        isLoading = false;
-        request = null;
-      }).catchError((_) {
+      request = fetch(refresh).whenComplete(() {
         isLoading = false;
         request = null;
       });
@@ -77,6 +72,8 @@ abstract class BaseFeedModel extends BaseModel {
 
   Future<void> fetch(bool refresh);
 
-  Stream<List<Post>> get posts => postsFetcher.stream;
-  int get listLength => postsFetcher.value.length;
+  void afterInitialFetch(double circularIndicatorHeight);
+
+  Stream<List<T>> get listStream => listSubject.stream;
+  int get listLength => listSubject.value.length;
 }

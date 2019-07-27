@@ -1,32 +1,56 @@
 import 'dart:async';
 
 import 'package:aperture/locator.dart';
+import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show DeviceOrientation, SystemChrome, SystemUiOverlayStyle;
 
 Future<void> main() async {
-  //TODO remove for full view pictures
+  // * Setup
+  // TODO remove for full view pictures
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle.light.copyWith(
-      systemNavigationBarIconBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarColor: Colors.blue,
-    ),
-  );
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
   setupLocator();
-  await locator<AppInfo>().init();
+  final AppInfo appInfo = locator<AppInfo>();
+  await appInfo.init();
 
-  //TODO insert splash screen so you can use verifyToken there and delete TransitionWidget
-  runApp(MyApp());
+  // * Gets the initial route the app starts with
+  String initialRoute = await _getInitialRoute(appInfo);
+  runApp(MyApp(initialRoute: initialRoute));
+  //TODO insert splash screen
+}
+
+Future<String> _getInitialRoute(AppInfo appInfo) async {
+  final Repository repository = locator<Repository>();
+
+  bool validToken;
+  if (appInfo.isLoggedIn()) {
+    validToken = await repository.verifyToken();
+  } else {
+    validToken = false;
+  }
+
+  if (!validToken) {
+    return RouteName.login;
+  } else {
+    User user = await repository.fetchUserInfo();
+    if (!user.hasFinishedRegister) {
+      return RouteName.recommendedTopics;
+    } else {
+      return RouteName.userInfo;
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  final String initialRoute;
+
+  const MyApp({Key key, @required this.initialRoute}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +75,7 @@ class MyApp extends StatelessWidget {
               ),
         ),
       ),
-      initialRoute: RouteNames.home,
+      initialRoute: initialRoute,
       onGenerateRoute: Router.routes,
     );
   }

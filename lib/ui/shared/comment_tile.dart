@@ -1,4 +1,5 @@
 import 'package:aperture/models/comment.dart';
+import 'package:aperture/models/users/compact_user.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -6,8 +7,10 @@ const double _iconSideSize = 40.0;
 
 class CommentTile extends StatefulWidget {
   final Comment comment;
+  final void Function(BuildContext, [CompactUser]) onPressed;
 
-  const CommentTile({Key key, @required this.comment}) : super(key: key);
+  const CommentTile({Key key, @required this.comment, @required this.onPressed})
+      : super(key: key);
 
   @override
   _CommentTileState createState() => _CommentTileState();
@@ -27,14 +30,27 @@ class _CommentTileState extends State<CommentTile> {
               height: _iconSideSize,
               width: _iconSideSize,
               color: Colors.grey[300],
-              child: (widget.comment.user.avatar == null
-                  ? Image.asset(
-                      'assets/img/user_placeholder.png',
-                    )
-                  : FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
-                      image: widget.comment.user.avatar,
-                    )),
+              child: Stack(
+                children: <Widget>[
+                  widget.comment.user.avatar == null
+                      ? Image.asset(
+                          'assets/img/user_placeholder.png',
+                        )
+                      : FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: widget.comment.user.avatar,
+                        ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.white24,
+                      onTap: () =>
+                          widget.onPressed(context, widget.comment.user),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(

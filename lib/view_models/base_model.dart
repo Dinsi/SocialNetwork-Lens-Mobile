@@ -5,7 +5,9 @@ abstract class BaseModel {
 }
 
 abstract class StateModel<T> extends BaseModel with ChangeNotifier {
-  StateModel(T initialState) : _state = initialState;
+  StateModel(T initialState)
+      : assert(initialState != null),
+        _state = initialState;
 
   T _state;
 

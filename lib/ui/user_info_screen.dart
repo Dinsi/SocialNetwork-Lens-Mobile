@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aperture/router.dart';
 import 'package:aperture/view_models/user_info_screen_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class UserInfoScreen extends StatefulWidget {
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
   Future<void> _uploadPost() async {
-    int result = await Navigator.of(context).pushNamed('/uploadPost');
+    int result = await Navigator.of(context).pushNamed(RouteName.uploadPost);
 
     switch (result) {
       case 0:
@@ -53,25 +54,26 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   void _feed() {
-    Navigator.of(context).pushNamed('/feed');
+    Navigator.of(context).pushNamed(RouteName.feed);
   }
 
   void _search() {
-    Navigator.of(context).pushNamed('/search');
+    Navigator.of(context).pushNamed(RouteName.search);
   }
 
   void _logout() {
     userInfoBloc.clearCache();
-    Navigator.of(context).pushReplacementNamed('/login');
+    Navigator.of(context).pushReplacementNamed(RouteName.login);
   }
 
   void _settings() {
-    Navigator.of(context).pushNamed('/settings');
+    Navigator.of(context).pushNamed(RouteName.settings);
   }
 
   void _collections() {
+    // TODO navigateToCollectionList
     Navigator.of(context).pushNamed(
-      '/collectionList',
+      RouteName.collectionList,
       arguments: {
         'addToCollection': false,
       },

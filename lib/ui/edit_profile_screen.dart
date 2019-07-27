@@ -201,6 +201,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                 );
+
                               case 'network':
                                 return Container(
                                   decoration: BoxDecoration(
@@ -212,11 +213,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                 );
+
                               case 'image':
                                 return Image.file(
                                   _image,
                                   fit: BoxFit.contain,
                                 );
+
+                              default:
+                                return Container(); // TODO something better
                             }
                           },
                         ),
@@ -234,11 +239,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           onPressed: () =>
                               bloc.selectNewImage().then((imageFile) {
-                                if (imageFile != null) {
-                                  _image = imageFile;
-                                  bloc.notifyImageStream();
-                                }
-                              }),
+                            if (imageFile != null) {
+                              _image = imageFile;
+                              bloc.notifyImageStream();
+                            }
+                          }),
                         ),
                       )
                     ],

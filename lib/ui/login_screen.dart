@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/router.dart';
 import 'package:aperture/ui/utils/login_bubble_indication_painter.dart';
 import 'package:aperture/ui/utils/login_theme.dart' as Theme;
 import 'package:aperture/utils/post_shared_functions.dart';
@@ -63,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen>
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowGlow();
+          return true;
         },
         child: SingleChildScrollView(
           controller: _scrollController,
@@ -220,14 +223,23 @@ class _LoginScreenState extends State<LoginScreen>
     int code = await loginBloc.login(username, password);
 
     if (code == 0) {
-      Navigator.of(context).pushReplacementNamed("/transitionWidget");
+      User user = await loginBloc.fetchUserInfo();
+      if (user != null) {
+        Navigator.of(context).pushReplacementNamed(!user.hasFinishedRegister
+            ? RouteName.recommendedTopics
+            : RouteName.userInfo);
+        return;
+      }
+
+      showInSnackBar('Network error: fetchUserInfo');
     } else {
       showInSnackBar('No active account found with the given credentials');
-      setState(() {
-        _onPressedSignIn = () => _login();
-        _signInButtonWidget = _getTextWidget('LOGIN');
-      });
     }
+
+    setState(() {
+      _onPressedSignIn = () => _login();
+      _signInButtonWidget = _getTextWidget('LOGIN');
+    });
   }
 
   Future<void> _signUp() async {
@@ -285,12 +297,22 @@ class _LoginScreenState extends State<LoginScreen>
     if (result == 0) {
       result = await loginBloc.login(username, password);
       if (result == 0) {
-        Navigator.of(context).pushReplacementNamed("/transitionWidget");
-        return;
+        User user = await loginBloc.fetchUserInfo();
+        if (user != null) {
+          Navigator.of(context).pushReplacementNamed(!user.hasFinishedRegister
+              ? RouteName.recommendedTopics
+              : RouteName.userInfo);
+          return;
+        }
+
+        showInSnackBar('Network error: fetchUserInfo');
+      } else {
+        // TODO what to show here?
       }
+    } else {
+      showInSnackBar('That username has already been taken');
     }
 
-    showInSnackBar('That username has already been taken');
     setState(() {
       _onPressedSignUp = () => _signUp();
       _signUpButtonWidget = _getTextWidget('SIGN UP');
@@ -890,10 +912,17 @@ class _LoginScreenState extends State<LoginScreen>
                   highlightColor: Colors.transparent,
                   splashColor: Theme.Colors.loginGradientEnd,
                   //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  child: Padding(
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 50.0,
+                    child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 42.0),
-                      child: _signUpButtonWidget),
+                      child: Center(
+                        child: _signUpButtonWidget,
+                      ),
+                    ),
+                  ),
                   onPressed: _onPressedSignUp,
                   //showInSnackBar("SignUp button pressed")),
                 ),
