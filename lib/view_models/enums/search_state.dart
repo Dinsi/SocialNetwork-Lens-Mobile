@@ -1,3 +1,0 @@
-enum SearchState {
-  empty, list
-}

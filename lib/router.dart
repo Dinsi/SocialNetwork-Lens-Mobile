@@ -2,11 +2,8 @@ import 'package:aperture/view_models/change_email_bloc.dart';
 import 'package:aperture/view_models/change_password_bloc.dart';
 import 'package:aperture/view_models/collection_list_bloc.dart';
 import 'package:aperture/view_models/collection_posts_bloc.dart';
-import 'package:aperture/view_models/shared/basic_post_model.dart';
 import 'package:aperture/view_models/new_collection_bloc.dart';
 import 'package:aperture/view_models/providers/edit_profile_bloc_provider.dart';
-import 'package:aperture/view_models/providers/topic_feed_bloc_provider.dart';
-import 'package:aperture/view_models/providers/user_profile_bloc_provider.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
@@ -26,9 +23,7 @@ import 'package:aperture/ui/topic_list_screen.dart';
 import 'package:aperture/ui/upload_post_screen.dart';
 import 'package:aperture/ui/user_info_screen.dart';
 import 'package:aperture/ui/user_profile_screen.dart';
-import 'package:aperture/view_models/topic_feed_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 abstract class RouteName {
   static const String login = 'login';
@@ -50,6 +45,7 @@ abstract class RouteName {
   static const String newCollection = 'newCollection';
   static const String collectionPosts = 'collectionPosts';
 }
+
 abstract class Router {
   static Route<dynamic> routes(RouteSettings settings) {
     switch (settings.name) {
@@ -73,20 +69,17 @@ abstract class Router {
         final data = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute<Null>(
           builder: (context) {
-            return ChangeNotifierProvider<BasicPostModel>.value(
-                value: data['delegateModel'] as BasicPostModel,
-                child:
-                    DetailedPostScreen(toComments: data['toComments'] as bool));
+            return DetailedPostScreen(
+              basicPostModel: data['basicPostModel'],
+              toComments: data['toComments'] as bool,
+            );
           },
         );
 
       case RouteName.topicFeed:
-        final bloc = TopicFeedBloc(settings.arguments as String);
         return MaterialPageRoute<Null>(
-          builder: (context) => TopicFeedBlocProvider(
-            bloc,
-            child: TopicFeedScreen(),
-          ),
+          builder: (context) =>
+              TopicFeedScreen(topic: settings.arguments as String),
         );
 
       case RouteName.editProfile:
@@ -99,17 +92,9 @@ abstract class Router {
         );
 
       case RouteName.userProfile:
-        Map<String, dynamic> arguments =
-            settings.arguments as Map<String, dynamic>;
-
-        final bloc = UserProfileBloc(
-          arguments['id'] as int,
-          arguments['username'] as String,
-        );
         return MaterialPageRoute<Null>(
-          builder: (context) => UserProfileBlocProvider(
-            bloc,
-            child: UserProfileScreen(),
+          builder: (context) => UserProfileScreen(
+            userId: settings.arguments as int,
           ),
         );
 

@@ -1,4 +1,5 @@
-import 'package:aperture/view_models/enums/search_state.dart';
+import 'package:aperture/router.dart';
+import 'package:aperture/view_models/core/enums/search_state.dart';
 import 'package:aperture/view_models/search_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -118,12 +119,10 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: StreamBuilder<SearchState>(
         stream: bloc.searchStream,
-        initialData: SearchState.empty,
+        initialData: SearchState.Empty,
         builder: (BuildContext context, AsyncSnapshot<SearchState> snapshot) {
           switch (snapshot.data) {
-            case SearchState.empty:
-              return Container();
-            case SearchState.list:
+            case SearchState.List:
               return ListView.builder(
                 itemCount: bloc.results.length,
                 itemBuilder: (context, index) => ListTile(
@@ -135,18 +134,18 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   onTap: () => (bloc.results[index].type == 0
                       ? Navigator.of(context).pushNamed(
-                          '/topicFeed',
+                          RouteName.topicFeed,
                           arguments: bloc.results[index].name,
                         )
                       : Navigator.of(context).pushNamed(
-                          '/userProfile',
-                          arguments: {
-                            'id': bloc.results[index].userId,
-                            'username': bloc.results[index].name,
-                          },
+                          RouteName.userProfile,
+                          arguments: bloc.results[index].userId,
                         )),
                 ),
               );
+
+            default:
+              return Container();
           }
         },
       ),

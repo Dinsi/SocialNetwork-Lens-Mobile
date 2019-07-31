@@ -1,5 +1,5 @@
-import 'package:aperture/ui/base_view.dart';
-import 'package:aperture/view_models/recommended_topics_model.dart';
+import 'package:aperture/ui/core/base_view.dart';
+import 'package:aperture/view_models/recommended_topics.dart';
 import 'package:flutter/material.dart';
 
 const double _itemHeight = 70.0;
@@ -9,9 +9,9 @@ class RecommendedTopicsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
           child: ChangeNotifierBaseView<RecommendedTopicsModel>(
             onModelReady: (model) => model.getRecommendedTopics(),
             builder: (context, model, _) {
@@ -22,24 +22,24 @@ class RecommendedTopicsScreen extends StatelessWidget {
                     child: Center(
                       child: Text(
                         'Welcome ${model.userUsername}!\nTo get you started, select a few topics of your interest!',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20.0,
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ),
-                  (model.state == RecTopViewState.Loading
+                  model.state == RecTopViewState.Loading
                       ? const SizedBox(
                           height: 150.0,
-                          child: const Center(
-                            child: const CircularProgressIndicator(),
+                          child: Center(
+                            child: CircularProgressIndicator(),
                           ),
                         )
                       : Wrap(
                           children: _getTopicWidgets(context, model),
-                        )),
-                  SizedBox(height: 50.0),
+                        ),
+                  const SizedBox(height: 50.0),
                   Center(
                     child: RaisedButton(
                       disabledColor: Colors.grey,
@@ -47,7 +47,7 @@ class RecommendedTopicsScreen extends StatelessWidget {
                           ? () => model.sendTopics(context)
                           : null,
                       color: Colors.blue,
-                      child: Text(
+                      child: const Text(
                         "Continue...",
                         style: TextStyle(
                           fontSize: 20.0,
@@ -90,7 +90,7 @@ class RecommendedTopicsScreen extends StatelessWidget {
             child: Center(
               child: Text(
                 '${topic.name}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16.0,
                 ),
               ),

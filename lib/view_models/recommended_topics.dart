@@ -5,7 +5,7 @@ import 'package:aperture/models/topic.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
-import 'package:aperture/view_models/base_model.dart';
+import 'package:aperture/view_models/core/base_model.dart';
 import 'package:flutter/material.dart' show BuildContext, Navigator;
 
 enum RecTopViewState { Loading, Idle, Busy }

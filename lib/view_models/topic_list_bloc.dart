@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aperture/view_models/enums/checkbox_state.dart';
+import 'package:aperture/view_models/core/enums/checkbox_state.dart';
 import 'package:aperture/locator.dart';
 import 'package:aperture/models/topic.dart';
 import 'package:aperture/resources/app_info.dart';

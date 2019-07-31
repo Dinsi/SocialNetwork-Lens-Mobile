@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:io' show File, HttpException, HttpHeaders, HttpStatus;
 import 'dart:convert' show jsonDecode, utf8;
 
+import 'package:aperture/models/post.dart';
+import 'package:aperture/resources/base_api_provider.dart';
+import 'package:aperture/view_models/shared/basic_post.dart'
+    show ChangeVoteAction;
 import 'package:async/async.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:http/http.dart'
@@ -9,9 +13,6 @@ import 'package:http/http.dart'
 import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' show Image, decodeImage;
 import 'package:path/path.dart';
-
-import '../models/post.dart';
-import 'base_api_provider.dart';
 
 class PostApiProvider extends BaseApiProvider {
   Client client = Client();
@@ -78,8 +79,7 @@ class PostApiProvider extends BaseApiProvider {
     }
   }
 
-  Future<int> upload(
-      File imageFile, String title, String description) async {
+  Future<int> upload(File imageFile, String title, String description) async {
     //TODO verifyToken();
 
     print("_post_upload_");
@@ -126,13 +126,32 @@ class PostApiProvider extends BaseApiProvider {
     throw HttpException('_post_upload_'); //TODO add more errors as necessary
   }
 
-  Future<int> changeVote(int postId, String change) async {
-    print('_post_${change}_');
+  Future<int> changeVote(int postId, ChangeVoteAction action) async {
+    String printText = '_post_changeVote_';
+    String actionPath;
 
-    var response = await client.post('${super.baseUrl}posts/$postId/$change/',
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
-        });
+    switch (action) {
+      case ChangeVoteAction.Up:
+        printText += 'upvote_';
+        actionPath = 'upvote';
+        break;
+
+      case ChangeVoteAction.Down:
+        printText += 'downvote_';
+        actionPath = 'downvote';
+        break;
+
+      case ChangeVoteAction.Remove:
+        printText += 'removevote_';
+        actionPath = 'removevote';
+    }
+
+    print(printText);
+
+    var response = await client
+        .post('${super.baseUrl}posts/$postId/$actionPath/', headers: {
+      HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
+    });
 
     print(response.body + response.statusCode.toString());
 
@@ -140,6 +159,6 @@ class PostApiProvider extends BaseApiProvider {
       return 0;
     }
 
-    throw HttpException('_post_${change}_');
+    throw HttpException(printText);
   }
 }

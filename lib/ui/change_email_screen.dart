@@ -94,41 +94,41 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
       onWillPop: () {
         return Future<bool>.value(bloc.willPop);
       },
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Change Email'),
-          leading: BackButton(),
-          actions: <Widget>[
-            StreamBuilder<bool>(
-              stream: bloc.saveButton,
-              initialData: true,
-              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                return FlatButton.icon(
-                  icon: Icon(
-                    Icons.check,
-                    color: snapshot.data ? Colors.blue : Colors.grey,
-                  ),
-                  label: Text(
-                    'SAVE',
-                    style: Theme.of(context).textTheme.button.merge(
-                          TextStyle(
-                            color: snapshot.data ? Colors.blue : Colors.grey,
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            title: Text('Change Email'),
+            leading: BackButton(),
+            actions: <Widget>[
+              StreamBuilder<bool>(
+                stream: bloc.saveButton,
+                initialData: true,
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  return FlatButton.icon(
+                    icon: Icon(
+                      Icons.check,
+                      color: snapshot.data ? Colors.blue : Colors.grey,
+                    ),
+                    label: Text(
+                      'SAVE',
+                      style: Theme.of(context).textTheme.button.merge(
+                            TextStyle(
+                              color: snapshot.data ? Colors.blue : Colors.grey,
+                            ),
                           ),
-                        ),
-                  ),
-                  onPressed: snapshot.data
-                      ? () {
-                          _changeUserEmail();
-                        }
-                      : null,
-                );
-              },
-            ),
-          ],
-        ),
-        body: SafeArea(
-          child: Padding(
+                    ),
+                    onPressed: snapshot.data
+                        ? () {
+                            _changeUserEmail();
+                          }
+                        : null,
+                  );
+                },
+              ),
+            ],
+          ),
+          body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: <Widget>[

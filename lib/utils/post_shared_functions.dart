@@ -46,14 +46,6 @@ List<String> detectHashtags(String description) {
   return splits;
 }
 
-TextStyle votesTextStyle([Color color]) {
-  return TextStyle(
-    fontSize: 17.0,
-    fontWeight: FontWeight.bold,
-    color: color ?? Colors.grey[600],
-  );
-}
-
 String nFormatter(double number, int digits) {
   final List<Map<dynamic, dynamic>> si = const [
     {"value": 1, "symbol": ""},
@@ -65,7 +57,7 @@ String nFormatter(double number, int digits) {
     {"value": 1E18, "symbol": "E"}
   ];
   final rx = RegExp(r"\.0+$|(\.[0-9]*[1-9]*)0+$");
-  var i;
+  int i;
   for (i = si.length - 1; i > 0; i--) {
     if (number >= si[i]["value"]) {
       break;

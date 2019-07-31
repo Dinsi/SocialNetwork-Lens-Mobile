@@ -1,20 +1,25 @@
 import 'dart:async';
+import 'dart:collection';
 
-import 'package:aperture/view_models/base_model.dart';
-import 'package:aperture/view_models/mixins/base_feed_model.dart';
+import 'package:aperture/view_models/core/base_model.dart';
+import 'package:aperture/view_models/core/mixins/base_feed.dart';
 import 'package:aperture/models/post.dart';
 
 const _backendListSize = 20;
 
 class FeedModel extends BaseModel with BaseFeedMixin<Post> {
+  // TODO cover empty list case
+
   @override
   Future<void> fetch(bool refresh) async {
-    List<Post> fetchedList;
+    UnmodifiableListView<Post> fetchedList;
     if (refresh || !listSubject.hasValue) {
-      fetchedList = await repository.fetchPosts(null);
+      fetchedList =
+          UnmodifiableListView<Post>(await repository.fetchPosts(null));
     } else {
-      fetchedList = List<Post>.from(listSubject.value)
-        ..addAll(await repository.fetchPosts(listSubject.value.last.id));
+      fetchedList = UnmodifiableListView<Post>(
+          List<Post>.from(listSubject.value)
+            ..addAll(await repository.fetchPosts(listSubject.value.last.id)));
     }
 
     if (fetchedList.length != _backendListSize) {

@@ -5,18 +5,13 @@ import 'package:transparent_image/transparent_image.dart';
 
 const double _iconSideSize = 40.0;
 
-class CommentTile extends StatefulWidget {
+class CommentTile extends StatelessWidget {
   final Comment comment;
   final void Function(BuildContext, [CompactUser]) onPressed;
 
   const CommentTile({Key key, @required this.comment, @required this.onPressed})
       : super(key: key);
 
-  @override
-  _CommentTileState createState() => _CommentTileState();
-}
-
-class _CommentTileState extends State<CommentTile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,21 +27,20 @@ class _CommentTileState extends State<CommentTile> {
               color: Colors.grey[300],
               child: Stack(
                 children: <Widget>[
-                  widget.comment.user.avatar == null
+                  comment.user.avatar == null
                       ? Image.asset(
                           'assets/img/user_placeholder.png',
                         )
                       : FadeInImage.memoryNetwork(
                           placeholder: kTransparentImage,
-                          image: widget.comment.user.avatar,
+                          image: comment.user.avatar,
                         ),
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
                       highlightColor: Colors.transparent,
                       splashColor: Colors.white24,
-                      onTap: () =>
-                          widget.onPressed(context, widget.comment.user),
+                      onTap: () => onPressed(context, comment.user),
                     ),
                   ),
                 ],
@@ -64,9 +58,9 @@ class _CommentTileState extends State<CommentTile> {
                   ),
                   children: <TextSpan>[
                     TextSpan(
-                        text: '@${widget.comment.user.name}',
+                        text: '@${comment.user.name}',
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    TextSpan(text: ' ${widget.comment.text}'),
+                    TextSpan(text: ' ${comment.text}'),
                   ],
                 ),
               ),

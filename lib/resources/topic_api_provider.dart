@@ -2,11 +2,12 @@ import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:io' show HttpException, HttpHeaders, HttpStatus;
 import 'dart:io';
 
+import 'package:aperture/models/search_result.dart';
+import 'package:aperture/models/topic.dart';
+import 'package:aperture/resources/base_api_provider.dart';
+import 'package:aperture/view_models/shared/subscription_app_bar.dart'
+    show SubscriptionAction;
 import 'package:http/http.dart' show Client;
-
-import 'base_api_provider.dart';
-import '../models/topic.dart';
-import '../models/search_result.dart';
 
 class TopicApiProvider extends BaseApiProvider {
   Client client = Client();
@@ -52,13 +53,28 @@ class TopicApiProvider extends BaseApiProvider {
   }
 
   Future<int> toggleSubscription(
-      String topic, String subscriptionIntent) async {
-    print('_topic_toggleSubscription_');
+      String topic, SubscriptionAction action) async {
+    String printText = '_topic_toggleSubscription_';
+    String actionPath;
 
-    var response = await client
-        .post('${super.baseUrl}topics/$topic/$subscriptionIntent/', headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
-    });
+    switch (action) {
+      case SubscriptionAction.Subscribe:
+        printText += 'subscribe_';
+        actionPath = 'subscribe';
+        break;
+      case SubscriptionAction.Unsubscribe:
+        printText += 'unsubscribe_';
+        actionPath = 'unsubscribe';
+    }
+
+    print(printText);
+
+    var response = await client.post(
+      '${super.baseUrl}topics/$topic/$actionPath/',
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
+      },
+    );
 
     print('${response.statusCode.toString()}\n${response.body}');
 
@@ -66,7 +82,7 @@ class TopicApiProvider extends BaseApiProvider {
       return 0;
     }
 
-    throw HttpException('_topic_toggleSubscription_');
+    throw HttpException(printText);
   }
 
   Future<List<SearchResult>> fetchSearchResults(String query) async {

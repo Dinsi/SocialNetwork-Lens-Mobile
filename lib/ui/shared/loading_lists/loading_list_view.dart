@@ -1,8 +1,8 @@
 import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
-import 'package:aperture/view_models/mixins/base_feed_model.dart';
+import 'package:aperture/view_models/core/mixins/base_feed.dart';
 import 'package:flutter/material.dart';
 
-typedef WidgetAdapter<T> = Widget Function(T t);
+typedef WidgetAdapter<T> = Widget Function(ObjectKey key, T t);
 
 const _circularIndicatorHeight = 100.0;
 
@@ -13,27 +13,21 @@ abstract class LoadingListView<T> extends StatefulWidget {
   LoadingListView({this.model, this.widgetAdapter});
 }
 
-abstract class LoadingListViewState<T extends LoadingListView, TT>
-    extends State<T> {
-  LoadingListViewState(this.model, this.widgetAdapter);
-
-  BaseFeedMixin<TT> model;
-
-  /// Used for building Widgets out of
-  /// the fetched data
-  WidgetAdapter<TT> widgetAdapter;
-
+abstract class LoadingListViewState<T, LListViewT extends LoadingListView<T>>
+    extends State<LListViewT> {
   @override
   void initState() {
     super.initState();
-    model.fetch(false).then((_) => model.afterInitialFetch(_circularIndicatorHeight));
+    widget.model
+        .fetch(false)
+        .then((_) => widget.model.afterInitialFetch(_circularIndicatorHeight));
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<TT>>(
-      stream: model.listStream,
-      builder: (BuildContext context, AsyncSnapshot<List<TT>> snapshot) {
+    return StreamBuilder<List<T>>(
+      stream: widget.model.listStream,
+      builder: (BuildContext context, AsyncSnapshot<List<T>> snapshot) {
         if (snapshot.hasData) {
           return _buildList(snapshot.data);
         } else {
@@ -53,14 +47,14 @@ abstract class LoadingListViewState<T extends LoadingListView, TT>
     );
   }
 
-  Widget _buildList(List<TT> list) {
+  Widget _buildList(List<T> list) {
     return ListView.builder(
       itemCount: list.length,
       itemBuilder: (BuildContext context, int index) {
-        if (model.existsNext && index == list.length - 1) {
+        if (widget.model.existsNext && index == list.length - 1) {
           return Column(
             children: <Widget>[
-              widgetAdapter(list[index]),
+              widget.widgetAdapter(ObjectKey(list[index]), list[index]),
               const SizedBox(
                 height: _circularIndicatorHeight,
                 child: const Padding(
@@ -77,7 +71,7 @@ abstract class LoadingListViewState<T extends LoadingListView, TT>
           );
         }
 
-        return widgetAdapter(list[index]);
+        return widget.widgetAdapter(ObjectKey(list[index]), list[index]);
       },
       physics: (widget is ScrollLoadingListView
           ? const AlwaysScrollableScrollPhysics()

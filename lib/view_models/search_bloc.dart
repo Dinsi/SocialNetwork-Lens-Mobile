@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aperture/view_models/enums/search_state.dart';
+import 'package:aperture/view_models/core/enums/search_state.dart';
 import 'package:aperture/locator.dart';
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/resources/repository.dart';
@@ -31,12 +31,12 @@ class SearchBloc {
 
     if (!_searchController.isClosed && query == controller.text) {
       _results = searchResults;
-      _searchController.add(SearchState.list);
+      _searchController.add(SearchState.List);
     }
   }
 
   void shiftStateToEmpty() {
-    _searchController.add(SearchState.empty);
+    _searchController.add(SearchState.Empty);
   }
 
   Stream<SearchState> get searchStream => _searchController.stream;

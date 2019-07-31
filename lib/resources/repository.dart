@@ -14,6 +14,10 @@ import 'package:aperture/resources/post_api_provider.dart';
 import 'package:aperture/resources/token_api_provider.dart';
 import 'package:aperture/resources/topic_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
+import 'package:aperture/view_models/shared/basic_post.dart'
+    show ChangeVoteAction;
+import 'package:aperture/view_models/shared/subscription_app_bar.dart'
+    show SubscriptionAction;
 
 class Repository {
   final postsApiProvider = locator<PostApiProvider>();
@@ -39,8 +43,8 @@ class Repository {
           int commentLimit, int postId, String nextLink) =>
       commentsApiProvider.fetchList(commentLimit, postId, nextLink);
 
-  Future<int> changeVote(int postId, String change) =>
-      postsApiProvider.changeVote(postId, change);
+  Future<int> changeVote(int postId, ChangeVoteAction action) =>
+      postsApiProvider.changeVote(postId, action);
 
   Future<int> login(String username, String password) =>
       tokenApiProvider.login(username, password);
@@ -62,8 +66,8 @@ class Repository {
   Future<bool> verifyToken() => tokenApiProvider.verify();
 
   Future<int> toggleTopicSubscription(
-          String topic, String subscriptionIntent) =>
-      topicsApiProvider.toggleSubscription(topic, subscriptionIntent);
+          String topic, SubscriptionAction action) =>
+      topicsApiProvider.toggleSubscription(topic, action);
 
   Future<Comment> postComment(int postId, String comment) =>
       commentsApiProvider.post(postId, comment);

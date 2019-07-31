@@ -2,11 +2,13 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
-import 'package:aperture/view_models/base_model.dart';
+import 'package:aperture/view_models/core/base_model.dart';
 import 'package:flutter/material.dart';
 import 'package:synchronized/synchronized.dart';
 
 enum BasicPostViewState { Inactive, UpVote, DownVote, NoVote }
+
+enum ChangeVoteAction { Up, Down, Remove }
 
 class BasicPostModel extends StateModel<BasicPostViewState> {
   BasicPostModel() : super(BasicPostViewState.Inactive);
@@ -16,6 +18,12 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
   Post _post;
 
   // * Init Functions
+  void init(Post post) {
+    setPost(post);
+  }
+
+  /////////////////////////////////////////////////////////////
+  // * Setters
   void setPost(Post post) {
     _post = post;
     switch (post.userVote) {
@@ -37,17 +45,17 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
       RouteName.detailedPost,
       arguments: {
         'toComments': toComments,
-        'delegateModel': this,
+        'basicPostModel': this,
       },
     );
   }
 
   void navigateToUserProfile(BuildContext context) {
     // TODO navigateToUserProfile
-    Navigator.of(context).pushNamed(RouteName.userProfile, arguments: {
-      'id': _post.user.id,
-      'username': _post.user.username,
-    });
+    Navigator.of(context).pushNamed(
+      RouteName.userProfile,
+      arguments: _post.user.id,
+    );
   }
 
   Future<String> _navigateToCollectionList(BuildContext context) async {
@@ -69,7 +77,10 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
         _post.votes--;
         setState(BasicPostViewState.NoVote);
 
-        int result = await _repository.changeVote(_post.id, "removevote");
+        int result = await _repository.changeVote(
+          _post.id,
+          ChangeVoteAction.Remove,
+        );
 
         if (result == 0) {
           _post.userVote = 0;
@@ -86,7 +97,10 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
 
       setState(BasicPostViewState.UpVote);
 
-      int result = await _repository.changeVote(_post.id, "upvote");
+      int result = await _repository.changeVote(
+        _post.id,
+        ChangeVoteAction.Up,
+      );
 
       if (result == 0) {
         _post.userVote = 1;
@@ -110,7 +124,10 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
         _post.votes++;
         setState(BasicPostViewState.NoVote);
 
-        int result = await _repository.changeVote(_post.id, "removevote");
+        int result = await _repository.changeVote(
+          _post.id,
+          ChangeVoteAction.Remove,
+        );
 
         if (result == 0) {
           _post.userVote = 0;
@@ -127,7 +144,10 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
 
       setState(BasicPostViewState.DownVote);
 
-      int result = await _repository.changeVote(_post.id, "downvote");
+      int result = await _repository.changeVote(
+        _post.id,
+        ChangeVoteAction.Down,
+      );
 
       if (result == 0) {
         _post.userVote = -1;

@@ -9,68 +9,72 @@ class AppInfo {
   SharedPreferences _prefs;
   User _user;
 
-  Future init() async {
+  ///////////////////////////////////////////////////////
+  // * Init
+  Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     _user = _prefs.getString('user') == null
         ? null
         : User.fromJson(jsonDecode(_prefs.getString('user')));
   }
 
+  ///////////////////////////////////////////////////////
+  // * Public functions
   bool isLoggedIn() {
     return _prefs.getBool('loggedIn') != null;
   }
 
-  Future clearCache() async {
+  Future<void> clearCache() async {
     await _prefs.clear();
   }
 
-  Future cacheLogin(String access, String refresh) async {
-    final Future loggedInResult = setLoggedIn(true);
-    final Future accessResult = setAccessToken(access);
-    final Future refreshResult = setRefreshToken(refresh);
-    await loggedInResult;
-    await accessResult;
-    await refreshResult;
+  Future<void> cacheLogin(String access, String refresh) async {
+    await Future.wait<void>([
+      _setLoggedIn(true),
+      setAccessToken(access),
+      _setRefreshToken(refresh)
+    ]);
   }
 
   Future<void> addTopicToUser(Topic topic) async {
     _user.topics.add(topic);
-    await setUserFromUser(_user);
+    await updateUser();
   }
 
   Future<void> removeTopicFromUser(String topicName) async {
     _user.topics.removeWhere((topic) => topic.name == topicName);
-    await setUserFromUser(_user);
+    await updateUser();
   }
 
   Future<void> bulkRemoveTopicsFromUser(List<Topic> topicList) async {
     for (Topic targetTopic in topicList) {
       _user.topics.removeWhere((topic) => topic.id == targetTopic.id);
     }
-    await setUserFromUser(_user);
+    await updateUser();
   }
 
+  ///////////////////////////////////////////////////////
+  // * Getters and private/public setters
   bool get loggedIn => _prefs.getBool('loggedIn');
-  Future setLoggedIn(bool value) async =>
+  Future<void> _setLoggedIn(bool value) async =>
       await _prefs.setBool('loggedIn', value);
 
   String get accessToken => _prefs.getString('accessToken');
-  Future setAccessToken(String value) async =>
+  Future<void> setAccessToken(String value) async =>
       await _prefs.setString('accessToken', value);
 
   String get refreshToken => _prefs.getString('refreshToken');
-  Future setRefreshToken(String value) async =>
+  Future<void> _setRefreshToken(String value) async =>
       await _prefs.setString('refreshToken', value);
 
   User get user => _user;
 
-  Future setUserFromMap(Map<String, dynamic> userMap) async {
+  Future<void> setUserFromMap(Map<String, dynamic> userMap) async {
     await _prefs.setString('user', jsonEncode(userMap));
     _user = User.fromJson(userMap);
   }
 
-  Future setUserFromUser(User newUserData) async {
-    await _prefs.setString('user', jsonEncode(newUserData.toJson()));
-    _user = newUserData;
+  Future<void> updateUser() async {
+    await _prefs.setString('user', jsonEncode(_user.toJson()));
   }
 }

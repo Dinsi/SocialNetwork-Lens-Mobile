@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
+// import 'package:transparent_image/transparent_image.dart';
 
 class ImageContainer extends StatelessWidget {
   final String imageUrl;
@@ -23,11 +23,15 @@ class ImageContainer extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Center(
-            child: FadeInImage.memoryNetwork(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.fitWidth,
+            ),
+            /*FadeInImage.memoryNetwork(
               fit: BoxFit.fitWidth,
               placeholder: kTransparentImage,
               image: imageUrl,
-            ),
+            ),*/
           ),
           Material(
             color: Colors.transparent,

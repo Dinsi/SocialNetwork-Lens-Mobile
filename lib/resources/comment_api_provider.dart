@@ -1,10 +1,9 @@
 import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:io';
 
+import 'package:aperture/models/comment.dart';
+import 'package:aperture/resources/base_api_provider.dart';
 import 'package:http/http.dart' show Client;
-
-import '../models/comment.dart';
-import 'base_api_provider.dart';
 
 class CommentApiProvider extends BaseApiProvider {
   Client client = Client();

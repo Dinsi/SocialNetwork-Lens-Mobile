@@ -3,22 +3,22 @@ import 'package:aperture/utils/post_shared_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class DescriptionTextWidget extends StatefulWidget {
+class DescriptionText extends StatefulWidget {
   final String text;
   final bool withHashtags;
 
-  DescriptionTextWidget({@required this.text, @required this.withHashtags});
+  DescriptionText({@required this.text, @required this.withHashtags});
 
   @override
-  _DescriptionTextWidgetState createState() => _DescriptionTextWidgetState();
+  _DescriptionTextState createState() => _DescriptionTextState();
 }
 
 //TODO fix this IMMEDIATELY
 
-class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
-    with SingleTickerProviderStateMixin<DescriptionTextWidget> {
+class _DescriptionTextState extends State<DescriptionText>
+    with SingleTickerProviderStateMixin<DescriptionText> {
   List<String> _textSplits;
-  bool showAll = false;
+  bool _showAll = false;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
               style: TextStyle(fontSize: 16.0),
             )
           : Column(
-              children: (showAll
+              children: (_showAll
                   ? <Widget>[
                       Text(
                         _textSplits.first,
@@ -64,7 +64,7 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
                             style: TextStyle(fontSize: 16.0),
                           ),
                           onPressed: () => setState(() {
-                            showAll = true;
+                            _showAll = true;
                           }),
                         ),
                       )
@@ -82,7 +82,7 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget>
                             style: TextStyle(fontSize: 16.0),
                           ),
                           onPressed: () => setState(() {
-                            showAll = false;
+                            _showAll = false;
                           }),
                         ),
                       )

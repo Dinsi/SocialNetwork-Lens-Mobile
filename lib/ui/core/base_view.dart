@@ -1,35 +1,45 @@
-import 'package:aperture/view_models/base_model.dart';
+import 'package:aperture/view_models/core/base_model.dart';
 import 'package:aperture/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 //* Widgets
 class SimpleBaseView<T extends BaseModel> extends StatefulWidget {
-  final Function(T model) onModelReady;
-  final Widget Function(BuildContext context, T model, Widget child) builder;
+  final Function(T) onModelReady;
+  final Widget Function(BuildContext, T, Widget) builder;
+  final Widget child;
 
-  const SimpleBaseView({Key key, this.onModelReady, @required this.builder})
-      : super(key: key);
+  const SimpleBaseView({this.onModelReady, @required this.builder})
+      : child = null;
+
+  const SimpleBaseView.noConsumer({this.onModelReady, @required this.child})
+      : builder = null;
 
   @override
   _SimpleBaseViewState<T> createState() => _SimpleBaseViewState<T>();
 }
 
 class ChangeNotifierBaseView<TT extends StateModel> extends StatefulWidget {
-  final void Function(TT model) onModelReady;
-  final Widget Function(BuildContext context, TT model, Widget child) builder;
+  final void Function(TT) onModelReady;
+  final Widget Function(BuildContext, TT, Widget) builder;
+  final Widget child;
 
-  const ChangeNotifierBaseView(
-      {Key key, this.onModelReady, @required this.builder})
-      : super(key: key);
+  const ChangeNotifierBaseView({this.onModelReady, @required this.builder})
+      : child = null;
+
+  const ChangeNotifierBaseView.noConsumer(
+      {this.onModelReady, @required this.child})
+      : builder = null;
 
   @override
   _ChangeNotifierBaseViewState<TT> createState() =>
       _ChangeNotifierBaseViewState<TT>();
 }
 
+///////////////////////////////////////////////////////
 //* States
-class _SimpleBaseViewState<T extends BaseModel> extends State<SimpleBaseView<T>> {
+class _SimpleBaseViewState<T extends BaseModel>
+    extends State<SimpleBaseView<T>> {
   T model = locator<T>();
 
   @override
@@ -45,7 +55,7 @@ class _SimpleBaseViewState<T extends BaseModel> extends State<SimpleBaseView<T>>
     return Provider<T>(
       builder: (_) => model,
       dispose: (_, model) => model.dispose(),
-      child: Consumer<T>(builder: widget.builder),
+      child: widget.child ?? Consumer<T>(builder: widget.builder),
     );
   }
 }
@@ -66,7 +76,7 @@ class _ChangeNotifierBaseViewState<TT extends StateModel>
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<TT>(
       builder: (_) => model,
-      child: Consumer<TT>(builder: widget.builder),
+      child: widget.child ?? Consumer<TT>(builder: widget.builder),
     );
   }
 }

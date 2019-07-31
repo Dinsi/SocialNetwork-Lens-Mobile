@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:aperture/locator.dart';
 import 'package:aperture/resources/app_info.dart';
@@ -23,7 +24,8 @@ mixin BaseFeedMixin<T> {
   bool isLoading = false;
 
   @protected
-  BehaviorSubject<List<T>> listSubject = BehaviorSubject<List<T>>();
+  BehaviorSubject<UnmodifiableListView<T>> listSubject =
+      BehaviorSubject<UnmodifiableListView<T>>();
 
   @mustCallSuper
   void dispose() {
@@ -74,6 +76,6 @@ mixin BaseFeedMixin<T> {
 
   void afterInitialFetch(double circularIndicatorHeight);
 
-  Stream<List<T>> get listStream => listSubject.stream;
+  Stream<UnmodifiableListView<T>> get listStream => listSubject.stream;
   int get listLength => listSubject.value.length;
 }

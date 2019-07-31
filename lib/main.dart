@@ -13,20 +13,25 @@ Future<void> main() async {
   // * Setup
   // TODO remove for full view pictures
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      systemNavigationBarColor: Colors.grey[50],
+      statusBarColor: Colors.grey[50],
+      systemNavigationBarIconBrightness: Brightness.dark));
 
   setupLocator();
-  final AppInfo appInfo = locator<AppInfo>();
-  await appInfo.init();
 
   // * Gets the initial route the app starts with
-  String initialRoute = await _getInitialRoute(appInfo);
+  String initialRoute = await _getInitialRoute();
   runApp(MyApp(initialRoute: initialRoute));
   //TODO insert splash screen
 }
 
-Future<String> _getInitialRoute(AppInfo appInfo) async {
+Future<String> _getInitialRoute() async {
   final Repository repository = locator<Repository>();
+  final AppInfo appInfo = locator<AppInfo>();
+
+  //
+  await appInfo.init();
 
   bool validToken;
   if (appInfo.isLoggedIn()) {
@@ -50,7 +55,7 @@ Future<String> _getInitialRoute(AppInfo appInfo) async {
 class MyApp extends StatelessWidget {
   final String initialRoute;
 
-  const MyApp({Key key, @required this.initialRoute}) : super(key: key);
+  const MyApp({@required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +64,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "SourceSansPro",
-        backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
         appBarTheme: AppBarTheme(
           color: Colors.white,

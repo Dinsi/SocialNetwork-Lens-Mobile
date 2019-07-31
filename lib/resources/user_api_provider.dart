@@ -1,14 +1,13 @@
 import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io' show ContentType, File, HttpException, HttpHeaders, HttpStatus;
 
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/base_api_provider.dart';
 import 'package:async/async.dart' show DelegatingStream;
 import 'package:http/http.dart'
     show ByteStream, Client, MultipartFile, MultipartRequest;
 import 'package:http_parser/http_parser.dart' show MediaType;
 import 'package:path/path.dart';
-
-import 'base_api_provider.dart';
-import '../models/users/user.dart';
 
 class UserApiProvider extends BaseApiProvider {
   Client client = Client();

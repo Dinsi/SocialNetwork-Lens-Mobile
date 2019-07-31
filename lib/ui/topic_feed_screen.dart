@@ -1,128 +1,37 @@
+import 'package:aperture/models/post.dart';
+import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/basic_post.dart';
 import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
-import 'package:aperture/view_models/enums/subscribe_button.dart';
-import 'package:aperture/view_models/providers/topic_feed_bloc_provider.dart';
-import 'package:aperture/view_models/topic_feed_bloc.dart';
+import 'package:aperture/ui/shared/subscription_app_bar.dart';
+import 'package:aperture/view_models/topic_feed.dart';
 import 'package:flutter/material.dart';
 
-class TopicFeedScreen extends StatefulWidget {
-  const TopicFeedScreen({Key key}) : super(key: key);
+class TopicFeedScreen extends StatelessWidget {
+  final String topic;
 
-  @override
-  _TopicFeedScreenState createState() => _TopicFeedScreenState();
-}
-
-class _TopicFeedScreenState extends State<TopicFeedScreen> {
-  TopicFeedBloc bloc;
-  bool _isInit;
-
-  @override
-  void initState() {
-    super.initState();
-    _isInit = true;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (_isInit) {
-      bloc = TopicFeedBlocProvider.of(context);
-      /*WidgetsBinding.instance
-          .addPostFrameCallback((_) => bloc.initSubscribeButton());*/
-      _isInit = false;
-    }
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
-  }
+  const TopicFeedScreen({this.topic});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('#${bloc.topic}'),
-        leading: BackButton(),
-        actions: <Widget>[
-          StreamBuilder<SubscribeButton>(
-            stream: bloc.subscriptionButton,
-            initialData: bloc.initSubscribeButton(),
-            builder: (BuildContext context,
-                AsyncSnapshot<SubscribeButton> snapshot) {
-              if (snapshot.hasData) {
-                switch (snapshot.data) {
-                  case SubscribeButton.subscribe:
-                    return MaterialButton(
-                      child: Text(
-                        'SUBSCRIBE',
-                        style: Theme.of(context).textTheme.button.merge(
-                              TextStyle(color: Colors.blue),
-                            ),
-                      ),
-                      onPressed: () => bloc.toggleSubscribe('subscribe'),
-                    );
-
-                  case SubscribeButton.subscribeInactive:
-                    return MaterialButton(
-                      child: Text(
-                        'SUBSCRIBE',
-                        style: Theme.of(context).textTheme.button.merge(
-                              TextStyle(color: Colors.grey),
-                            ),
-                      ),
-                      onPressed: null,
-                    );
-
-                  case SubscribeButton.unsubscribe:
-                    return FlatButton.icon(
-                      icon: Icon(
-                        Icons.check,
-                        color: Colors.blue,
-                      ),
-                      label: Text(
-                        'SUBSCRIBED',
-                        style: Theme.of(context).textTheme.button.merge(
-                              TextStyle(color: Colors.blue),
-                            ),
-                      ),
-                      onPressed: () => bloc.toggleSubscribe('unsubscribe'),
-                    );
-
-                  case SubscribeButton.unsubscribeInactive:
-                    return FlatButton.icon(
-                      icon: Icon(
-                        Icons.check,
-                        color: Colors.grey,
-                      ),
-                      label: Text(
-                        'SUBSCRIBED',
-                        style: Theme.of(context).textTheme.button.merge(
-                              TextStyle(color: Colors.grey),
-                            ),
-                      ),
-                      onPressed: null,
-                    );
-
-                  default:
-                    return Container();
-                }
-              } else {
-                return Container();
-              }
-            },
+    return SimpleBaseView<TopicFeedModel>(
+      onModelReady: (model) => model.init(topic),
+      builder: (_, model, __) {
+        return SafeArea(
+          child: Scaffold(
+            appBar: SubscriptionAppBar(
+              topicOrUser: topic,
+              title: Text("#$topic"),
+            ),
+            body: ScrollLoadingListView(
+              model: model,
+              widgetAdapter: (ObjectKey key, Post post) => BasicPost(
+                key: key,
+                post: post,
+              ),
+            ),
           ),
-        ],
-      ),
-      body: ScrollLoadingListView(
-        model: bloc, // TODO Change bloc to model
-        widgetAdapter: (dynamic post) => BasicPost(
-          post: post,
-          delegatingToDetail: false,
-        ),
-      ),
+        );
+      },
     );
   }
 }

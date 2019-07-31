@@ -1,286 +1,167 @@
-import 'package:aperture/models/users/user.dart';
+import 'package:aperture/models/post.dart';
+import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/basic_post.dart';
-import 'package:aperture/ui/shared/description_text_widget.dart';
+import 'package:aperture/ui/shared/description_text.dart';
 import 'package:aperture/ui/shared/loading_lists/no_scroll_loading_list_view.dart';
-import 'package:aperture/view_models/enums/subscribe_button.dart';
-import 'package:aperture/view_models/providers/user_profile_bloc_provider.dart';
-import 'package:aperture/view_models/user_profile_bloc.dart';
+import 'package:aperture/ui/shared/subscription_app_bar.dart';
+import 'package:aperture/view_models/user_profile.dart';
 import 'package:flutter/material.dart';
 
-class UserProfileScreen extends StatefulWidget {
-  UserProfileScreen({Key key}) : super(key: key);
+class UserProfileScreen extends StatelessWidget {
+  final int userId;
 
-  _UserProfileScreenState createState() => _UserProfileScreenState();
-}
-
-class _UserProfileScreenState extends State<UserProfileScreen> {
-  UserProfileBloc bloc;
-  bool _isInit = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInit) {
-      bloc = UserProfileBlocProvider.of(context);
-      bloc.fetchUser();
-      _isInit = true;
-    }
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
-  }
-
-  Future<void> _editProfile() async {
-    int result = await Navigator.of(context).pushNamed('/editProfile');
-
-    if (result != null) {
-      bloc.fetchUser();
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Edit Profile'),
-            content: const Text('Profile has been edited successfully'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          );
-        },
-      );
-    }
-  }
+  UserProfileScreen({Key key, @required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User>(
-      stream: bloc.userInfo,
-      builder: (BuildContext context, AsyncSnapshot<User> userSnapshot) {
-        if (userSnapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.blue,
-              leading: BackButton(
-                color: Colors.white,
-              ),
-              title: Text(
-                userSnapshot.data.name,
-                style: Theme.of(context)
-                    .textTheme
-                    .title
-                    .copyWith(color: Colors.white),
-              ),
-              actions: <Widget>[
-                StreamBuilder<SubscribeButton>(
-                  stream: bloc.subscriptionButton,
-                  initialData: bloc.initSubscribeButton(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<SubscribeButton> snapshot) {
-                    if (snapshot.hasData) {
-                      switch (snapshot.data) {
-                        case SubscribeButton.subscribe:
-                          return MaterialButton(
-                            child: Text(
-                              'SUBSCRIBE',
-                              style: Theme.of(context).textTheme.button.merge(
-                                    TextStyle(color: Colors.white),
-                                  ),
-                            ),
-                            onPressed: () => bloc.toggleSubscribe('subscribe'),
-                          );
-
-                        case SubscribeButton.subscribeInactive:
-                          return MaterialButton(
-                            child: Text(
-                              'SUBSCRIBE',
-                              style: Theme.of(context).textTheme.button.merge(
-                                    TextStyle(color: Colors.grey[400]),
-                                  ),
-                            ),
-                            onPressed: null,
-                          );
-
-                        case SubscribeButton.unsubscribe:
-                          return FlatButton.icon(
-                            icon: Icon(
-                              Icons.check,
-                              color: Colors.white,
-                            ),
-                            label: Text(
-                              'SUBSCRIBED',
-                              style: Theme.of(context).textTheme.button.merge(
-                                    TextStyle(color: Colors.white),
-                                  ),
-                            ),
-                            onPressed: () =>
-                                bloc.toggleSubscribe('unsubscribe'),
-                          );
-
-                        case SubscribeButton.unsubscribeInactive:
-                          return FlatButton.icon(
-                            icon: Icon(
-                              Icons.check,
-                              color: Colors.grey[400],
-                            ),
-                            label: Text(
-                              'SUBSCRIBED',
-                              style: Theme.of(context).textTheme.button.merge(
-                                    TextStyle(color: Colors.grey[400]),
-                                  ),
-                            ),
-                            onPressed: null,
-                          );
-                      }
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              ],
-            ),
-            body: SafeArea(
-              child: RefreshIndicator(
-                onRefresh: bloc.onRefresh,
-                child: NotificationListener<ScrollNotification>(
-                  onNotification: bloc.onNotification,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        (bloc.isSelf
-                            ? Container(
-                                width: double.infinity,
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 16.0),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: <Widget>[
-                                    ClipOval(
-                                      child: Container(
-                                        height: 125.0,
-                                        width: 125.0,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[300],
-                                          image: DecorationImage(
-                                            image: (userSnapshot.data.avatar ==
-                                                    null
-                                                ? AssetImage(
-                                                    'assets/img/user_placeholder.png')
-                                                : NetworkImage(
-                                                    userSnapshot.data.avatar)),
-                                          ),
-                                        ),
-                                      ),
+    return ChangeNotifierBaseView<UserProfileModel>(
+      onModelReady: (model) => model.init(userId),
+      builder: (_, model, __) {
+        return SafeArea(
+          child: model.state == UserProfileViewState.Loading
+              ? _buildLoadingScaffold()
+              : Scaffold(
+                  appBar: SubscriptionAppBar(
+                    backgroundColor: Colors.blue,
+                    actionColor: Colors.white,
+                    disabledActionColor: Colors.grey[300],
+                    topicOrUser: model.user.username,
+                    leading: BackButton(
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      model.user.name,
+                      style: Theme.of(context)
+                          .textTheme
+                          .title
+                          .copyWith(color: Colors.white),
+                    ),
+                  ),
+                  body: RefreshIndicator(
+                    onRefresh: model.onRefresh,
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: model.onNotification,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            model.isSelf
+                                ? Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 16.0,
                                     ),
-                                    Positioned(
-                                      height: 125.0,
-                                      right: 15.0,
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.edit,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: <Widget>[
+                                        _buildCircleAvatar(model),
+                                        Positioned(
+                                          height: 125.0,
+                                          right: 15.0,
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.edit,
+                                              color: Colors.blue,
+                                            ),
+                                            alignment: Alignment.center,
+                                            onPressed: () => model
+                                                .navigateToEditProfile(context),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0,
+                                    ),
+                                    child: _buildCircleAvatar(model),
+                                  ),
+                            if (model.user.headline != null)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: Text(
+                                  model.user.headline,
+                                  style: Theme.of(context).textTheme.headline,
+                                ),
+                              ),
+                            Text(
+                              model.user.name,
+                              style: Theme.of(context).textTheme.subhead,
+                            ),
+                            if (model.user.location != null)
+                              Text(model.user.location),
+                            if (model.user.website != null)
+                              model.clickableURL
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        model.launchURL();
+                                      },
+                                      child: Text(
+                                        model.user.website,
+                                        style: TextStyle(
                                           color: Colors.blue,
                                         ),
-                                        alignment: Alignment.center,
-                                        onPressed: () {
-                                          _editProfile();
-                                        },
                                       ),
                                     )
-                                  ],
-                                ),
-                              )
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16.0),
-                                child: ClipOval(
-                                  child: Container(
-                                    height: 125.0,
-                                    width: 125.0,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      image: DecorationImage(
-                                        image: (userSnapshot.data.avatar == null
-                                            ? AssetImage(
-                                                'assets/img/user_placeholder.png')
-                                            : NetworkImage(
-                                                userSnapshot.data.avatar)),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )),
-                        if (userSnapshot.data.headline != null)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Text(
-                              userSnapshot.data.headline,
-                              style: Theme.of(context).textTheme.headline,
+                                  : Text(model.user.website),
+                            if (model.user.bio != null) ...[
+                              Divider(
+                                height: 20.0,
+                                color: Colors.grey,
+                              ),
+                              DescriptionText(
+                                text: model.user.bio,
+                                withHashtags: false,
+                              ),
+                            ],
+                            Divider(
+                              height: 20.0,
+                              color: Colors.grey,
                             ),
-                          ),
-                        Text(userSnapshot.data.name,
-                            style: Theme.of(context).textTheme.subhead),
-                        if (userSnapshot.data.location != null)
-                          Text(userSnapshot.data.location),
-                        if (userSnapshot.data.website != null)
-                          bloc.clickableURL
-                              ? GestureDetector(
-                                  onTap: () {
-                                    bloc.launchURL(userSnapshot.data.website);
-                                  },
-                                  child: Text(
-                                    userSnapshot.data.website,
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                )
-                              : Text(userSnapshot.data.website),
-                        if (userSnapshot.data.bio != null) ...[
-                          Divider(
-                            height: 20.0,
-                            color: Colors.grey,
-                          ),
-                          DescriptionTextWidget(
-                            text: userSnapshot.data.bio,
-                            withHashtags: false,
-                          ),
-                        ],
-                        Divider(
-                          height: 20.0,
-                          color: Colors.grey,
+                            NoScrollLoadingListView(
+                              model: model,
+                              widgetAdapter: (ObjectKey key, Post post) =>
+                                  BasicPost(
+                                key: key,
+                                post: post,
+                              ),
+                            ),
+                          ],
                         ),
-                        NoScrollLoadingListView(
-                          model: bloc, // TODO Change bloc to model
-                          widgetAdapter: (dynamic post) => BasicPost(
-                            post: post,
-                            delegatingToDetail: false,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }
-
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.blue,
-            leading: BackButton(
-              color: Colors.white,
-            ),
-          ),
-          body: const Center(
-            child: const CircularProgressIndicator(),
-          ),
         );
       },
+    );
+  }
+
+  Widget _buildLoadingScaffold() {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        leading: BackButton(
+          color: Colors.white,
+        ),
+      ),
+      body: const Center(
+        child: const CircularProgressIndicator(
+          valueColor: const AlwaysStoppedAnimation<Color>(
+            Colors.blueGrey,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCircleAvatar(UserProfileModel model) {
+    return CircleAvatar(
+      radius: 65.0,
+      backgroundColor: Colors.grey[300],
+      backgroundImage: model.user.avatar == null
+          ? AssetImage('assets/img/user_placeholder.png')
+          : NetworkImage(model.user.avatar),
     );
   }
 }

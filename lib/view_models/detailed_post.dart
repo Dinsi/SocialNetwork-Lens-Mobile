@@ -1,15 +1,16 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/users/compact_user.dart';
 import 'package:aperture/router.dart';
-import 'package:aperture/view_models/base_model.dart';
-import 'package:aperture/view_models/mixins/base_feed_model.dart';
-import 'package:aperture/view_models/shared/basic_post_model.dart';
+import 'package:aperture/view_models/core/base_model.dart';
+import 'package:aperture/view_models/core/mixins/base_feed.dart';
+import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 
-const int _commentLimit = 10;
+const _commentLimit = 10;
 
 enum DetailedPostViewState { Idle, Publishing }
 
@@ -29,17 +30,17 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   double _initialHeight;
 
   // * Init Functions
-  void init(bool toComments) {
+  void init(bool toComments, BasicPostModel model) {
+    // Set toComments
     _toComments = toComments;
     if (_toComments) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _calculateInitialHeight();
       });
     }
-  }
 
-  void delegateModel(BasicPostModel basicPostModel) {
-    _basicPostModel = basicPostModel;
+    // Delegate model
+    _basicPostModel = model;
   }
 
   /////////////////////////////////////////////////////////////
@@ -124,17 +125,16 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   // * Navigator Functions
   void navigateToUserProfile(BuildContext context, [CompactUser user]) {
     // TODO navigateToUserProfile
-    Navigator.of(context).pushNamed(RouteName.userProfile, arguments: {
-      'id': user != null ? user.id : _basicPostModel.post.user.id,
-      'username':
-          user != null ? user.username : _basicPostModel.post.user.username,
-    });
+    Navigator.of(context).pushNamed(
+      RouteName.userProfile,
+      arguments: user != null ? user.id : _basicPostModel.post.user.id,
+    );
   }
 
   /////////////////////////////////////////////////////////////
   // * Private Functions
   void _updateComments(dynamic commentData) {
-    List<Comment> comments;
+    UnmodifiableListView<Comment> comments;
 
     if (commentData is Map) {
       _nextLink = commentData["nextLink"];
@@ -144,10 +144,13 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
       }
 
       if (!listSubject.hasValue) {
-        comments = commentData["comments"] as List<Comment>;
+        comments = UnmodifiableListView<Comment>(
+            commentData["comments"] as List<Comment>);
       } else {
-        comments = List<Comment>.from(listSubject.value)
-          ..addAll(commentData["comments"] as List<Comment>);
+        comments = UnmodifiableListView<Comment>(
+          List<Comment>.from(listSubject.value)
+            ..addAll(commentData["comments"] as List<Comment>),
+        );
       }
     }
 
@@ -157,9 +160,9 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   }
 
   void _calculateInitialHeight() {
-    final RenderBox renderBoxColumn =
+    final RenderBox columnRenderBox =
         _columnKey.currentContext.findRenderObject();
-    _initialHeight = renderBoxColumn.size.height;
+    _initialHeight = columnRenderBox.size.height;
   }
 
   /////////////////////////////////////////////////////////////
@@ -167,10 +170,9 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   Post get post => _basicPostModel.post;
   VoidCallback get onUpvoteOrRemove => _basicPostModel.onUpvoteOrRemove;
   VoidCallback get onDownvoteOrRemove => _basicPostModel.onDownvoteOrRemove;
-  BasicPostViewState get basicPostState => _basicPostModel.state;
 
+  GlobalKey get columnKey => _columnKey;
   ScrollController get scrollController => _scrollController;
   TextEditingController get commentTextController => _commentTextController;
   FocusNode get commentFocusNode => _commentFocusNode;
-  GlobalKey get columnKey => _columnKey;
 }

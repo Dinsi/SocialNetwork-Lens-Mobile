@@ -29,13 +29,13 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings'),
-        leading: BackButton(),
-      ),
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Settings'),
+          leading: BackButton(),
+        ),
+        body: Column(
           children: <Widget>[
             _buildListTile(
               context: context,

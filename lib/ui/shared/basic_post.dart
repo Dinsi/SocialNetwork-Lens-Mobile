@@ -1,41 +1,47 @@
 import 'package:aperture/models/post.dart';
-import 'package:aperture/router.dart';
-import 'package:aperture/ui/base_view.dart';
+import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/image_container.dart';
 import 'package:aperture/utils/post_shared_functions.dart';
-import 'package:aperture/view_models/shared/basic_post_model.dart';
+import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 const double _iconSideSize = 45.0;
 const double _defaultHeight = 55.0;
 
+TextStyle _votesTextStyle([Color color]) {
+  return TextStyle(
+    fontSize: 17.0,
+    fontWeight: FontWeight.bold,
+    color: color ?? Colors.grey[600],
+  );
+}
+
 class BasicPost extends StatelessWidget {
-  final bool delegatingToDetail;
+  final bool delegatingModel;
   final Post post;
 
-  const BasicPost({Key key, @required this.delegatingToDetail, this.post})
-      : assert((delegatingToDetail == true && post == null) ||
-            (delegatingToDetail == false && post != null)),
+  const BasicPost({Key key, this.delegatingModel = false, this.post})
+      : assert((delegatingModel == true && post == null) ||
+            (delegatingModel == false && post != null)),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return delegatingToDetail
+    return delegatingModel
         ? Consumer<BasicPostModel>(
             builder: _buildBasicPost,
           )
         : ChangeNotifierBaseView<BasicPostModel>(
-            onModelReady: (model) => model.setPost(post),
+            onModelReady: (model) => model.init(post),
             builder: _buildBasicPost,
           );
   }
 
   Widget _buildBasicPost(
       BuildContext context, BasicPostModel model, Widget __) {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.only(bottom: 25.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -44,7 +50,7 @@ class BasicPost extends StatelessWidget {
             imageUrl: model.post.image,
             imageHeight: model.post.height,
             imageWidth: model.post.width,
-            onTap: !delegatingToDetail
+            onTap: !delegatingModel
                 ? () => model.navigateToDetailedPost(context, false)
                 : null, // TODO toFullImageScreen
             onDoubleTap: () => model.onUpvoteOrRemove(),
@@ -54,14 +60,14 @@ class BasicPost extends StatelessWidget {
             padding: const EdgeInsets.only(left: 15.0),
             child: Theme(
               data: Theme.of(context).copyWith(
-                iconTheme: Theme.of(context).iconTheme.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                iconTheme: Theme.of(context)
+                    .iconTheme
+                    .copyWith(color: Colors.grey[600]),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  if (!delegatingToDetail)
+                  if (!delegatingModel)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Container(
@@ -71,20 +77,16 @@ class BasicPost extends StatelessWidget {
                         child: Stack(
                           children: <Widget>[
                             model.post.user.avatar == null
-                                ? Image.asset(
-                                    'assets/img/user_placeholder.png',
-                                  )
-                                : FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: model.post.user.avatar,
-                                  ),
+                                ? Image.asset('assets/img/user_placeholder.png')
+                                : Image.network(model.post.user.avatar),
                             Material(
                               color: Colors.transparent,
                               child: InkWell(
-                                  highlightColor: Colors.transparent,
-                                  splashColor: Colors.white24,
-                                  onTap: () =>
-                                      model.navigateToUserProfile(context)),
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.white24,
+                                onTap: () =>
+                                    model.navigateToUserProfile(context),
+                              ),
                             ),
                           ],
                         ),
@@ -114,7 +116,7 @@ class BasicPost extends StatelessWidget {
                                 ),
                                 Text(
                                   nFormatter(model.post.votes.toDouble(), 0),
-                                  style: votesTextStyle(
+                                  style: _votesTextStyle(
                                       model.state == BasicPostViewState.UpVote
                                           ? Colors.blue
                                           : null),
@@ -143,12 +145,14 @@ class BasicPost extends StatelessWidget {
                   ),
                   Material(
                     child: InkWell(
-                      onTap: !delegatingToDetail
+                      onTap: !delegatingModel
                           ? () => model.navigateToDetailedPost(context, true)
                           : null,
                       child: Padding(
                         padding: const EdgeInsetsDirectional.only(
-                            start: 20.0, end: 20.0),
+                          start: 20.0,
+                          end: 20.0,
+                        ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
@@ -161,7 +165,7 @@ class BasicPost extends StatelessWidget {
                             Center(
                               child: Text(
                                 model.post.commentsLength.toString(),
-                                style: votesTextStyle(),
+                                style: _votesTextStyle(),
                               ),
                             )
                           ],
@@ -171,21 +175,18 @@ class BasicPost extends StatelessWidget {
                   ),
                   PopupMenuButton<int>(
                     onSelected: (int value) => model.onSelected(context, value),
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<int>>[
-                      PopupMenuItem<int>(
-                        value: 1,
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.plusSquare,
-                            ),
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem<int>(
+                          value: 1,
+                          child: Row(children: <Widget>[
+                            Icon(FontAwesomeIcons.plusSquare),
                             const SizedBox(width: 15.0),
-                            Text('Add to collection'),
-                          ],
-                        ),
-                      ),
-                    ],
+                            const Text('Add to collection'),
+                          ]),
+                        )
+                      ];
+                    },
                   )
                 ],
               ),

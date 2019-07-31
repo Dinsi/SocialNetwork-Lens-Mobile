@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aperture/models/users/user.dart';
 import 'package:aperture/view_models/append_to_collection_bloc.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
@@ -18,14 +19,16 @@ class NewCollectionBloc extends AppendToCollectionBloc {
 
     _saveController.sink.add(false);
 
+    User user = appInfo.user;
+
     Collection result =
         await repository.postNewCollection(collectionName.trim());
     if (result != null) {
       final newCollection = CompactCollection.fromJson(result.toJson());
       user.collections.add(newCollection);
-      await appInfo.setUserFromUser(user);
+      await appInfo.updateUser();
       Collection result2 =
-          await super.updateCollection(user.collections.length - 1, postId);
+          await updateCollection(user.collections.length - 1, postId);
       return result2 != null ? newCollection : 2;
     }
 

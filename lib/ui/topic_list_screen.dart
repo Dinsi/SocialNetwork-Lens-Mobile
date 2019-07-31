@@ -1,4 +1,4 @@
-import 'package:aperture/view_models/enums/checkbox_state.dart';
+import 'package:aperture/view_models/core/enums/checkbox_state.dart';
 import 'package:aperture/view_models/topic_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

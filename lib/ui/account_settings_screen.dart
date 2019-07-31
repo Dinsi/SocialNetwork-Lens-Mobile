@@ -4,13 +4,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class AccountSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Account'),
-        leading: BackButton(),
-      ),
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Account'),
+          leading: BackButton(),
+        ),
+        body: Column(
           children: <Widget>[
             ListTile(
               leading: Icon(FontAwesomeIcons.envelope),
@@ -19,8 +19,8 @@ class AccountSettingsScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.title,
               ),
               onTap: () async {
-                int result = await Navigator.of(context)
-                    .pushNamed('/changeEmail');
+                int result =
+                    await Navigator.of(context).pushNamed('/changeEmail');
                 if (result != null) {
                   showDialog(
                     context: context,

@@ -1,11 +1,11 @@
 import 'package:aperture/models/comment.dart';
-import 'package:aperture/ui/base_view.dart';
+import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/basic_post.dart';
 import 'package:aperture/ui/shared/comment_tile.dart';
-import 'package:aperture/ui/shared/description_text_widget.dart';
+import 'package:aperture/ui/shared/description_text.dart';
 import 'package:aperture/ui/shared/loading_lists/no_scroll_loading_list_view.dart';
-import 'package:aperture/view_models/detailed_post_model.dart';
-import 'package:aperture/view_models/shared/basic_post_model.dart';
+import 'package:aperture/view_models/detailed_post.dart';
+import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -13,67 +13,59 @@ import 'package:transparent_image/transparent_image.dart';
 
 const double _iconSideSize = 60.0;
 const double _defaultHeight = 75.0;
-const double _initialCircularIndicatorHeight = 100.0;
 
-class DetailedPostScreen extends StatefulWidget {
+class DetailedPostScreen extends StatelessWidget {
   final bool toComments;
+  final BasicPostModel basicPostModel;
 
-  const DetailedPostScreen({@required this.toComments});
+  const DetailedPostScreen({
+    @required this.toComments,
+    @required this.basicPostModel,
+  });
 
-  @override
-  _DetailedPostScreenState createState() => _DetailedPostScreenState();
-}
-
-class _DetailedPostScreenState extends State<DetailedPostScreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<BasicPostModel>(
-      builder: (_, basicPostModel, __) {
-        return ChangeNotifierBaseView<DetailedPostModel>(
-          onModelReady: (model) {
-            model.init(widget.toComments);
-            model.delegateModel(basicPostModel);
-          },
-          builder: (_, model, __) {
-            return Scaffold(
-              body: SafeArea(
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    iconTheme: Theme.of(context).iconTheme.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                  ),
-                  child: RefreshIndicator(
-                    onRefresh: model.onRefresh,
-                    child: NotificationListener<ScrollNotification>(
-                      onNotification: model.onNotification,
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(
-                            child: SingleChildScrollView(
-                              controller: model.scrollController,
-                              child: Column(
-                                key: model.columnKey,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: _buildWidgetList(model),
-                              ),
-                            ),
+    return SafeArea(
+      child: Scaffold(
+        body: Theme(
+          data: Theme.of(context).copyWith(
+            iconTheme:
+                Theme.of(context).iconTheme.copyWith(color: Colors.grey[600]),
+          ),
+          child: ChangeNotifierBaseView<DetailedPostModel>(
+            onModelReady: (model) {
+              model.init(toComments, basicPostModel);
+            },
+            builder: (context, model, _) {
+              return RefreshIndicator(
+                onRefresh: model.onRefresh,
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: model.onNotification,
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: SingleChildScrollView(
+                          controller: model.scrollController,
+                          child: Column(
+                            key: model.columnKey,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _buildWidgetList(context, model),
                           ),
-                          _buildNewCommentContainer(model),
-                        ],
+                        ),
                       ),
-                    ),
+                      _buildNewCommentContainer(context, model),
+                    ],
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 
-  List<Widget> _buildWidgetList(DetailedPostModel model) {
+  List<Widget> _buildWidgetList(BuildContext context, DetailedPostModel model) {
     return [
       Padding(
         padding: const EdgeInsets.only(left: 12.0, top: 12.0, right: 12.0),
@@ -82,22 +74,25 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              _buildUserRow(model),
+              _buildUserRow(context, model),
               _buildTopActionButtons(model),
             ],
           ),
         ),
       ),
-      DescriptionTextWidget(
+      DescriptionText(
         text: model.post.description,
         withHashtags: true,
       ),
-      BasicPost(delegatingToDetail: true),
+      ChangeNotifierProvider.value(
+        value: basicPostModel,
+        child: BasicPost(delegatingModel: true),
+      ),
       _buildCommentSection(model)
     ];
   }
 
-  Widget _buildUserRow(DetailedPostModel model) {
+  Widget _buildUserRow(BuildContext context, DetailedPostModel model) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -154,14 +149,16 @@ class _DetailedPostScreenState extends State<DetailedPostScreen> {
   Widget _buildCommentSection(DetailedPostModel model) {
     return NoScrollLoadingListView<Comment>(
       model: model,
-      widgetAdapter: (Comment comment) => CommentTile(
+      widgetAdapter: (ObjectKey key, Comment comment) => CommentTile(
+        key: key,
         comment: comment,
         onPressed: model.navigateToUserProfile,
       ),
     );
   }
 
-  Widget _buildNewCommentContainer(DetailedPostModel model) {
+  Widget _buildNewCommentContainer(
+      BuildContext context, DetailedPostModel model) {
     return Container(
       child: Column(
         children: <Widget>[
