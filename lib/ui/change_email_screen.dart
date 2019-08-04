@@ -1,3 +1,4 @@
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/change_email_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -52,40 +53,30 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
       'password': _passwordController.text,
     });
 
+    if (result == 0) {
+      Navigator.of(context).pop(result);
+      return;
+    }
+
+    String snackBarMessage;
     switch (result) {
-      case 0:
-        Navigator.of(context).pop(result);
-        break;
       case -1:
-        _showInSnackBar('All fields must be filled');
+        snackBarMessage = 'All fields must be filled';
         break;
       case -2:
-        _showInSnackBar('Invalid email address');
+        snackBarMessage = 'Invalid email address';
+
         break;
       case -3:
-        _showInSnackBar('New email cannot be the same as the current email');
+        snackBarMessage = 'New email cannot be the same as the current email';
+
         break;
       case 1:
-        _showInSnackBar(
-            'The password provided does not match the current password');
+        snackBarMessage =
+            'The password provided does not match the current password';
     }
-  }
 
-  void _showInSnackBar(String value) {
-    FocusScope.of(context).requestFocus(new FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "WorkSansSemiBold"),
-      ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
-    ));
+    showInSnackBar(context, _scaffoldKey, snackBarMessage);
   }
 
   @override

@@ -19,14 +19,14 @@ class NewCollectionBloc extends AppendToCollectionBloc {
 
     _saveController.sink.add(false);
 
-    User user = appInfo.user;
+    User user = appInfo.currentUser;
 
     Collection result =
         await repository.postNewCollection(collectionName.trim());
     if (result != null) {
       final newCollection = CompactCollection.fromJson(result.toJson());
       user.collections.add(newCollection);
-      await appInfo.updateUser();
+      await appInfo.updateUser(user);
       Collection result2 =
           await updateCollection(user.collections.length - 1, postId);
       return result2 != null ? newCollection : 2;

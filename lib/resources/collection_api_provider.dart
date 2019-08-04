@@ -11,7 +11,7 @@ class CollectionApiProvider extends BaseApiProvider {
   Future<Collection> fetch(int collectionId) async {
     print('_collection_fetch_');
 
-    var response = await client.get(
+    final response = await client.get(
       '${super.baseUrl}collections/$collectionId/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
@@ -31,7 +31,7 @@ class CollectionApiProvider extends BaseApiProvider {
   Future<Collection> appendPost(int collectionId, int postId) async {
     print('_collection_appendPost_');
 
-    var response = await client.patch(
+    final response = await client.patch(
       '${super.baseUrl}collections/$collectionId/append/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
@@ -53,7 +53,7 @@ class CollectionApiProvider extends BaseApiProvider {
   Future<Collection> postNew(String collectionName) async {
     print('_collection_postNew_');
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}collections/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,

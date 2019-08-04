@@ -1,3 +1,4 @@
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/new_collection_bloc.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:flutter/material.dart';
@@ -82,11 +83,11 @@ class _NewCollectionScreenState extends State<NewCollectionScreen> {
                           } else {
                             switch (result) {
                               case -1:
-                                _showInSnackBar(
+                                showInSnackBar(context, _scaffoldKey,
                                     'The collection name cannot be empty');
                                 break;
                               case 1:
-                                _showInSnackBar(
+                                showInSnackBar(context, _scaffoldKey,
                                     'An error has occurred in the server');
                             }
                           }
@@ -124,22 +125,5 @@ class _NewCollectionScreenState extends State<NewCollectionScreen> {
             ],
           ),
         ));
-  }
-
-  void _showInSnackBar(String value) {
-    FocusScope.of(context).requestFocus(new FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "WorkSansSemiBold"),
-      ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
-    ));
   }
 }

@@ -3,7 +3,6 @@ import 'package:aperture/view_models/change_password_bloc.dart';
 import 'package:aperture/view_models/collection_list_bloc.dart';
 import 'package:aperture/view_models/collection_posts_bloc.dart';
 import 'package:aperture/view_models/new_collection_bloc.dart';
-import 'package:aperture/view_models/providers/edit_profile_bloc_provider.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
@@ -83,13 +82,8 @@ abstract class Router {
         );
 
       case RouteName.editProfile:
-        final bloc = EditProfileBloc();
         return MaterialPageRoute<int>(
-          builder: (context) => EditProfileBlocProvider(
-            bloc,
-            child: EditProfileScreen(),
-          ),
-        );
+            builder: (context) => EditProfileScreen());
 
       case RouteName.userProfile:
         return MaterialPageRoute<Null>(

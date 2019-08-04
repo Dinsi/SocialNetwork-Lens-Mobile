@@ -1,3 +1,4 @@
+import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -19,8 +20,8 @@ class AccountSettingsScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.title,
               ),
               onTap: () async {
-                int result =
-                    await Navigator.of(context).pushNamed('/changeEmail');
+                int result = await Navigator.of(context)
+                    .pushNamed(RouteName.changeEmail);
                 if (result != null) {
                   showDialog(
                     context: context,
@@ -48,8 +49,8 @@ class AccountSettingsScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.title,
               ),
               onTap: () async {
-                int result =
-                    await Navigator.of(context).pushNamed('/changePassword');
+                int result = await Navigator.of(context)
+                    .pushNamed(RouteName.changePassword);
                 if (result != null) {
                   showDialog(
                     context: context,

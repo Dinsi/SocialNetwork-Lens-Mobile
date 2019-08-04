@@ -55,8 +55,8 @@ class UserProfileModel extends StateModel<UserProfileViewState>
   void afterInitialFetch(double circularIndicatorHeight) => null;
 
   Future<void> fetchUser(int userId) async {
-    if (_appInfo.user.id == userId) {
-      _user = appInfo.user;
+    if (_appInfo.currentUser.id == userId) {
+      _user = appInfo.currentUser;
     } else {
       _user = await repository.fetchUserInfoById(userId);
     }
@@ -73,7 +73,6 @@ class UserProfileModel extends StateModel<UserProfileViewState>
   void launchURL() async {
     await launch(
       _user.website,
-      forceWebView: true,
       enableJavaScript: true,
     );
   }
@@ -104,5 +103,5 @@ class UserProfileModel extends StateModel<UserProfileViewState>
   }
 
   User get user => _user;
-  bool get isSelf => _appInfo.user.id == _user.id;
+  bool get isSelf => _appInfo.currentUser.id == _user.id;
 }

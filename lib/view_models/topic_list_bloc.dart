@@ -21,7 +21,7 @@ class TopicListBloc {
   TopicListBloc()
       : _repository = locator<Repository>(),
         _appInfo = locator<AppInfo>(),
-        _initialTopics = locator<AppInfo>().user.topics
+        _initialTopics = locator<AppInfo>().currentUser.topics
           ..sort(
             (Topic a, Topic b) => a.name.compareTo(b.name),
           ),

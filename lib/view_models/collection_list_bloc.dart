@@ -6,7 +6,7 @@ import 'package:aperture/resources/app_info.dart';
 
 class CollectionListBloc extends AppendToCollectionBloc {
   List<CompactCollection> collections =
-      List.from(locator<AppInfo>().user.collections);
+      List.from(locator<AppInfo>().currentUser.collections);
 
   @override
   Future<Collection> updateCollection(int index, int postId) async {

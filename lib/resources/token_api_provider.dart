@@ -3,6 +3,7 @@ import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
 
 import 'package:aperture/resources/base_api_provider.dart';
 import 'package:http/http.dart' show Client;
+import 'package:http/http.dart';
 
 // TODO fix after token functionality clarification
 
@@ -12,7 +13,7 @@ class TokenApiProvider extends BaseApiProvider {
   Future<int> login(String username, String password) async {
     print('_token_login_');
 
-    var response = await client.post('${super.baseUrl}token/',
+    final response = await client.post('${super.baseUrl}token/',
         body: jsonEncode({'username': username, 'password': password}),
         headers: {HttpHeaders.contentTypeHeader: ContentType.json.value});
 
@@ -34,7 +35,7 @@ class TokenApiProvider extends BaseApiProvider {
   Future<int> register(Map<String, String> fields) async {
     print('_token_register_');
 
-    var response = await client.post('${super.baseUrl}users/',
+    final response = await client.post('${super.baseUrl}users/',
         body: jsonEncode(fields),
         headers: {HttpHeaders.contentTypeHeader: ContentType.json.value});
 
@@ -57,7 +58,7 @@ class TokenApiProvider extends BaseApiProvider {
     //TODO fix verify, returns false on other functions and does nothing
     print('_token_verify_');
 
-    var response = await client.post('${super.baseUrl}token/verify/',
+    Response response = await client.post('${super.baseUrl}token/verify/',
         body: jsonEncode({'token': appInfo.accessToken}),
         headers: {HttpHeaders.contentTypeHeader: ContentType.json.value});
 

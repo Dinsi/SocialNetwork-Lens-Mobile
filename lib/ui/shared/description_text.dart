@@ -1,5 +1,5 @@
 import 'package:aperture/router.dart';
-import 'package:aperture/utils/post_shared_functions.dart';
+import 'package:aperture/utils/utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 

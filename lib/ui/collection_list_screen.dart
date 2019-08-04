@@ -1,3 +1,4 @@
+import 'package:aperture/router.dart';
 import 'package:aperture/view_models/collection_list_bloc.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
@@ -33,11 +34,13 @@ class _CollectionListScreenState extends State<CollectionListScreen> {
             icon: Icon(Icons.add),
             onPressed: () async {
               final CompactCollection newCollection =
-                  await Navigator.of(context)
-                      .pushNamed('/newCollection', arguments: {
-                'addToCollection': widget.addToCollection,
-                'postId': widget.postId,
-              });
+                  await Navigator.of(context).pushNamed(
+                RouteName.newCollection,
+                arguments: {
+                  'addToCollection': widget.addToCollection,
+                  'postId': widget.postId,
+                },
+              );
 
               if (newCollection != null) {
                 if (widget.addToCollection) {
@@ -83,7 +86,7 @@ class _CollectionListScreenState extends State<CollectionListScreen> {
                                   ctx, widget.bloc.collections[index].name))
                           : () {
                               Navigator.of(context).pushNamed(
-                                '/collectionPosts',
+                                RouteName.collectionPosts,
                                 arguments: {
                                   'collId': widget.bloc.collections[index].id,
                                   'collName':

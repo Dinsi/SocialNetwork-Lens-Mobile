@@ -13,7 +13,7 @@ abstract class AppendToCollectionBloc {
   final AppInfo appInfo = locator<AppInfo>();
 
   Future<Collection> updateCollection(int index, int postId) async {
-    User user = appInfo.user;
+    User user = appInfo.currentUser;
 
     Collection result = await repository.appendPostToCollection(
         user.collections[index].id, postId);
@@ -23,7 +23,7 @@ abstract class AppendToCollectionBloc {
         user.collections[index].cover = result.cover;
       }
       user.collections[index].posts.add(postId);
-      await appInfo.updateUser();
+      await appInfo.updateUser(user);
     }
 
     return result;

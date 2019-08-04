@@ -50,6 +50,6 @@ class RecommendedTopicsModel extends StateModel<RecTopViewState> {
 
   Map<Topic, bool> get recommendedTopics => _recommendedTopics;
   List<Topic> get topicList => _recommendedTopics.keys.toList();
-  String get userUsername => _appInfo.user.username;
+  String get userUsername => _appInfo.currentUser.username;
   bool get emptyTopics => _recommendedTopics.isEmpty;
 }

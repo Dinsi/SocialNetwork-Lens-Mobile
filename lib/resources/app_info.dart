@@ -3,19 +3,25 @@ import 'dart:convert' show jsonDecode, jsonEncode;
 
 import 'package:aperture/models/topic.dart';
 import 'package:aperture/models/users/user.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppInfo {
-  SharedPreferences _prefs;
-  User _user;
+  final SharedPreferences _prefs;
+  BehaviorSubject<User> _userController = BehaviorSubject();
 
-  ///////////////////////////////////////////////////////
-  // * Init
-  Future<void> init() async {
-    _prefs = await SharedPreferences.getInstance();
-    _user = _prefs.getString('user') == null
-        ? null
-        : User.fromJson(jsonDecode(_prefs.getString('user')));
+  AppInfo(this._prefs) {
+    String userJson = _prefs.getString('user');
+
+    if (userJson != null) {
+      User user = User.fromJson(jsonDecode(userJson));
+      addUser(user);
+    }
+  }
+
+  // * Dispose
+  void dispose() {
+    _userController.close();
   }
 
   ///////////////////////////////////////////////////////
@@ -37,20 +43,23 @@ class AppInfo {
   }
 
   Future<void> addTopicToUser(Topic topic) async {
-    _user.topics.add(topic);
-    await updateUser();
+    User newUser = User.from(currentUser);
+    newUser.topics.add(topic);
+    await updateUser(newUser);
   }
 
   Future<void> removeTopicFromUser(String topicName) async {
-    _user.topics.removeWhere((topic) => topic.name == topicName);
-    await updateUser();
+    User newUser = User.from(currentUser);
+    newUser.topics.removeWhere((topic) => topic.name == topicName);
+    await updateUser(newUser);
   }
 
   Future<void> bulkRemoveTopicsFromUser(List<Topic> topicList) async {
+    User newUser = User.from(currentUser);
     for (Topic targetTopic in topicList) {
-      _user.topics.removeWhere((topic) => topic.id == targetTopic.id);
+      newUser.topics.removeWhere((topic) => topic.id == targetTopic.id);
     }
-    await updateUser();
+    await updateUser(newUser);
   }
 
   ///////////////////////////////////////////////////////
@@ -67,14 +76,17 @@ class AppInfo {
   Future<void> _setRefreshToken(String value) async =>
       await _prefs.setString('refreshToken', value);
 
-  User get user => _user;
+  Function(User) get addUser => _userController.sink.add;
+  Stream<User> get userStream => _userController.stream;
+  User get currentUser => _userController.value ?? User.initial();
 
   Future<void> setUserFromMap(Map<String, dynamic> userMap) async {
     await _prefs.setString('user', jsonEncode(userMap));
-    _user = User.fromJson(userMap);
+    addUser(User.fromJson(userMap));
   }
 
-  Future<void> updateUser() async {
-    await _prefs.setString('user', jsonEncode(_user.toJson()));
+  Future<void> updateUser(User newUserData) async {
+    await _prefs.setString('user', jsonEncode(newUserData.toJson()));
+    addUser(newUserData);
   }
 }

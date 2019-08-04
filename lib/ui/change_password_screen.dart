@@ -1,3 +1,4 @@
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/change_password_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -63,36 +64,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       'new_password_confirm': _confirmedPasswordController.text,
     });
 
+    if (result == 0) {
+      Navigator.of(context).pop(result);
+      return;
+    }
+
+    String snackBarMessage;
     switch (result) {
-      case 0:
-        Navigator.of(context).pop(result);
-        break;
       case -1:
-        _showInSnackBar('All fields must be filled');
+        snackBarMessage = 'All fields must be filled';
         break;
       case -2:
-        _showInSnackBar('Passwords don\'t match');
+        snackBarMessage = 'Passwords don\'t match';
         break;
       case 1:
-        _showInSnackBar('The old password provided is invalid');
+        snackBarMessage = 'The old password provided is invalid';
     }
-  }
 
-  void _showInSnackBar(String value) {
-    FocusScope.of(context).requestFocus(new FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "WorkSansSemiBold"),
-      ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
-    ));
+    showInSnackBar(context, _scaffoldKey, snackBarMessage);
   }
 
   @override

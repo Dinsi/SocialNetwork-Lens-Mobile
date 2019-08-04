@@ -15,7 +15,7 @@ class TopicApiProvider extends BaseApiProvider {
   Future<List<Topic>> fetchRecommended() async {
     print('_topic_fetchRecommended_');
 
-    var response = await client.get('${super.baseUrl}topics/recommended/',
+    final response = await client.get('${super.baseUrl}topics/recommended/',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
@@ -39,7 +39,7 @@ class TopicApiProvider extends BaseApiProvider {
   Future<Topic> fetchSingle(String topic) async {
     print('_topic_fetchSingle_');
 
-    var response = await client.get('${super.baseUrl}topics/$topic/', headers: {
+    final response = await client.get('${super.baseUrl}topics/$topic/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
     });
 
@@ -69,7 +69,7 @@ class TopicApiProvider extends BaseApiProvider {
 
     print(printText);
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}topics/$topic/$actionPath/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
@@ -88,7 +88,7 @@ class TopicApiProvider extends BaseApiProvider {
   Future<List<SearchResult>> fetchSearchResults(String query) async {
     print('_topic_fetchSearchResults_');
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}topics/search/',
       headers: {
         HttpHeaders.contentTypeHeader: ContentType.json.value,
@@ -121,7 +121,7 @@ class TopicApiProvider extends BaseApiProvider {
       topicsNames[i] = changedTopics[i].id;
     }
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}topics/bulk/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,

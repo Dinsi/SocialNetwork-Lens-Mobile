@@ -1,7 +1,10 @@
 import 'package:aperture/models/post.dart';
+import 'package:aperture/models/users/compact_user.dart';
+import 'package:aperture/models/users/user.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/image_container.dart';
-import 'package:aperture/utils/post_shared_functions.dart';
+import 'package:aperture/ui/shared/user_avatar.dart';
+import 'package:aperture/utils/utils.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -41,6 +44,11 @@ class BasicPost extends StatelessWidget {
 
   Widget _buildBasicPost(
       BuildContext context, BasicPostModel model, Widget __) {
+    // * If the post belongs to the user, fetches user
+    // *     (provided by Stream Provider) from the widget tree
+
+    // * Else, it uses the user info from the post itself
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 25.0),
       child: Column(
@@ -55,144 +63,133 @@ class BasicPost extends StatelessWidget {
                 : null, // TODO toFullImageScreen
             onDoubleTap: () => model.onUpvoteOrRemove(),
           ),
-          Container(
-            height: _defaultHeight,
-            padding: const EdgeInsets.only(left: 15.0),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                iconTheme: Theme.of(context)
-                    .iconTheme
-                    .copyWith(color: Colors.grey[600]),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  if (!delegatingModel)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: Container(
-                        height: _iconSideSize,
-                        width: _iconSideSize,
-                        color: Colors.grey[300],
-                        child: Stack(
-                          children: <Widget>[
-                            model.post.user.avatar == null
-                                ? Image.asset('assets/img/user_placeholder.png')
-                                : Image.network(model.post.user.avatar),
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.white24,
-                                onTap: () =>
-                                    model.navigateToUserProfile(context),
-                              ),
-                            ),
-                          ],
-                        ),
+          _buildActionRow(context, model),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionRow(BuildContext context, BasicPostModel model) {
+    return Container(
+      height: _defaultHeight,
+      padding: const EdgeInsets.only(left: 15.0),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          iconTheme:
+              Theme.of(context).iconTheme.copyWith(color: Colors.grey[600]),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            if (!delegatingModel)
+              model.isSelf
+                  ? Consumer<User>(
+                      builder: (context, currentUser, __) => UserAvatar(
+                        side: _iconSideSize,
+                        user: currentUser,
+                        onTap: () => model.navigateToUserProfile(context),
+                      ),
+                    )
+                  : UserAvatar(
+                      side: _iconSideSize,
+                      user: model.post.user,
+                      onTap: () => model.navigateToUserProfile(context),
+                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Material(
+                  child: InkWell(
+                    onTap: () => model.onUpvoteOrRemove(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            FontAwesomeIcons.arrowAltCircleUp,
+                            color: model.state == BasicPostViewState.UpVote
+                                ? Colors.blue
+                                : Colors.grey[600],
+                          ),
+                          const SizedBox(
+                            width: 8.0,
+                          ),
+                          Text(
+                            nFormatter(model.post.votes.toDouble(), 0),
+                            style: _votesTextStyle(
+                                model.state == BasicPostViewState.UpVote
+                                    ? Colors.blue
+                                    : null),
+                          ),
+                        ],
                       ),
                     ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                ),
+                Material(
+                  child: InkWell(
+                    onTap: () => model.onDownvoteOrRemove(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Icon(
+                        FontAwesomeIcons.arrowAltCircleDown,
+                        color: model.state == BasicPostViewState.DownVote
+                            ? Colors.red
+                            : Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Material(
+              child: InkWell(
+                onTap: !delegatingModel
+                    ? () => model.navigateToDetailedPost(context, true)
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                    start: 20.0,
+                    end: 20.0,
+                  ),
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Material(
-                        child: InkWell(
-                          onTap: () => model.onUpvoteOrRemove(),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Row(
-                              children: <Widget>[
-                                Icon(
-                                  FontAwesomeIcons.arrowAltCircleUp,
-                                  color:
-                                      model.state == BasicPostViewState.UpVote
-                                          ? Colors.blue
-                                          : Colors.grey[600],
-                                ),
-                                const SizedBox(
-                                  width: 8.0,
-                                ),
-                                Text(
-                                  nFormatter(model.post.votes.toDouble(), 0),
-                                  style: _votesTextStyle(
-                                      model.state == BasicPostViewState.UpVote
-                                          ? Colors.blue
-                                          : null),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      Icon(
+                        FontAwesomeIcons.commentAlt,
+                        size: 18.0,
+                        color: Colors.grey[600],
                       ),
-                      Material(
-                        child: InkWell(
-                          onTap: () => model.onDownvoteOrRemove(),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Icon(
-                              FontAwesomeIcons.arrowAltCircleDown,
-                              color: model.state == BasicPostViewState.DownVote
-                                  ? Colors.red
-                                  : Colors.grey[600],
-                            ),
-                          ),
+                      const SizedBox(width: 8.0),
+                      Center(
+                        child: Text(
+                          model.post.commentsLength.toString(),
+                          style: _votesTextStyle(),
                         ),
                       )
                     ],
                   ),
-                  Material(
-                    child: InkWell(
-                      onTap: !delegatingModel
-                          ? () => model.navigateToDetailedPost(context, true)
-                          : null,
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          start: 20.0,
-                          end: 20.0,
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.commentAlt,
-                              size: 18.0,
-                              color: Colors.grey[600],
-                            ),
-                            const SizedBox(width: 8.0),
-                            Center(
-                              child: Text(
-                                model.post.commentsLength.toString(),
-                                style: _votesTextStyle(),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  PopupMenuButton<int>(
-                    onSelected: (int value) => model.onSelected(context, value),
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem<int>(
-                          value: 1,
-                          child: Row(children: <Widget>[
-                            Icon(FontAwesomeIcons.plusSquare),
-                            const SizedBox(width: 15.0),
-                            const Text('Add to collection'),
-                          ]),
-                        )
-                      ];
-                    },
-                  )
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+            PopupMenuButton<int>(
+              onSelected: (value) => model.onSelected(context, value),
+              itemBuilder: (_) => [
+                PopupMenuItem<int>(
+                  value: 1,
+                  child: Row(
+                    children: <Widget>[
+                      Icon(FontAwesomeIcons.plusSquare),
+                      const SizedBox(width: 15.0),
+                      const Text('Add to collection'),
+                    ],
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

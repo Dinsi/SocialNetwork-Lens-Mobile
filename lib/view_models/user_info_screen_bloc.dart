@@ -5,7 +5,7 @@ import 'package:aperture/resources/app_info.dart';
 class UserInfoScreenBloc {
   final AppInfo _appInfo = locator<AppInfo>();
 
-  User get user => _appInfo.user;
+  User get user => _appInfo.currentUser;
 
   void clearCache() {
     _appInfo.clearCache();

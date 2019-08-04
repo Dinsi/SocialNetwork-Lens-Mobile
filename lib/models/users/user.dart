@@ -1,17 +1,14 @@
 import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/models/topic.dart';
+import 'package:aperture/models/users/compact_user.dart';
 
-class User {
-  int id;
-  String username;
+class User extends CompactUser {
   String firstName;
   String lastName;
-  String name;
   String email;
   bool isActive;
   bool isConfirmed;
   bool hasFinishedRegister;
-  String avatar;
   final List<Topic> topics;
   String headline;
   String location;
@@ -21,23 +18,37 @@ class User {
   final List<CompactCollection> collections;
 
   User(
-      this.id,
-      this.username,
+      int id,
+      String username,
       this.firstName,
       this.lastName,
-      this.name,
+      String name,
       this.email,
       this.isActive,
       this.isConfirmed,
       this.hasFinishedRegister,
-      this.avatar,
+      String avatar,
       this.topics,
       this.headline,
       this.location,
       this.bio,
       this.publicEmail,
       this.website,
-      this.collections);
+      this.collections)
+      : super(id, username, name, avatar);
+
+  User.initial()
+      : this.firstName = '',
+        this.lastName = '',
+        this.email = '',
+        this.topics = null,
+        this.headline = '',
+        this.location = '',
+        this.bio = '',
+        this.publicEmail = '',
+        this.website = '',
+        this.collections = null,
+        super(0, '', '', '');
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -70,17 +81,13 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['username'] = this.username;
+    final Map<String, dynamic> data = super.toJson();
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
-    data['name'] = this.name;
     data['email'] = this.email;
     data['is_active'] = this.isActive;
     data['is_confirmed'] = this.isConfirmed;
     data['finished_register'] = this.hasFinishedRegister;
-    data['avatar'] = this.avatar;
     data['topics'] = this.topics.map((v) => v.toJson()).toList();
     data['headline'] = this.headline;
     data['location'] = this.location;
@@ -89,5 +96,26 @@ class User {
     data['website'] = this.website;
     data['collections'] = this.collections.map((v) => v.toJson()).toList();
     return data;
+  }
+
+  static User from(User user) {
+    return User(
+        user.id,
+        user.username,
+        user.firstName,
+        user.lastName,
+        user.name,
+        user.email,
+        user.isActive,
+        user.isConfirmed,
+        user.hasFinishedRegister,
+        user.avatar,
+        user.topics,
+        user.headline,
+        user.location,
+        user.bio,
+        user.publicEmail,
+        user.website,
+        user.collections);
   }
 }

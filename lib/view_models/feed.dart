@@ -34,5 +34,5 @@ class FeedModel extends BaseModel with BaseFeedMixin<Post> {
   @override
   void afterInitialFetch(double circularIndicatorHeight) => null;
 
-  bool get userIsConfirmed => appInfo.user.isConfirmed;
+  bool get userIsConfirmed => appInfo.currentUser.isConfirmed;
 }

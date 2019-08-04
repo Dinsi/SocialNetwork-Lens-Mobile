@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 
 class SubscriptionAppBar extends StatelessWidget
     implements PreferredSizeWidget {
+  final String topicOrUser;
+
   final Color actionColor;
   final Color backgroundColor;
   final Color disabledActionColor;
   final Widget leading;
   final Widget title;
-  final String topicOrUser;
 
   const SubscriptionAppBar({
     Color actionColor,
@@ -45,7 +46,7 @@ class SubscriptionAppBar extends StatelessWidget
       BuildContext context, SubscriptionAppBarModel model) {
     switch (model.state) {
       case SubscriptionAppBarViewState.Subscribe:
-        return MaterialButton(
+        return FlatButton(
           child: Text(
             'SUBSCRIBE',
             style: Theme.of(context).textTheme.button.merge(
@@ -56,7 +57,7 @@ class SubscriptionAppBar extends StatelessWidget
         );
 
       case SubscriptionAppBarViewState.DisabledSubscribe:
-        return MaterialButton(
+        return FlatButton(
           child: Text(
             'SUBSCRIBE',
             style: Theme.of(context).textTheme.button.merge(

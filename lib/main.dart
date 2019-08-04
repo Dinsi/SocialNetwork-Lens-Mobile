@@ -8,17 +8,22 @@ import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show DeviceOrientation, SystemChrome, SystemUiOverlayStyle;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   // * Setup
-  // TODO remove for full view pictures
+  // TODO change for full view pictures
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      systemNavigationBarColor: Colors.grey[50],
-      statusBarColor: Colors.grey[50],
-      systemNavigationBarIconBrightness: Brightness.dark));
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle.dark.copyWith(
+        systemNavigationBarColor: Colors.grey[50],
+        statusBarColor: Colors.grey[50],
+        systemNavigationBarIconBrightness: Brightness.dark),
+  );
 
-  setupLocator();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  setupLocator(prefs);
 
   // * Gets the initial route the app starts with
   String initialRoute = await _getInitialRoute();
@@ -27,11 +32,8 @@ Future<void> main() async {
 }
 
 Future<String> _getInitialRoute() async {
-  final Repository repository = locator<Repository>();
-  final AppInfo appInfo = locator<AppInfo>();
-
-  //
-  await appInfo.init();
+  final repository = locator<Repository>();
+  final appInfo = locator<AppInfo>();
 
   bool validToken;
   if (appInfo.isLoggedIn()) {
@@ -52,35 +54,50 @@ Future<String> _getInitialRoute() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final String initialRoute;
 
   const MyApp({@required this.initialRoute});
 
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void dispose() { 
+    locator<AppInfo>().dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Aperture',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: "SourceSansPro",
-        iconTheme: IconThemeData(color: Colors.black),
-        appBarTheme: AppBarTheme(
-          color: Colors.white,
-          textTheme: Theme.of(context).textTheme.merge(
-                TextTheme(
-                  title: TextStyle(color: Colors.black),
+    return StreamProvider<User>(
+      initialData: User.initial(),
+      builder: (_) => locator<AppInfo>().userStream,
+      child: MaterialApp(
+        title: 'Aperture',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: "SourceSansPro",
+          iconTheme: IconThemeData(color: Colors.black),
+          appBarTheme: AppBarTheme(
+            color: Colors.white,
+            textTheme: Theme.of(context).textTheme.merge(
+                  TextTheme(
+                    title: TextStyle(color: Colors.black),
+                  ),
                 ),
-              ),
-          iconTheme: Theme.of(context).iconTheme.merge(
-                IconThemeData(
-                  color: Colors.black,
+            iconTheme: Theme.of(context).iconTheme.merge(
+                  IconThemeData(
+                    color: Colors.black,
+                  ),
                 ),
-              ),
+          ),
         ),
+        initialRoute: this.widget.initialRoute,
+        onGenerateRoute: Router.routes,
       ),
-      initialRoute: initialRoute,
-      onGenerateRoute: Router.routes,
     );
   }
 }

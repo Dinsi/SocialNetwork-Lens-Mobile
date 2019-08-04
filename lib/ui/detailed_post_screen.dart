@@ -1,15 +1,19 @@
+import 'package:aperture/locator.dart';
 import 'package:aperture/models/comment.dart';
+import 'package:aperture/models/users/compact_user.dart';
+import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/basic_post.dart';
 import 'package:aperture/ui/shared/comment_tile.dart';
 import 'package:aperture/ui/shared/description_text.dart';
 import 'package:aperture/ui/shared/loading_lists/no_scroll_loading_list_view.dart';
+import 'package:aperture/ui/shared/user_avatar.dart';
 import 'package:aperture/view_models/detailed_post.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 const double _iconSideSize = 60.0;
 const double _defaultHeight = 75.0;
@@ -74,7 +78,12 @@ class DetailedPostScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              _buildUserRow(context, model),
+              basicPostModel.isSelf
+                  ? Consumer<User>(
+                      builder: (context, currentUser, __) =>
+                          _buildUserRow(context, model, currentUser),
+                    )
+                  : _buildUserRow(context, model, model.post.user),
               _buildTopActionButtons(model),
             ],
           ),
@@ -92,44 +101,20 @@ class DetailedPostScreen extends StatelessWidget {
     ];
   }
 
-  Widget _buildUserRow(BuildContext context, DetailedPostModel model) {
+  Widget _buildUserRow(
+      BuildContext context, DetailedPostModel model, CompactUser user) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12.0),
-          child: Container(
-            height: _iconSideSize,
-            width: _iconSideSize,
-            color: Colors.grey[300],
-            child: Stack(
-              children: <Widget>[
-                Center(
-                  child: (model.post.user.avatar == null
-                      ? Image.asset(
-                          'assets/img/user_placeholder.png',
-                        )
-                      : FadeInImage.memoryNetwork(
-                          placeholder: kTransparentImage,
-                          image: model.post.user.avatar,
-                        )),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.white24,
-                    onTap: () => model.navigateToUserProfile(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        UserAvatar(
+          side: _iconSideSize,
+          user: user,
+          onTap: () => model.navigateToUserProfile(context),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Text(
-            model.post.user.name,
+            user.name,
             style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
         ),
@@ -149,11 +134,15 @@ class DetailedPostScreen extends StatelessWidget {
   Widget _buildCommentSection(DetailedPostModel model) {
     return NoScrollLoadingListView<Comment>(
       model: model,
-      widgetAdapter: (ObjectKey key, Comment comment) => CommentTile(
-        key: key,
-        comment: comment,
-        onPressed: model.navigateToUserProfile,
-      ),
+      widgetAdapter: (ObjectKey key, Comment comment) {
+        final isSelf = comment.user.id == locator<AppInfo>().currentUser.id;
+        return CommentTile(
+          key: key,
+          comment: comment,
+          onPressed: model.navigateToUserProfile,
+          isSelf: isSelf,
+        );
+      },
     );
   }
 

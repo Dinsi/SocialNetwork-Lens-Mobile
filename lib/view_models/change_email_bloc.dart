@@ -4,7 +4,7 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
-import 'package:aperture/utils/post_shared_functions.dart';
+import 'package:aperture/utils/utils.dart';
 
 class ChangeEmailBloc {
   final Repository _repository = locator<Repository>();
@@ -24,7 +24,7 @@ class ChangeEmailBloc {
   }
 
   Future<int> changeUserEmail(Map<String, String> fields) async {
-    User user = _appInfo.user;
+    User user = _appInfo.currentUser;
 
     _willPop = false;
     _saveButtonController.sink.add(false);
@@ -53,7 +53,7 @@ class ChangeEmailBloc {
     int result = await _repository.changeUserEmail(requestFields);
     if (result == 0) {
       user.email = requestFields['email'];
-      await _appInfo.updateUser();
+      await _appInfo.updateUser(user);
     }
 
     _willPop = true;
@@ -63,6 +63,6 @@ class ChangeEmailBloc {
 
   Stream<bool> get saveButton => _saveButtonController.stream;
   Stream<bool> get obscureText => _obscureTextController.stream;
-  String get email => _appInfo.user.email;
+  String get email => _appInfo.currentUser.email;
   bool get willPop => _willPop;
 }

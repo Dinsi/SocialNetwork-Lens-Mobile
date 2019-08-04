@@ -42,7 +42,7 @@ class CommentApiProvider extends BaseApiProvider {
   Future<Comment> post(int postId, String comment) async {
     print('_comment_post_');
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}posts/$postId/comments/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,

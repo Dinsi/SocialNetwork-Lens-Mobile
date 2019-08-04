@@ -1,4 +1,6 @@
 import 'package:aperture/models/post.dart';
+import 'package:aperture/models/users/compact_user.dart';
+import 'package:aperture/models/users/user.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/basic_post.dart';
 import 'package:aperture/ui/shared/description_text.dart';
@@ -6,6 +8,7 @@ import 'package:aperture/ui/shared/loading_lists/no_scroll_loading_list_view.dar
 import 'package:aperture/ui/shared/subscription_app_bar.dart';
 import 'package:aperture/view_models/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserProfileScreen extends StatelessWidget {
   final int userId;
@@ -22,10 +25,10 @@ class UserProfileScreen extends StatelessWidget {
               ? _buildLoadingScaffold()
               : Scaffold(
                   appBar: SubscriptionAppBar(
+                    topicOrUser: model.user.username,
                     backgroundColor: Colors.blue,
                     actionColor: Colors.white,
                     disabledActionColor: Colors.grey[300],
-                    topicOrUser: model.user.username,
                     leading: BackButton(
                       color: Colors.white,
                     ),
@@ -53,7 +56,11 @@ class UserProfileScreen extends StatelessWidget {
                                     child: Stack(
                                       alignment: Alignment.center,
                                       children: <Widget>[
-                                        _buildCircleAvatar(model),
+                                        Consumer<User>(
+                                          builder: (_, currentUser, __) =>
+                                              _buildCircleAvatar(
+                                                  model, currentUser),
+                                        ),
                                         Positioned(
                                           height: 125.0,
                                           right: 15.0,
@@ -74,7 +81,8 @@ class UserProfileScreen extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 16.0,
                                     ),
-                                    child: _buildCircleAvatar(model),
+                                    child:
+                                        _buildCircleAvatar(model, model.user),
                                   ),
                             if (model.user.headline != null)
                               Padding(
@@ -155,13 +163,15 @@ class UserProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCircleAvatar(UserProfileModel model) {
+  Widget _buildCircleAvatar(UserProfileModel model, CompactUser user) {
     return CircleAvatar(
       radius: 65.0,
       backgroundColor: Colors.grey[300],
-      backgroundImage: model.user.avatar == null
+      backgroundImage: user.avatar == null
           ? AssetImage('assets/img/user_placeholder.png')
-          : NetworkImage(model.user.avatar),
+          : NetworkImage(user.avatar),
     );
   }
+
+  // TODO _buildUserInfoSection(UserProfileModel model) {}
 }

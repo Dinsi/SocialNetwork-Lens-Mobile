@@ -1,3 +1,4 @@
+import 'package:aperture/router.dart';
 import 'package:aperture/view_models/collection_posts_bloc.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +32,14 @@ class CollectionPostsScreen extends StatelessWidget {
                 itemCount: snapshot.data.length,
                 itemBuilder: (ctx, idx) {
                   return GestureDetector(
-                    onTap: () => Navigator.of(context)
-                            .pushNamed('/detailedPost', arguments: {
-                          'postId': snapshot.data.posts[idx].id,
-                          'post': snapshot.data.posts[idx],
-                          'toComments': false,
-                        }),
+                    onTap: () => Navigator.of(context).pushNamed(
+                      RouteName.detailedPost,
+                      arguments: {
+                        'postId': snapshot.data.posts[idx].id,
+                        'post': snapshot.data.posts[idx],
+                        'toComments': false,
+                      },
+                    ),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.black,

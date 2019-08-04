@@ -15,7 +15,7 @@ class UserApiProvider extends BaseApiProvider {
   Future<User> fetchInfo() async {
     print('_user_fetchInfo_');
 
-    var response = await client.get('${super.baseUrl}users/self/', headers: {
+    final response = await client.get('${super.baseUrl}users/self/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
     });
 
@@ -33,7 +33,7 @@ class UserApiProvider extends BaseApiProvider {
   Future<User> fetchInfoById(int userId) async {
     print('_user_fetchInfoById_');
 
-    var response = await client.get('${super.baseUrl}users/$userId/', headers: {
+    final response = await client.get('${super.baseUrl}users/$userId/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
     });
 
@@ -49,7 +49,7 @@ class UserApiProvider extends BaseApiProvider {
   Future<int> finishRegister(List<int> desiredTopics) async {
     print('_user_finishRegister_');
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}users/finish_register/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
@@ -71,7 +71,7 @@ class UserApiProvider extends BaseApiProvider {
   Future<int> updateEmail(Map<String, String> fields) async {
     print('_user_updateEmail_');
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}users/update_email/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
@@ -95,7 +95,7 @@ class UserApiProvider extends BaseApiProvider {
   Future<int> updatePassword(Map<String, String> fields) async {
     print('_user_updatePassword_');
 
-    var response = await client.post(
+    final response = await client.post(
       '${super.baseUrl}users/update_password/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
@@ -119,7 +119,7 @@ class UserApiProvider extends BaseApiProvider {
   Future<int> patch(Map<String, String> fields) async {
     print('_user_patch_');
 
-    var response = await client.patch(
+    final response = await client.patch(
       '${super.baseUrl}users/self/',
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
@@ -164,7 +164,7 @@ class UserApiProvider extends BaseApiProvider {
     request.headers.addAll(
         {HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken});
 
-    var response = await request.send();
+    final response = await request.send();
     print(response.statusCode);
 
     if (response.statusCode == HttpStatus.ok) {

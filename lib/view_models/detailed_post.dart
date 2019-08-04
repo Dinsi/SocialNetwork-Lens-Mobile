@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:aperture/locator.dart';
 import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/users/compact_user.dart';
+import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:aperture/view_models/core/base_model.dart';
 import 'package:aperture/view_models/core/mixins/base_feed.dart';
@@ -16,18 +18,20 @@ enum DetailedPostViewState { Idle, Publishing }
 
 class DetailedPostModel extends StateModel<DetailedPostViewState>
     with BaseFeedMixin<Comment> {
-  DetailedPostModel() : super(DetailedPostViewState.Idle);
+  final Repository _repository = locator<Repository>();
 
   BasicPostModel _basicPostModel;
 
   String _nextLink;
   bool _toComments;
 
-  GlobalKey _columnKey = GlobalKey();
+  final GlobalKey columnKey = GlobalKey();
   ScrollController _scrollController = ScrollController();
   TextEditingController _commentTextController = TextEditingController();
   FocusNode _commentFocusNode = FocusNode();
   double _initialHeight;
+
+  DetailedPostModel() : super(DetailedPostViewState.Idle);
 
   // * Init Functions
   void init(bool toComments, BasicPostModel model) {
@@ -64,18 +68,17 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
 
       List<Future> futures = List<Future>(2);
 
-      futures[0] =
-          _basicPostModel.repository.fetchSinglePost(_basicPostModel.post.id);
-      futures[1] = _basicPostModel.repository
-          .fetchComments(_commentLimit, _basicPostModel.post.id, null);
+      futures[0] = _repository.fetchSinglePost(_basicPostModel.post.id);
+      futures[1] = _repository.fetchComments(
+          _commentLimit, _basicPostModel.post.id, null);
 
       List fetchedData = await Future.wait(futures);
 
       _basicPostModel.setPost(fetchedData[0] as Post);
       _updateComments(fetchedData[1]);
     } else {
-      dynamic fetchedData = await _basicPostModel.repository
-          .fetchComments(_commentLimit, _basicPostModel.post.id, _nextLink);
+      dynamic fetchedData = await _repository.fetchComments(
+          _commentLimit, _basicPostModel.post.id, _nextLink);
 
       _updateComments(fetchedData);
     }
@@ -107,7 +110,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     String newComment = _commentTextController.text.trim();
     _commentTextController.clear();
 
-    Comment newCommentObj = await _basicPostModel.repository.postComment(
+    Comment newCommentObj = await _repository.postComment(
         _basicPostModel.post.id, newComment); // TODO assuming result is valid
 
     if (!listSubject.isClosed) {
@@ -161,7 +164,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
 
   void _calculateInitialHeight() {
     final RenderBox columnRenderBox =
-        _columnKey.currentContext.findRenderObject();
+        columnKey.currentContext.findRenderObject();
     _initialHeight = columnRenderBox.size.height;
   }
 
@@ -171,7 +174,6 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   VoidCallback get onUpvoteOrRemove => _basicPostModel.onUpvoteOrRemove;
   VoidCallback get onDownvoteOrRemove => _basicPostModel.onDownvoteOrRemove;
 
-  GlobalKey get columnKey => _columnKey;
   ScrollController get scrollController => _scrollController;
   TextEditingController get commentTextController => _commentTextController;
   FocusNode get commentFocusNode => _commentFocusNode;

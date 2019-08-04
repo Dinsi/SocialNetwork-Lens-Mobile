@@ -1,13 +1,14 @@
 import 'package:aperture/locator.dart';
 import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingsScreen extends StatelessWidget {
-  final AppInfo _globals = locator<AppInfo>();
+  final AppInfo _appInfo = locator<AppInfo>();
 
   Future<void> _editProfile(BuildContext context) async {
-    int code = await Navigator.of(context).pushNamed('/editProfile');
+    int code = await Navigator.of(context).pushNamed(RouteName.editProfile);
     if (code != null) {
       showDialog(
         context: context,
@@ -41,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
               context: context,
               title: 'Account',
               onTap: () {
-                Navigator.of(context).pushNamed('/accountSettings');
+                Navigator.of(context).pushNamed(RouteName.accountSettings);
               },
               iconData: FontAwesomeIcons.userCog,
             ),
@@ -57,7 +58,7 @@ class SettingsScreen extends StatelessWidget {
               context: context,
               title: 'Subscriptions',
               onTap: () {
-                Navigator.of(context).pushNamed('/topicList');
+                Navigator.of(context).pushNamed(RouteName.topicList);
               },
               iconData: FontAwesomeIcons.thList,
             ),
@@ -65,9 +66,11 @@ class SettingsScreen extends StatelessWidget {
               context: context,
               title: 'Logout',
               onTap: () {
-                _globals.clearCache();
+                _appInfo.clearCache();
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/login', (Route<dynamic> route) => false);
+                  RouteName.login,
+                  (Route route) => false,
+                );
               },
               iconData: FontAwesomeIcons.signOutAlt,
             ),

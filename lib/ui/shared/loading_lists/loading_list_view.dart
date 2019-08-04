@@ -49,25 +49,20 @@ abstract class LoadingListViewState<T, LListViewT extends LoadingListView<T>>
 
   Widget _buildList(List<T> list) {
     return ListView.builder(
-      itemCount: list.length,
+      itemCount: widget.model.existsNext ? list.length + 1 : list.length,
       itemBuilder: (BuildContext context, int index) {
-        if (widget.model.existsNext && index == list.length - 1) {
-          return Column(
-            children: <Widget>[
-              widget.widgetAdapter(ObjectKey(list[index]), list[index]),
-              const SizedBox(
-                height: _circularIndicatorHeight,
-                child: const Padding(
-                  padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
-                  child: const Center(
-                    child: const CircularProgressIndicator(
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(Colors.blueGrey),
-                    ),
-                  ),
+        if (index == list.length && widget.model.existsNext) {
+          return const SizedBox(
+            height: _circularIndicatorHeight,
+            child: const Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+              child: const Center(
+                child: const CircularProgressIndicator(
+                  valueColor:
+                      const AlwaysStoppedAnimation<Color>(Colors.blueGrey),
                 ),
               ),
-            ],
+            ),
           );
         }
 

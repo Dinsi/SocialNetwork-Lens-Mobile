@@ -57,7 +57,7 @@ class SubscriptionAppBarModel extends StateModel<SubscriptionAppBarViewState> {
   }
 
   SubscriptionAppBarViewState _getSubscriptionState() {
-    for (Topic topic in _appInfo.user.topics) {
+    for (Topic topic in _appInfo.currentUser.topics) {
       if (topic.name == _topicOrUser) {
         return SubscriptionAppBarViewState.Unsubscribe;
       }

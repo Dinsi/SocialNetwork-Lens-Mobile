@@ -1,15 +1,21 @@
 import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/users/compact_user.dart';
+import 'package:aperture/models/users/user.dart';
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
+import 'package:provider/provider.dart';
 
 const double _iconSideSize = 40.0;
 
 class CommentTile extends StatelessWidget {
   final Comment comment;
   final void Function(BuildContext, [CompactUser]) onPressed;
+  final bool isSelf;
 
-  const CommentTile({Key key, @required this.comment, @required this.onPressed})
+  const CommentTile(
+      {Key key,
+      @required this.comment,
+      @required this.onPressed,
+      @required this.isSelf})
       : super(key: key);
 
   @override
@@ -27,14 +33,12 @@ class CommentTile extends StatelessWidget {
               color: Colors.grey[300],
               child: Stack(
                 children: <Widget>[
-                  comment.user.avatar == null
-                      ? Image.asset(
-                          'assets/img/user_placeholder.png',
+                  isSelf
+                      ? Consumer<User>(
+                          builder: (_, currentUser, __) =>
+                              _buildImage(currentUser),
                         )
-                      : FadeInImage.memoryNetwork(
-                          placeholder: kTransparentImage,
-                          image: comment.user.avatar,
-                        ),
+                      : _buildImage(comment.user),
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -69,5 +73,13 @@ class CommentTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Image _buildImage(CompactUser user) {
+    return user.avatar == null
+        ? Image.asset(
+            'assets/img/user_placeholder.png',
+          )
+        : Image.network(user.avatar);
   }
 }

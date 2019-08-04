@@ -113,7 +113,7 @@ class PostApiProvider extends BaseApiProvider {
     request.headers.addAll(
         {HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken});
 
-    var response = await request.send();
+    final response = await request.send();
     print(response.statusCode);
     response.stream.transform(utf8.decoder).listen((value) {
       print(value);
@@ -148,7 +148,7 @@ class PostApiProvider extends BaseApiProvider {
 
     print(printText);
 
-    var response = await client
+    final response = await client
         .post('${super.baseUrl}posts/$postId/$actionPath/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
     });

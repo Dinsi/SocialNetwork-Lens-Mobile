@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 bool isUrl(String input) {
   return RegExp(
           r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)')
@@ -70,8 +68,3 @@ String nFormatter(double number, int digits) {
       }) +
       si[i]["symbol"];
 }
-
-CircularProgressIndicator getWhiteCircularIndicator() =>
-    CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-    );

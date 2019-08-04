@@ -1,5 +1,6 @@
 import 'package:aperture/locator.dart';
 import 'package:aperture/models/post.dart';
+import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:aperture/view_models/core/base_model.dart';
@@ -13,8 +14,9 @@ enum ChangeVoteAction { Up, Down, Remove }
 class BasicPostModel extends StateModel<BasicPostViewState> {
   BasicPostModel() : super(BasicPostViewState.Inactive);
 
-  final Repository _repository = locator<Repository>();
-  final Lock _lock = Lock();
+  final _repository = locator<Repository>();
+  final _appInfo = locator<AppInfo>();
+  final _lock = Lock();
   Post _post;
 
   // * Init Functions
@@ -189,5 +191,5 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
   }
 
   Post get post => _post;
-  Repository get repository => _repository;
+  bool get isSelf => _appInfo.currentUser.id == _post.user.id;
 }

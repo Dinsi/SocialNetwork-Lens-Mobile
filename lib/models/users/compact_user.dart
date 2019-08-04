@@ -1,8 +1,8 @@
 class CompactUser {
-  final int id;
-  final String username;
-  final String name;
-  final String avatar;
+  int id;
+  String username;
+  String name;
+  String avatar;
 
   CompactUser(this.id, this.username, this.name, this.avatar);
 
