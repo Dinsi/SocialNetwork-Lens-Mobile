@@ -1,5 +1,3 @@
-import 'package:aperture/view_models/change_email_bloc.dart';
-import 'package:aperture/view_models/change_password_bloc.dart';
 import 'package:aperture/view_models/collection_list_bloc.dart';
 import 'package:aperture/view_models/collection_posts_bloc.dart';
 import 'package:aperture/view_models/new_collection_bloc.dart';
@@ -87,9 +85,8 @@ abstract class Router {
 
       case RouteName.userProfile:
         return MaterialPageRoute<Null>(
-          builder: (context) => UserProfileScreen(
-            userId: settings.arguments as int,
-          ),
+          builder: (context) =>
+              UserProfileScreen(userId: settings.arguments as int),
         );
 
       case RouteName.search:
@@ -103,20 +100,15 @@ abstract class Router {
 
       case RouteName.accountSettings:
         return MaterialPageRoute<Null>(
-          builder: (context) => AccountSettingsScreen(),
-        );
+            builder: (context) => AccountSettingsScreen());
 
       case RouteName.changeEmail:
-        final bloc = ChangeEmailBloc();
         return MaterialPageRoute<int>(
-          builder: (context) => ChangeEmailScreen(bloc: bloc),
-        );
+            builder: (context) => ChangeEmailScreen());
 
       case RouteName.changePassword:
-        final bloc = ChangePasswordBloc();
         return MaterialPageRoute<int>(
-          builder: (context) => ChangePasswordScreen(bloc: bloc),
-        );
+            builder: (context) => ChangePasswordScreen());
 
       case RouteName.collectionList:
         final args = settings.arguments as Map<String, dynamic>;

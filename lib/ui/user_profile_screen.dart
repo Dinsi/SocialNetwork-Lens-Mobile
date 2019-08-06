@@ -58,8 +58,7 @@ class UserProfileScreen extends StatelessWidget {
                                       children: <Widget>[
                                         Consumer<User>(
                                           builder: (_, currentUser, __) =>
-                                              _buildCircleAvatar(
-                                                  model, currentUser),
+                                              _buildCircleAvatar(currentUser),
                                         ),
                                         Positioned(
                                           height: 125.0,
@@ -81,8 +80,7 @@ class UserProfileScreen extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 16.0,
                                     ),
-                                    child:
-                                        _buildCircleAvatar(model, model.user),
+                                    child: _buildCircleAvatar(model.user),
                                   ),
                             if (model.user.headline != null)
                               Padding(
@@ -163,7 +161,7 @@ class UserProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCircleAvatar(UserProfileModel model, CompactUser user) {
+  Widget _buildCircleAvatar(CompactUser user) {
     return CircleAvatar(
       radius: 65.0,
       backgroundColor: Colors.grey[300],

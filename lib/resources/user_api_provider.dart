@@ -3,6 +3,7 @@ import 'dart:io' show ContentType, File, HttpException, HttpHeaders, HttpStatus;
 
 import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/base_api_provider.dart';
+import 'package:aperture/view_models/edit_profile.dart';
 import 'package:async/async.dart' show DelegatingStream;
 import 'package:http/http.dart'
     show ByteStream, Client, MultipartFile, MultipartRequest;
@@ -33,9 +34,10 @@ class UserApiProvider extends BaseApiProvider {
   Future<User> fetchInfoById(int userId) async {
     print('_user_fetchInfoById_');
 
-    final response = await client.get('${super.baseUrl}users/$userId/', headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
-    });
+    final response = await client.get('${super.baseUrl}users/$userId/',
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
+        });
 
     print('${response.statusCode.toString()}\n${response.body}');
 
@@ -68,8 +70,13 @@ class UserApiProvider extends BaseApiProvider {
     throw HttpException('_user_finishRegister_');
   }
 
-  Future<int> updateEmail(Map<String, String> fields) async {
+  Future<int> updateEmail(String email, String password) async {
     print('_user_updateEmail_');
+
+    final Map<String, String> fields = {
+      'email': email,
+      'password': password,
+    };
 
     final response = await client.post(
       '${super.baseUrl}users/update_email/',
@@ -92,8 +99,15 @@ class UserApiProvider extends BaseApiProvider {
     }
   }
 
-  Future<int> updatePassword(Map<String, String> fields) async {
+  Future<int> updatePassword(String oldPassword, String newPassword,
+      String confirmationPassword) async {
     print('_user_updatePassword_');
+
+    final Map<String, String> fields = {
+      'password': oldPassword,
+      'new_password': newPassword,
+      'new_password_confirm': confirmationPassword,
+    };
 
     final response = await client.post(
       '${super.baseUrl}users/update_password/',
@@ -116,8 +130,10 @@ class UserApiProvider extends BaseApiProvider {
     }
   }
 
-  Future<int> patch(Map<String, String> fields) async {
+  Future<int> patch(Map<EditProfileField, String> fields) async {
     print('_user_patch_');
+
+    final Map<String, String> stringFields = _getStringFields(fields);
 
     final response = await client.patch(
       '${super.baseUrl}users/self/',
@@ -125,7 +141,7 @@ class UserApiProvider extends BaseApiProvider {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
         HttpHeaders.contentTypeHeader: ContentType.json.value,
       },
-      body: jsonEncode(fields),
+      body: jsonEncode(stringFields),
     );
 
     print('${response.statusCode.toString()}\n${response.body}');
@@ -138,7 +154,8 @@ class UserApiProvider extends BaseApiProvider {
     throw HttpException('_user_patch_');
   }
 
-  Future<int> patchMultiPart(File imageFile, Map<String, String> fields) async {
+  Future<int> patchMultiPart(
+      File imageFile, Map<EditProfileField, String> fields) async {
     print("_user_patchMultiPart_");
 
     ByteStream stream =
@@ -158,7 +175,8 @@ class UserApiProvider extends BaseApiProvider {
     request.files.add(multipartFile);
 
     if (fields != null) {
-      request.fields.addAll(fields);
+      Map<String, String> stringFields = _getStringFields(fields);
+      request.fields.addAll(stringFields);
     }
 
     request.headers.addAll(
@@ -176,5 +194,36 @@ class UserApiProvider extends BaseApiProvider {
     } //TODO assuming success
 
     throw HttpException('_user_patchMultiPart_');
+  }
+
+  Map<String, String> _getStringFields(Map<EditProfileField, String> fields) {
+    final Map<String, String> stringFields = {};
+
+    fields.forEach((fieldType, value) {
+      switch (fieldType) {
+        case EditProfileField.FirstName:
+          stringFields['first_name'] = fields[fieldType];
+          break;
+        case EditProfileField.LastName:
+          stringFields['last_name'] = fields[fieldType];
+          break;
+        case EditProfileField.Headline:
+          stringFields['headline'] = fields[fieldType];
+          break;
+        case EditProfileField.Location:
+          stringFields['location'] = fields[fieldType];
+          break;
+        case EditProfileField.Bio:
+          stringFields['bio'] = fields[fieldType];
+          break;
+        case EditProfileField.PublicEmail:
+          stringFields['public_email'] = fields[fieldType];
+          break;
+        case EditProfileField.Website:
+          stringFields['website'] = fields[fieldType];
+      }
+    });
+
+    return stringFields;
   }
 }

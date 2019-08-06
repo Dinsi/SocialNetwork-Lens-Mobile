@@ -13,67 +13,55 @@ class AccountSettingsScreen extends StatelessWidget {
         ),
         body: Column(
           children: <Widget>[
-            ListTile(
-              leading: Icon(FontAwesomeIcons.envelope),
-              title: Text(
-                'Change email',
-                style: Theme.of(context).textTheme.title,
-              ),
-              onTap: () async {
-                int result = await Navigator.of(context)
-                    .pushNamed(RouteName.changeEmail);
-                if (result != null) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Change email'),
-                        content: const Text(
-                            'Your email has been changed successfully'),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: const Text('OK'),
-                            onPressed: () => Navigator.of(context).pop(),
-                          )
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-            ListTile(
-              leading: Icon(FontAwesomeIcons.key),
-              title: Text(
-                'Change password',
-                style: Theme.of(context).textTheme.title,
-              ),
-              onTap: () async {
-                int result = await Navigator.of(context)
-                    .pushNamed(RouteName.changePassword);
-                if (result != null) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Change password'),
-                        content: const Text(
-                            'Your password has been changed successfully'),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: const Text('OK'),
-                            onPressed: () => Navigator.of(context).pop(),
-                          )
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-            ),
+            _buildListTile(context,
+                destRoute: RouteName.changeEmail,
+                icon: FontAwesomeIcons.envelope,
+                title: 'Change email',
+                content: 'Your email has been changed successfully'),
+            _buildListTile(context,
+                destRoute: RouteName.changePassword,
+                icon: FontAwesomeIcons.key,
+                title: 'Change password',
+                content: 'Your password has been changed successfully')
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildListTile(
+    BuildContext context, {
+    @required String destRoute,
+    @required IconData icon,
+    @required String title,
+    @required String content,
+  }) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.title,
+      ),
+      onTap: () async {
+        int result = await Navigator.of(context).pushNamed(destRoute);
+        if (result != null) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(title),
+                content: Text(content),
+                actions: <Widget>[
+                  FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              );
+            },
+          );
+        }
+      },
     );
   }
 }

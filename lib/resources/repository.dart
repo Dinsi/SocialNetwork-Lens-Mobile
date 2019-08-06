@@ -14,6 +14,7 @@ import 'package:aperture/resources/post_api_provider.dart';
 import 'package:aperture/resources/token_api_provider.dart';
 import 'package:aperture/resources/topic_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
+import 'package:aperture/view_models/edit_profile.dart';
 import 'package:aperture/view_models/shared/basic_post.dart'
     show ChangeVoteAction;
 import 'package:aperture/view_models/shared/subscription_app_bar.dart'
@@ -75,10 +76,11 @@ class Repository {
   Future<Topic> fetchSingleTopic(String topic) =>
       topicsApiProvider.fetchSingle(topic);
 
-  Future<int> patchUser(Map<String, String> fields) =>
+  Future<int> patchUser(Map<EditProfileField, String> fields) =>
       userApiProvider.patch(fields);
 
-  Future<int> patchUserMultiPart(File imageFile, Map<String, String> fields) =>
+  Future<int> patchUserMultiPart(
+          File imageFile, Map<EditProfileField, String> fields) =>
       userApiProvider.patchMultiPart(imageFile, fields);
 
   Future<User> fetchUserInfoById(int userId) =>
@@ -90,11 +92,13 @@ class Repository {
   Future<int> bulkUpdateTopics(List<Topic> changedTopics) =>
       topicsApiProvider.bulkUpdate(changedTopics);
 
-  Future<int> changeUserEmail(Map<String, String> fields) =>
-      userApiProvider.updateEmail(fields);
+  Future<int> updateUserEmail(String email, String password) =>
+      userApiProvider.updateEmail(email, password);
 
-  Future<int> changeUserPassword(Map<String, String> fields) =>
-      userApiProvider.updatePassword(fields);
+  Future<int> changeUserPassword(String oldPassword, String newPassword,
+          String confirmationPassword) =>
+      userApiProvider.updatePassword(
+          oldPassword, newPassword, confirmationPassword);
 
   Future<Collection> appendPostToCollection(int collectionId, int postId) =>
       collectionsApiProvider.appendPost(collectionId, postId);

@@ -12,9 +12,19 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum EditProfileViewState { Idle, Updating }
+enum EditProfileField {
+  FirstName,
+  LastName,
+  Headline,
+  Location,
+  Bio,
+  PublicEmail,
+  Website,
+}
 
 enum ImageType { Asset, Network, File }
+
+enum EditProfileViewState { Idle, Updating }
 
 // TODO Update pfp in entire app ???
 
@@ -27,18 +37,27 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
   File _imageFile;
 
   ///////////////////////////////////////////////////////////////////////
+
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  final Map<String, FocusNode> focusNodes = {
-    'first_name': FocusNode(),
-    'last_name': FocusNode(),
-    'headline': FocusNode(),
-    'location': FocusNode(),
-    'bio': FocusNode(),
-    'public_email': FocusNode(),
-    'website': FocusNode(),
+
+  final Map<EditProfileField, FocusNode> _focusNodes = {
+    // First name
+    EditProfileField.FirstName: FocusNode(),
+    // Last name
+    EditProfileField.LastName: FocusNode(),
+    // Headline
+    EditProfileField.Headline: FocusNode(),
+    // Location
+    EditProfileField.Location: FocusNode(),
+    // Bio
+    EditProfileField.Bio: FocusNode(),
+    // Public email
+    EditProfileField.PublicEmail: FocusNode(),
+    // Website
+    EditProfileField.Website: FocusNode(),
   };
 
-  final Map<String, TextEditingController> textControllers = {};
+  final Map<EditProfileField, TextEditingController> _textControllers = {};
 
   //////////////////////////////////////////////////////////////////////
 
@@ -49,17 +68,25 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
   void init() {
     User user = _appInfo.currentUser;
 
-    textControllers['first_name'] = TextEditingController(text: user.firstName);
-    textControllers['last_name'] = TextEditingController(text: user.lastName);
-    textControllers['headline'] =
-        TextEditingController(text: user.headline ?? '');
-    textControllers['location'] =
-        TextEditingController(text: user.location ?? '');
-    textControllers['bio'] = TextEditingController(text: user.bio ?? '');
-    textControllers['public_email'] =
-        TextEditingController(text: user.publicEmail ?? '');
-    textControllers['website'] =
-        TextEditingController(text: user.website ?? '');
+    _textControllers.addAll({
+      // First name
+      EditProfileField.FirstName: TextEditingController(text: user.firstName),
+      // Last name
+      EditProfileField.LastName: TextEditingController(text: user.lastName),
+      // Headline
+      EditProfileField.Headline:
+          TextEditingController(text: user.headline ?? ''),
+      // Location
+      EditProfileField.Location:
+          TextEditingController(text: user.location ?? ''),
+      // Bio
+      EditProfileField.Bio: TextEditingController(text: user.bio ?? ''),
+      // Public email
+      EditProfileField.PublicEmail:
+          TextEditingController(text: user.publicEmail ?? ''),
+      // Website
+      EditProfileField.Website: TextEditingController(text: user.website ?? '')
+    });
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -68,8 +95,8 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
     super.dispose();
     _imageSubject.close();
 
-    textControllers.forEach((_, controller) => controller.dispose());
-    focusNodes.forEach((_, node) => node.dispose());
+    _textControllers.forEach((_, controller) => controller.dispose());
+    _focusNodes.forEach((_, node) => node.dispose());
   }
 
   Future<void> selectNewImage() async {
@@ -90,52 +117,52 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
   Future<void> saveProfile(BuildContext context) async {
     setState(EditProfileViewState.Updating);
 
-    Map<String, String> newFields = Map<String, String>();
+    Map<EditProfileField, String> newFields = Map<EditProfileField, String>();
     User user = _appInfo.currentUser;
-    // select new fields
-    textControllers.forEach((key, controller) {
-      final trimmedField = controller.text.trimRight();
+    // Select new fields
+    _textControllers.forEach((key, controller) {
+      final trimmedField = controller.text.trim();
 
       switch (key) {
-        case 'first_name':
+        case EditProfileField.FirstName:
           if (trimmedField != user.firstName) {
-            newFields['first_name'] = trimmedField;
+            newFields[EditProfileField.FirstName] = trimmedField;
           }
           break;
 
-        case 'last_name':
+        case EditProfileField.LastName:
           if (trimmedField != user.lastName) {
-            newFields['last_name'] = trimmedField;
+            newFields[EditProfileField.LastName] = trimmedField;
           }
           break;
 
-        case 'headline':
+        case EditProfileField.Headline:
           if (trimmedField != user.headline) {
-            newFields['headline'] = trimmedField;
+            newFields[EditProfileField.Headline] = trimmedField;
           }
           break;
 
-        case 'location':
+        case EditProfileField.Location:
           if (trimmedField != user.location) {
-            newFields['location'] = trimmedField;
+            newFields[EditProfileField.Location] = trimmedField;
           }
           break;
 
-        case 'bio':
+        case EditProfileField.Bio:
           if (trimmedField != user.bio) {
-            newFields['bio'] = trimmedField;
+            newFields[EditProfileField.Bio] = trimmedField;
           }
           break;
 
-        case 'public_email':
+        case EditProfileField.PublicEmail:
           if (trimmedField != user.publicEmail) {
-            newFields['public_email'] = trimmedField;
+            newFields[EditProfileField.PublicEmail] = trimmedField;
           }
           break;
 
-        case 'website':
+        case EditProfileField.Website:
           if (trimmedField != user.website) {
-            newFields['website'] = trimmedField;
+            newFields[EditProfileField.Website] = trimmedField;
           }
       }
     });
@@ -143,10 +170,10 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
     // do validations
     if (newFields.isNotEmpty) {
       // Check if first and last name are not blank
-      if ((newFields.containsKey('first_name') &&
-              newFields['first_name'].isEmpty) ||
-          (newFields.containsKey('last_name') &&
-              newFields['last_name'].isEmpty)) {
+      if ((newFields.containsKey(EditProfileField.FirstName) &&
+              newFields[EditProfileField.FirstName].isEmpty) ||
+          (newFields.containsKey(EditProfileField.LastName) &&
+              newFields[EditProfileField.LastName].isEmpty)) {
         showInSnackBar(
           context,
           scaffoldKey,
@@ -157,9 +184,9 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
       }
 
       // Check if public email has been filled, and if so, if it's an email
-      if (newFields.containsKey('public_email') &&
-          newFields['public_email'].isNotEmpty &&
-          !isEmail(newFields['public_email'])) {
+      if (newFields.containsKey(EditProfileField.PublicEmail) &&
+          newFields[EditProfileField.PublicEmail].isNotEmpty &&
+          !isEmail(newFields[EditProfileField.PublicEmail])) {
         showInSnackBar(
           context,
           scaffoldKey,
@@ -170,9 +197,9 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
       }
 
       // Check if website has been filled, and if so, if it's a URL
-      if (newFields.containsKey('website') &&
-          newFields['website'].isNotEmpty &&
-          !isUrl(newFields['website'])) {
+      if (newFields.containsKey(EditProfileField.Website) &&
+          newFields[EditProfileField.Website].isNotEmpty &&
+          !isUrl(newFields[EditProfileField.Website])) {
         showInSnackBar(
           context,
           scaffoldKey,
@@ -206,12 +233,16 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
   }
 
   ImageType getInitialData() {
-    return _appInfo.currentUser.avatar.isEmpty
-        ? ImageType.Asset
-        : ImageType.Network;
+    return imageUrl.isEmpty ? ImageType.Asset : ImageType.Network;
   }
 
   String get imageUrl => _appInfo.currentUser.avatar;
   File get imageFile => _imageFile;
   Observable<ImageType> get imageStream => _imageSubject.stream;
+
+  //////////////////////////////////////////////////////////////////////
+
+  Map<EditProfileField, TextEditingController> get textControllers =>
+      _textControllers;
+  Map<EditProfileField, FocusNode> get focusNodes => _focusNodes;
 }
