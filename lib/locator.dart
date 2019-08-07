@@ -15,6 +15,7 @@ import 'package:aperture/view_models/feed.dart';
 import 'package:aperture/view_models/recommended_topics.dart';
 import 'package:aperture/view_models/shared/subscription_app_bar.dart';
 import 'package:aperture/view_models/topic_feed.dart';
+import 'package:aperture/view_models/topic_list.dart';
 import 'package:aperture/view_models/user_profile.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,11 +34,10 @@ void setupLocator(SharedPreferences prefs) {
 
   locator.registerLazySingleton(() => Repository());
 
-  locator.registerFactory(() => RecommendedTopicsModel());
-
   //TODO turn to LazySingleton for production
   locator.registerFactory(() => FeedModel());
 
+  locator.registerFactory(() => RecommendedTopicsModel());
   locator.registerFactory(() => BasicPostModel());
   locator.registerFactory(() => DetailedPostModel());
   locator.registerFactory(() => SubscriptionAppBarModel());
@@ -46,4 +46,5 @@ void setupLocator(SharedPreferences prefs) {
   locator.registerFactory(() => EditProfileModel());
   locator.registerFactory(() => ChangeEmailModel());
   locator.registerFactory(() => ChangePasswordModel());
+  locator.registerFactory(() => TopicListModel());
 }

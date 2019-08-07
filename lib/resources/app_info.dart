@@ -56,9 +56,12 @@ class AppInfo {
 
   Future<void> bulkRemoveTopicsFromUser(List<Topic> topicList) async {
     User newUser = User.from(currentUser);
-    for (Topic targetTopic in topicList) {
-      newUser.topics.removeWhere((topic) => topic.id == targetTopic.id);
-    }
+    topicList.forEach(
+      (topicElem) => newUser.topics.removeWhere(
+        (topic) => topic.id == topicElem.id,
+      ),
+    );
+
     await updateUser(newUser);
   }
 
