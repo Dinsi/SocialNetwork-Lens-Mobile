@@ -1,6 +1,7 @@
 import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/users/compact_user.dart';
 import 'package:aperture/models/users/user.dart';
+import 'package:aperture/ui/shared/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,32 +26,19 @@ class CommentTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
-            child: Container(
-              height: _iconSideSize,
-              width: _iconSideSize,
-              color: Colors.grey[300],
-              child: Stack(
-                children: <Widget>[
-                  isSelf
-                      ? Consumer<User>(
-                          builder: (_, currentUser, __) =>
-                              _buildImage(currentUser),
-                        )
-                      : _buildImage(comment.user),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.white24,
-                      onTap: () => onPressed(context, comment.user),
-                    ),
+          isSelf
+              ? Consumer<User>(
+                  builder: (_, currentUser, __) => UserAvatar(
+                    side: _iconSideSize,
+                    user: currentUser,
+                    onTap: () => onPressed(context, comment.user),
                   ),
-                ],
-              ),
-            ),
-          ),
+                )
+              : UserAvatar(
+                  side: _iconSideSize,
+                  user: comment.user,
+                  onTap: () => onPressed(context, comment.user),
+                ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),

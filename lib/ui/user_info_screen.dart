@@ -75,7 +75,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     Navigator.of(context).pushNamed(
       RouteName.collectionList,
       arguments: {
-        'addToCollection': false,
+        'isAddToCollection': false,
       },
     );
   }

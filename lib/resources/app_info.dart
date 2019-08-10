@@ -43,13 +43,13 @@ class AppInfo {
   }
 
   Future<void> addTopicToUser(Topic topic) async {
-    User newUser = User.from(currentUser);
+    User newUser = currentUser;
     newUser.topics.add(topic);
     await updateUser(newUser);
   }
 
   Future<void> removeTopicFromUser(String topicName) async {
-    User newUser = User.from(currentUser);
+    User newUser = currentUser;
     newUser.topics.removeWhere((topic) => topic.name == topicName);
     await updateUser(newUser);
   }
@@ -81,7 +81,7 @@ class AppInfo {
 
   Function(User) get addUser => _userController.sink.add;
   Stream<User> get userStream => _userController.stream;
-  User get currentUser => _userController.value ?? User.initial();
+  User get currentUser => User.from(_userController.value) ?? User.initial();
 
   Future<void> setUserFromMap(Map<String, dynamic> userMap) async {
     await _prefs.setString('user', jsonEncode(userMap));

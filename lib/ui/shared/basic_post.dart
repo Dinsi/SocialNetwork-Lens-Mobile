@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-const double _iconSideSize = 45.0;
+const double _iconSideSize = 35.0;
 const double _defaultHeight = 55.0;
 
 TextStyle _votesTextStyle([Color color]) {
@@ -44,7 +44,36 @@ class BasicPost extends StatelessWidget {
 
   Widget _buildBasicPost(
       BuildContext context, BasicPostModel model, Widget __) {
-    // * If the post belongs to the user, fetches user
+    final cardTheme = CardTheme.of(context);
+
+    return Card(
+      child: Column(
+        children: <Widget>[
+          ImageContainer(
+            paddingDiff: cardTheme.margin.horizontal,
+            imageUrl: model.post.image,
+            imageHeight: model.post.height,
+            imageWidth: model.post.width,
+            onTap: !delegatingModel
+                ? () => model.navigateToDetailedPost(context, false)
+                : null, // TODO toFullImageScreen
+            onDoubleTap: () => model.onUpvoteOrRemove(),
+          ),
+          Container(
+            height: _defaultHeight,
+            margin: const EdgeInsets.fromLTRB(12.0, 6.0, 12.0, 10.0),
+            child: model.isSelf && !delegatingModel
+                ? Consumer<User>(
+                    builder: (context, currentUser, __) =>
+                        _buildActionRow(context, model, currentUser),
+                  )
+                : _buildActionRow(context, model, model.post.user),
+          ),
+        ],
+      ),
+    );
+
+    /*// * If the post belongs to the user, fetches user
     // *     (provided by Stream Provider) from the widget tree
 
     // * Else, it uses the user info from the post itself
@@ -66,11 +95,64 @@ class BasicPost extends StatelessWidget {
           _buildActionRow(context, model),
         ],
       ),
-    );
+    );*/
   }
 
-  Widget _buildActionRow(BuildContext context, BasicPostModel model) {
-    return Container(
+  Widget _buildActionRow(
+      BuildContext context, BasicPostModel model, CompactUser user) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        if (!delegatingModel)
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                UserAvatar(
+                  side: _iconSideSize,
+                  user: user,
+                  onTap: () => model.navigateToUserProfile(context),
+                ),
+                const SizedBox(
+                  width: 8.0,
+                ),
+                Flexible(
+                  child: GestureDetector(
+                    onTap: () => model.navigateToUserProfile(context),
+                    child: Text.rich(
+                      TextSpan(text: user.name),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.blueGrey, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            _buildVoteButton(model, true),
+            SizedBox(
+              width: 50.0,
+              child: Center(
+                child: Text(
+                  nFormatter(model.post.votes.toDouble()),
+                  style: _votesTextStyle(
+                      model.state == BasicPostViewState.UpVote
+                          ? Colors.blue
+                          : null),
+                ),
+              ),
+            ),
+            _buildVoteButton(model, false),
+          ],
+        ),
+      ],
+    );
+
+    /*return Container(
       height: _defaultHeight,
       padding: const EdgeInsets.only(left: 15.0),
       child: Theme(
@@ -189,6 +271,33 @@ class BasicPost extends StatelessWidget {
               ],
             )
           ],
+        ),
+      ),
+    );*/
+  }
+
+  Widget _buildVoteButton(BasicPostModel model, bool isUpvote) {
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: isUpvote
+            ? () => model.onUpvoteOrRemove()
+            : () => model.onDownvoteOrRemove(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: isUpvote
+              ? Icon(
+                  FontAwesomeIcons.arrowAltCircleUp,
+                  color: model.state == BasicPostViewState.UpVote
+                      ? Colors.blue
+                      : Colors.grey[600],
+                )
+              : Icon(
+                  FontAwesomeIcons.arrowAltCircleDown,
+                  color: model.state == BasicPostViewState.DownVote
+                      ? Colors.red
+                      : Colors.grey[600],
+                ),
         ),
       ),
     );

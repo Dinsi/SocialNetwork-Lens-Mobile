@@ -8,19 +8,13 @@ CircularProgressIndicator getWhiteCircularIndicator() =>
 void showInSnackBar(
     BuildContext context, GlobalKey<ScaffoldState> gKey, String value) {
   FocusScope.of(context).requestFocus(FocusNode());
-  gKey.currentState?.removeCurrentSnackBar();
+  gKey.currentState.hideCurrentSnackBar();
   gKey.currentState.showSnackBar(
     SnackBar(
       content: Text(
         value,
         textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "WorkSansSemiBold"),
       ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
     ),
   );
 }

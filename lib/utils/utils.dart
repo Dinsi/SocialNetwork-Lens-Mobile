@@ -44,7 +44,7 @@ List<String> detectHashtags(String description) {
   return splits;
 }
 
-String nFormatter(double number, int digits) {
+String nFormatter(double number) {
   final List<Map<dynamic, dynamic>> si = const [
     {"value": 1, "symbol": ""},
     {"value": 1E3, "symbol": "k"},
@@ -62,8 +62,14 @@ String nFormatter(double number, int digits) {
     }
   }
 
-  return (number / si[i]["value"]).toStringAsFixed(digits).replaceAllMapped(rx,
-          (match) {
+  String resultNumber;
+  if (number <= 99999) {
+    resultNumber = (number / si[i]["value"]).toStringAsFixed(1);
+  } else {
+    resultNumber = (number / si[i]["value"]).floorToDouble().toStringAsFixed(0);
+  }
+
+  return resultNumber.replaceAllMapped(rx, (match) {
         return match.group(1) ?? "";
       }) +
       si[i]["symbol"];

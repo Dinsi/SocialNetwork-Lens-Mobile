@@ -36,7 +36,7 @@ class UserProfileScreen extends StatelessWidget {
                       model.user.name,
                       style: Theme.of(context)
                           .textTheme
-                          .title
+                          .subhead
                           .copyWith(color: Colors.white),
                     ),
                   ),

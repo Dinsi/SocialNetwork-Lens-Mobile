@@ -7,42 +7,40 @@ class ImageContainer extends StatelessWidget {
   final int imageWidth;
   final GestureTapCallback onTap;
   final GestureTapCallback onDoubleTap;
+  final double paddingDiff;
 
   const ImageContainer(
       {@required this.imageUrl,
       @required this.imageHeight,
       @required this.imageWidth,
       @required this.onTap,
-      @required this.onDoubleTap});
+      @required this.onDoubleTap,
+      @required this.paddingDiff});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: _calculatePlaceholderHeight(context),
-      color: Colors.grey[300],
-      child: Stack(
-        children: <Widget>[
-          Center(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.fitWidth,
-            ),
-            /*FadeInImage.memoryNetwork(
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        image: DecorationImage(
+          image: NetworkImage(imageUrl),
+          fit: BoxFit.fitWidth,
+          /*FadeInImage.memoryNetwork(
               fit: BoxFit.fitWidth,
               placeholder: kTransparentImage,
               image: imageUrl,
             ),*/
-          ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Colors.white24,
-              onTap: this.onTap,
-              onDoubleTap: this.onDoubleTap,
-            ),
-          ),
-        ],
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          highlightColor: Colors.transparent,
+          splashColor: Colors.white24,
+          onTap: this.onTap, //this.onTap,
+          onDoubleTap: this.onDoubleTap,
+        ),
       ),
     );
   }
@@ -52,6 +50,6 @@ class ImageContainer extends StatelessWidget {
       return imageHeight.toDouble();
     }
 
-    return MediaQuery.of(context).size.width * imageHeight / imageWidth;
+    return ((MediaQuery.of(context).size.width - paddingDiff) * imageHeight / imageWidth);
   }
 }

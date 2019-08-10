@@ -65,7 +65,7 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
     return await Navigator.of(context).pushNamed(
       RouteName.collectionList,
       arguments: {
-        'addToCollection': true,
+        'isAddToCollection': true,
         'postId': _post.id,
       },
     );

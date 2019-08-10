@@ -13,15 +13,17 @@ import 'package:rxdart/rxdart.dart';
 enum TopicListViewState { Idle, Updating }
 
 class TopicListModel extends StateModel<TopicListViewState> {
+  // TODO cover empty list case
+
   final Repository _repository = locator<Repository>();
   final AppInfo _appInfo = locator<AppInfo>();
 
   UnmodifiableListView<Topic> _initialTopics;
   final List<Topic> _changedTopics = List<Topic>();
 
-  List<PublishSubject<CheckBoxState>> _subscribeButtonControllerList;
+  List<PublishSubject<CheckBoxState>> _checkBoxControllerList;
 
-  bool willPop = true;
+  /////////////////////////////////////////////////////////////
 
   TopicListModel() : super(TopicListViewState.Idle) {
     _initialTopics = UnmodifiableListView(
@@ -29,16 +31,21 @@ class TopicListModel extends StateModel<TopicListViewState> {
         ..sort((Topic a, Topic b) => a.name.compareTo(b.name)),
     );
 
-    _subscribeButtonControllerList =
-        List<PublishSubject<CheckBoxState>>.generate(
-            _initialTopics.length, (_) => PublishSubject<CheckBoxState>());
+    _checkBoxControllerList = List<PublishSubject<CheckBoxState>>.generate(
+      _initialTopics.length,
+      (_) => PublishSubject<CheckBoxState>(),
+    );
   }
 
+  /////////////////////////////////////////////////////////////
+  // * Dispose
   void dispose() {
     super.dispose();
-    _subscribeButtonControllerList.forEach((controller) => controller.close());
+    _checkBoxControllerList.forEach((controller) => controller.close());
   }
 
+  /////////////////////////////////////////////////////////////
+  // * Public functions
   Future<void> saveUserTopics(BuildContext context) async {
     if (_changedTopics.isEmpty) {
       Navigator.of(context).pop();
@@ -47,8 +54,8 @@ class TopicListModel extends StateModel<TopicListViewState> {
 
     setState(TopicListViewState.Updating);
 
-    for (int i = 0; i < _subscribeButtonControllerList.length; i++) {
-      _subscribeButtonControllerList[i].sink.add(
+    for (int i = 0; i < _checkBoxControllerList.length; i++) {
+      _checkBoxControllerList[i].sink.add(
           _changedTopics.contains(_initialTopics[i])
               ? CheckBoxState.UncheckedDisabled
               : CheckBoxState.CheckedDisabled);
@@ -66,7 +73,7 @@ class TopicListModel extends StateModel<TopicListViewState> {
 
   void toggleTopic(bool newValue, int index) {
     // ignore: close_sinks
-    final controller = _subscribeButtonControllerList[index];
+    final controller = _checkBoxControllerList[index];
     CheckBoxState newState;
 
     if (newValue == false) {
@@ -82,8 +89,11 @@ class TopicListModel extends StateModel<TopicListViewState> {
     }
   }
 
+  /////////////////////////////////////////////////////////////
+  // * Getters
+
   Stream<CheckBoxState> getStreamByIndex(int index) {
-    return _subscribeButtonControllerList[index].stream;
+    return _checkBoxControllerList[index].stream;
   }
 
   UnmodifiableListView<Topic> get topics => _initialTopics;

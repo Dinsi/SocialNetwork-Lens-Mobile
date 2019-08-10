@@ -6,7 +6,8 @@ class UserAvatar extends StatelessWidget {
   final CompactUser user;
   final VoidCallback onTap;
 
-  const UserAvatar({this.side, this.user, this.onTap});
+  const UserAvatar(
+      {@required this.side, @required this.user, @required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class UserAvatar extends StatelessWidget {
           child: InkWell(
             highlightColor: Colors.transparent,
             splashColor: Colors.white24,
-            onTap: onTap,
+            onTap: this.onTap,
           ),
         ),
       ),

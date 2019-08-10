@@ -38,7 +38,7 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
 
   ///////////////////////////////////////////////////////////////////////
 
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final Map<EditProfileField, FocusNode> _focusNodes = {
     // First name

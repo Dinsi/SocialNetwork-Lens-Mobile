@@ -20,7 +20,7 @@ class ChangeEmailModel extends StateModel<ChangeEmailViewState> {
 
   /////////////////////////////////////////////////////////////////////////
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -62,13 +62,13 @@ class ChangeEmailModel extends StateModel<ChangeEmailViewState> {
     // Validations
     if (newEmail.isEmpty || password.isEmpty) {
       setState(ChangeEmailViewState.Idle);
-      showInSnackBar(context, _scaffoldKey, 'All fields must be filled');
+      showInSnackBar(context, scaffoldKey, 'All fields must be filled');
       return;
     }
 
     if (!isEmail(newEmail)) {
       setState(ChangeEmailViewState.Idle);
-      showInSnackBar(context, _scaffoldKey, 'Invalid email address');
+      showInSnackBar(context, scaffoldKey, 'Invalid email address');
       return;
     }
 
@@ -76,7 +76,7 @@ class ChangeEmailModel extends StateModel<ChangeEmailViewState> {
 
     if (newEmail == user.email) {
       setState(ChangeEmailViewState.Idle);
-      showInSnackBar(context, _scaffoldKey,
+      showInSnackBar(context, scaffoldKey,
           'New email cannot be the same as the current email');
       return;
     }
@@ -89,7 +89,7 @@ class ChangeEmailModel extends StateModel<ChangeEmailViewState> {
       Navigator.of(context).pop(result);
     } else {
       setState(ChangeEmailViewState.Idle);
-      showInSnackBar(context, _scaffoldKey,
+      showInSnackBar(context, scaffoldKey,
           'The provided password does not match the current password');
     }
   }
@@ -101,7 +101,6 @@ class ChangeEmailModel extends StateModel<ChangeEmailViewState> {
 
   /////////////////////////////////////////////////////////////////////////
 
-  GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   TextEditingController get emailController => _emailController;
   TextEditingController get passwordController => _passwordController;
   FocusNode get emailFocusNode => _emailFocusNode;

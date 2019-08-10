@@ -1,6 +1,4 @@
-import 'package:aperture/view_models/collection_list_bloc.dart';
 import 'package:aperture/view_models/collection_posts_bloc.dart';
-import 'package:aperture/view_models/new_collection_bloc.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
@@ -11,7 +9,6 @@ import 'package:aperture/ui/detailed_post_screen.dart';
 import 'package:aperture/ui/edit_profile_screen.dart';
 import 'package:aperture/ui/feed_screen.dart';
 import 'package:aperture/ui/login_screen.dart';
-import 'package:aperture/ui/new_collection_screen.dart';
 import 'package:aperture/ui/recommended_topics_screen.dart';
 import 'package:aperture/ui/search_screen.dart';
 import 'package:aperture/ui/settings_screen.dart';
@@ -39,7 +36,6 @@ abstract class RouteName {
   static const String changeEmail = 'changeEmail';
   static const String changePassword = 'changePassword';
   static const String collectionList = 'collectionList';
-  static const String newCollection = 'newCollection';
   static const String collectionPosts = 'collectionPosts';
 }
 
@@ -112,22 +108,9 @@ abstract class Router {
 
       case RouteName.collectionList:
         final args = settings.arguments as Map<String, dynamic>;
-        final bloc = CollectionListBloc();
         return MaterialPageRoute<String>(
           builder: (context) => CollectionListScreen(
-            bloc: bloc,
-            addToCollection: args['addToCollection'],
-            postId: args['postId'] ?? null,
-          ),
-        );
-
-      case RouteName.newCollection:
-        final args = settings.arguments as Map<String, dynamic>;
-        final bloc = NewCollectionBloc();
-        return MaterialPageRoute<CompactCollection>(
-          builder: (context) => NewCollectionScreen(
-            bloc: bloc,
-            addToCollection: args['addToCollection'],
+            isAddToCollection: args['isAddToCollection'],
             postId: args['postId'] ?? null,
           ),
         );

@@ -19,7 +19,7 @@ class ChangePasswordModel extends StateModel<ChangePasswordViewState> {
 
   /////////////////////////////////////////////////////////////////////////
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final Map<PasswordField, TextEditingController> _textControllers = {
     PasswordField.Old: TextEditingController(),
@@ -74,17 +74,18 @@ class ChangePasswordModel extends StateModel<ChangePasswordViewState> {
     String confirmationPassword =
         textControllers[PasswordField.Confirmed].text.trim();
 
+    // Validations
     if (oldPassword.isEmpty ||
         newPassword.isEmpty ||
         confirmationPassword.isEmpty) {
       setState(ChangePasswordViewState.Idle);
-      showInSnackBar(context, _scaffoldKey, 'All fields must be filled');
+      showInSnackBar(context, scaffoldKey, 'All fields must be filled');
       return;
     }
 
     if (newPassword != confirmationPassword) {
       setState(ChangePasswordViewState.Idle);
-      showInSnackBar(context, _scaffoldKey, 'Passwords don\'t match');
+      showInSnackBar(context, scaffoldKey, 'Passwords don\'t match');
       return;
     }
 
@@ -93,7 +94,7 @@ class ChangePasswordModel extends StateModel<ChangePasswordViewState> {
     if (result != 0) {
       setState(ChangePasswordViewState.Idle);
       showInSnackBar(
-          context, _scaffoldKey, 'The old password provided is invalid');
+          context, scaffoldKey, 'The old password provided is invalid');
       return;
     }
 
@@ -108,7 +109,6 @@ class ChangePasswordModel extends StateModel<ChangePasswordViewState> {
 
   /////////////////////////////////////////////////////////////////////////
 
-  GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   Map<PasswordField, TextEditingController> get textControllers =>
       _textControllers;
   Map<PasswordField, FocusNode> get focusNodes => _focusNodes;

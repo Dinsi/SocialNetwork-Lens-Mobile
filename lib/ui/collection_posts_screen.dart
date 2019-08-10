@@ -13,52 +13,55 @@ class CollectionPostsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(collName),
-      ),
-      body: FutureBuilder<Collection>(
-        future: bloc.fetchCollection(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            return Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 3.0,
-                  mainAxisSpacing: 3.0,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(collName),
+        ),
+        body: FutureBuilder<Collection>(
+          future: bloc.fetchCollection(),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasData) {
+              return Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 3.0,
+                    mainAxisSpacing: 3.0,
+                  ),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (ctx, idx) {
+                    return GestureDetector(
+                      onTap: () => // TODO create basicPostModel and pass it on
+                          Navigator.of(context).pushNamed(
+                        RouteName.detailedPost,
+                        arguments: {
+                          'postId': snapshot.data.posts[idx].id,
+                          'post': snapshot.data.posts[idx],
+                          'toComments': false,
+                        },
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                        ),
+                        child: Image.network(
+                          snapshot.data.posts[idx].image,
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                itemCount: snapshot.data.length,
-                itemBuilder: (ctx, idx) {
-                  return GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(
-                      RouteName.detailedPost,
-                      arguments: {
-                        'postId': snapshot.data.posts[idx].id,
-                        'post': snapshot.data.posts[idx],
-                        'toComments': false,
-                      },
-                    ),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                      ),
-                      child: Image.network(
-                        snapshot.data.posts[idx].image,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          } else {
-            return const Center(
-              child: const CircularProgressIndicator(),
-            );
-          }
-        },
+              );
+            } else {
+              return const Center(
+                child: const CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }

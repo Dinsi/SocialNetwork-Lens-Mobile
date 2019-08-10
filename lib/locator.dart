@@ -8,6 +8,7 @@ import 'package:aperture/resources/topic_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
 import 'package:aperture/view_models/change_email.dart';
 import 'package:aperture/view_models/change_password.dart';
+import 'package:aperture/view_models/collection_list.dart';
 import 'package:aperture/view_models/detailed_post.dart';
 import 'package:aperture/view_models/edit_profile.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
@@ -47,4 +48,5 @@ void setupLocator(SharedPreferences prefs) {
   locator.registerFactory(() => ChangeEmailModel());
   locator.registerFactory(() => ChangePasswordModel());
   locator.registerFactory(() => TopicListModel());
+  locator.registerFactory(() => CollectionListModel());
 }

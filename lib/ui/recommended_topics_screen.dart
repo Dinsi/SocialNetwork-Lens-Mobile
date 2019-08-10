@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 const double _itemHeight = 70.0;
 
 class RecommendedTopicsScreen extends StatelessWidget {
-  const RecommendedTopicsScreen({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -79,8 +77,8 @@ class RecommendedTopicsScreen extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 20.0),
             decoration: BoxDecoration(
               color: model.recommendedTopics[topic]
-                  ? Colors.white
-                  : Colors.grey[400],
+                  ? Colors.grey[400]
+                  : Colors.white,
               border: Border.all(
                 color: Colors.blue,
                 width: 4.0,

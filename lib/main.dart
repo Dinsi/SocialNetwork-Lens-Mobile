@@ -11,6 +11,8 @@ import 'package:flutter/services.dart'
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// TODO Place animatedLists on feeds
+
 Future<void> main() async {
   // * Setup
   // TODO change for full view pictures
@@ -65,7 +67,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void dispose() { 
+  void dispose() {
     locator<AppInfo>().dispose();
     super.dispose();
   }
@@ -93,6 +95,13 @@ class _MyAppState extends State<MyApp> {
                     color: Colors.black,
                   ),
                 ),
+          ),
+          cardTheme: CardTheme(
+            margin: const EdgeInsets.all(8.0),
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
           ),
         ),
         initialRoute: this.widget.initialRoute,

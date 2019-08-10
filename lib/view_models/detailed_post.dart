@@ -25,7 +25,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   String _nextLink;
   bool _toComments;
 
-  final GlobalKey columnKey = GlobalKey();
+  final columnKey = GlobalKey();
   ScrollController _scrollController = ScrollController();
   TextEditingController _commentTextController = TextEditingController();
   FocusNode _commentFocusNode = FocusNode();

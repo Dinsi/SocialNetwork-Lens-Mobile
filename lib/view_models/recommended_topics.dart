@@ -45,6 +45,7 @@ class RecommendedTopicsModel extends StateModel<RecTopViewState> {
 
   void toggleTopic(Topic topic) {
     _recommendedTopics[topic] = !_recommendedTopics[topic];
+    print(_recommendedTopics);
     notifyListeners();
   }
 
