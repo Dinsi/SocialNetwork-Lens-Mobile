@@ -179,7 +179,9 @@ class CollectionListModel extends BaseModel {
   //////////////////////////////////////////////////////////////////////
   //* Private Functions
   void _toggleCanPop(bool event) {
-    _canPopController.sink.add(event);
+    if (!_canPopController.isClosed) {
+      _canPopController.sink.add(event);
+    }
   }
 
   Future<Collection> _updateCollection(int index) async {
