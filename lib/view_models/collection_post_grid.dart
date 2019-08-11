@@ -24,8 +24,8 @@ class CollectionPostGridModel extends StateModel<CollectionPostGridViewState> {
   }
 
   void navigateToDetailPostScreen(BuildContext context, int index) {
-    BasicPostModel subModel = locator<BasicPostModel>();
-    subModel.init(_collection.posts[index]);
+    BasicPostModel subModel = locator<BasicPostModel>()
+      ..init(_collection.posts[index]);
 
     Navigator.of(context).pushNamed(RouteName.detailedPost, arguments: {
       'basicPostModel': subModel,
