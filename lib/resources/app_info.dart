@@ -1,10 +1,14 @@
 import 'dart:async' show Future;
 import 'dart:convert' show jsonDecode, jsonEncode;
 
+import 'package:aperture/models/collections/collection.dart';
+import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/models/topic.dart';
 import 'package:aperture/models/users/user.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+typedef UserChangeCallback = User Function(User);
 
 class AppInfo {
   final SharedPreferences _prefs;
@@ -15,9 +19,11 @@ class AppInfo {
 
     if (userJson != null) {
       User user = User.fromJson(jsonDecode(userJson));
-      addUser(user);
+      _addUser(user);
     }
   }
+
+  ///////////////////////////////////////////////////////
 
   // * Dispose
   void dispose() {
@@ -42,27 +48,56 @@ class AppInfo {
     ]);
   }
 
-  Future<void> addTopicToUser(Topic topic) async {
-    User newUser = currentUser;
-    newUser.topics.add(topic);
-    await updateUser(newUser);
-  }
+  // User modifiers
+  Future<void> updateUserEmail(String newEmail) =>
+      _updateUser((user) => user..email = newEmail);
 
-  Future<void> removeTopicFromUser(String topicName) async {
-    User newUser = currentUser;
-    newUser.topics.removeWhere((topic) => topic.name == topicName);
-    await updateUser(newUser);
-  }
+  Future<void> addTopicToUser(Topic topic) =>
+      _updateUser((user) => user..topics.add(topic));
 
-  Future<void> bulkRemoveTopicsFromUser(List<Topic> topicList) async {
-    User newUser = User.from(currentUser);
-    topicList.forEach(
-      (topicElem) => newUser.topics.removeWhere(
-        (topic) => topic.id == topicElem.id,
-      ),
-    );
+  Future<void> removeTopicFromUser(String topicName) =>
+      _updateUser((user) => user
+        ..topics.removeWhere(
+          (topic) => topic.name == topicName,
+        ));
 
-    await updateUser(newUser);
+  Future<void> bulkRemoveTopicsFromUser(List<Topic> topicList) =>
+      _updateUser((user) {
+        topicList.forEach(
+          (topicElem) => user.topics.removeWhere(
+            (topic) => topic.id == topicElem.id,
+          ),
+        );
+
+        return user;
+      });
+
+  Future<void> addCollectionToUser(CompactCollection collection) =>
+      _updateUser((user) => user..collections.add(collection));
+
+  Future<void> addPostToUserCollection(
+          int index, CompactCollection collection) =>
+      _updateUser((user) => user..collections.add(collection));
+
+  Future<void> updateUserCollection(
+          int index, int postId, Collection newCollectionData) =>
+      _updateUser(((user) {
+        if (user.collections[index].length++ == 0) {
+          user.collections[index].cover = newCollectionData.cover;
+        }
+
+        user.collections[index].posts.add(postId);
+
+        return user;
+      }));
+
+  ///////////////////////////////////////////////////////
+  // * Private Functions
+  Future<void> _updateUser(UserChangeCallback onUserChange) async {
+    User newUserData = User.from(currentUser);
+    newUserData = onUserChange(newUserData);
+    await _prefs.setString('user', jsonEncode(newUserData.toJson()));
+    _addUser(newUserData);
   }
 
   ///////////////////////////////////////////////////////
@@ -79,17 +114,14 @@ class AppInfo {
   Future<void> _setRefreshToken(String value) async =>
       await _prefs.setString('refreshToken', value);
 
-  Function(User) get addUser => _userController.sink.add;
+  ////////////////////////////
+
+  Function(User) get _addUser => _userController.sink.add;
   Stream<User> get userStream => _userController.stream;
-  User get currentUser => User.from(_userController.value) ?? User.initial();
+  User get currentUser => _userController.value ?? User.initial();
 
   Future<void> setUserFromMap(Map<String, dynamic> userMap) async {
     await _prefs.setString('user', jsonEncode(userMap));
-    addUser(User.fromJson(userMap));
-  }
-
-  Future<void> updateUser(User newUserData) async {
-    await _prefs.setString('user', jsonEncode(newUserData.toJson()));
-    addUser(newUserData);
+    _addUser(User.fromJson(userMap));
   }
 }

@@ -72,7 +72,7 @@ class ChangeEmailModel extends StateModel<ChangeEmailViewState> {
       return;
     }
 
-    User user = User.from(_appInfo.currentUser);
+    User user = _appInfo.currentUser;
 
     if (newEmail == user.email) {
       setState(ChangeEmailViewState.Idle);
@@ -84,8 +84,7 @@ class ChangeEmailModel extends StateModel<ChangeEmailViewState> {
     // Post to server
     int result = await _repository.updateUserEmail(newEmail, password);
     if (result == 0) {
-      user.email = newEmail;
-      await _appInfo.updateUser(user);
+      await _appInfo.updateUserEmail(newEmail);
       Navigator.of(context).pop(result);
     } else {
       setState(ChangeEmailViewState.Idle);

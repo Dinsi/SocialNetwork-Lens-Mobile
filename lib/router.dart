@@ -1,10 +1,9 @@
-import 'package:aperture/view_models/collection_posts_bloc.dart';
-import 'package:aperture/models/collections/compact_collection.dart';
+import 'package:aperture/view_models/collection_post_grid.dart';
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
 import 'package:aperture/ui/change_password_screen.dart';
 import 'package:aperture/ui/collection_list_screen.dart';
-import 'package:aperture/ui/collection_posts_screen.dart';
+import 'package:aperture/ui/collection_post_grid_screen.dart';
 import 'package:aperture/ui/detailed_post_screen.dart';
 import 'package:aperture/ui/edit_profile_screen.dart';
 import 'package:aperture/ui/feed_screen.dart';
@@ -117,11 +116,10 @@ abstract class Router {
 
       case RouteName.collectionPosts:
         final args = settings.arguments as Map<String, dynamic>;
-        final bloc = CollectionPostsBloc(args['collId']);
         return MaterialPageRoute<Null>(
-          builder: (context) => CollectionPostsScreen(
-            bloc: bloc,
-            collName: args['collName'],
+          builder: (context) => CollectionPostGridScreen(
+            collectionId: args['collId'],
+            collectionName: args['collName'],
           ),
         );
 

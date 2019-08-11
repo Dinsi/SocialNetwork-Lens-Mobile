@@ -1,18 +1,25 @@
 import 'dart:async';
 
+import 'package:aperture/locator.dart';
 import 'package:aperture/models/users/user.dart';
+import 'package:aperture/resources/app_info.dart';
+import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:aperture/ui/utils/shortcuts.dart';
-import 'package:aperture/view_models/append_to_collection_bloc.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
+import 'package:aperture/view_models/core/base_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:rxdart/subjects.dart';
 
-class CollectionListModel extends AppendToCollectionModel {
-  bool _isAddToCollection;
+class CollectionListModel extends BaseModel {
+  final _repository = locator<Repository>();
+  final _appInfo = locator<AppInfo>();
+
   final _canPopController = PublishSubject<bool>();
+  int _postId;
+  bool _isAddToCollection;
 
   //////////////////////////////////////////////////////////////////////
 
@@ -21,31 +28,35 @@ class CollectionListModel extends AppendToCollectionModel {
 
   //////////////////////////////////////////////////////////////////////
   // * Init
-  void init(bool addToCollection, int postId) {
-    _isAddToCollection = addToCollection;
-    protPostId = postId;
+  void init(bool isAddToCollection, int postId) {
+    _isAddToCollection = isAddToCollection;
+    _postId = postId;
   }
 
   //////////////////////////////////////////////////////////////////////
   // * Dispose
-  void dipose(bool addToCollection, int postId) {
+  @override
+  void dispose() {
     _canPopController.close();
+
+    _newCollectionController?.dispose();
   }
 
   //////////////////////////////////////////////////////////////////////
   // * Public Functions
   bool existsInCollection(int index) {
-    return appInfo.currentUser.collections[index].posts.contains(protPostId);
+    return _appInfo.currentUser.collections[index].posts.contains(_postId);
   }
 
   //////////////////////////////////////////////////////////////////////
 
   Future<void> onCollectionTap(BuildContext context, int index) async {
-    CompactCollection targetCollection = appInfo.currentUser.collections[index];
+    CompactCollection targetCollection =
+        _appInfo.currentUser.collections[index];
 
     if (_isAddToCollection) {
       if (!existsInCollection(index)) {
-        Collection result = await updateCollection(index);
+        Collection result = await _updateCollection(index);
         if (result != null) {
           //TODO only covers valid response
           Navigator.of(context).pop(targetCollection.name);
@@ -121,7 +132,7 @@ class CollectionListModel extends AppendToCollectionModel {
     }
 
     // Prevent user from using the back button
-    _canPopController.sink.add(false);
+    _toggleCanPop(false);
 
     // Validations
     final newCollectionName = _newCollectionController.text.trim();
@@ -133,20 +144,19 @@ class CollectionListModel extends AppendToCollectionModel {
     }
 
     // Send new collection name to the server
-    final newCollection = await repository.postNewCollection(newCollectionName);
+    final newCollection = await _createCollection(newCollectionName);
     if (newCollection != null) {
-      User user = appInfo.currentUser;
+      User user = _appInfo.currentUser;
 
       final newCompactCollection =
           CompactCollection.fromJson(newCollection.toJson());
 
-      user.collections.add(newCompactCollection);
-      await appInfo.updateUser(user);
+      await _appInfo.addCollectionToUser(newCompactCollection);
 
       // If the objective is to add a post to a collection, add it to the newly created collection
       if (_isAddToCollection) {
         final updatedCollection =
-            await updateCollection(user.collections.length - 1);
+            await _updateCollection(user.collections.length - 1);
 
         if (updatedCollection != null) {
           Navigator.of(context).pop(newCollectionName);
@@ -156,9 +166,9 @@ class CollectionListModel extends AppendToCollectionModel {
         }
       } else {
         // Grant access to back button
-        _canPopController.sink.add(true);
-        showInSnackBar(context, scaffoldKey,
-            'Collection ($newCollectionName) created');
+        _toggleCanPop(true);
+        showInSnackBar(
+            context, scaffoldKey, 'Collection ($newCollectionName) created');
       }
     } else {
       showInSnackBar(context, scaffoldKey,
@@ -167,9 +177,32 @@ class CollectionListModel extends AppendToCollectionModel {
   }
 
   //////////////////////////////////////////////////////////////////////
+  //* Private Functions
+  void _toggleCanPop(bool event) {
+    _canPopController.sink.add(event);
+  }
+
+  Future<Collection> _updateCollection(int index) async {
+    CompactCollection targetCollection =
+        _appInfo.currentUser.collections[index];
+
+    Collection result =
+        await _repository.appendPostToCollection(targetCollection.id, _postId);
+
+    if (result != null) {
+      await _appInfo.updateUserCollection(index, _postId, result);
+    }
+
+    return result;
+  }
+
+  Future<Collection> _createCollection(String newCollectionName) =>
+      _repository.postNewCollection(newCollectionName);
+
+  //////////////////////////////////////////////////////////////////////
   // * Getters
   bool get isAddToCollection => _isAddToCollection;
-  int get postId => protPostId;
+  int get postId => _postId;
 
   Stream<bool> get canPopStream => _canPopController.stream;
 }
