@@ -62,12 +62,4 @@ class CommentTile extends StatelessWidget {
       ),
     );
   }
-
-  Image _buildImage(CompactUser user) {
-    return user.avatar == null
-        ? Image.asset(
-            'assets/img/user_placeholder.png',
-          )
-        : Image.network(user.avatar);
-  }
 }

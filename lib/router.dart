@@ -1,4 +1,3 @@
-import 'package:aperture/view_models/collection_post_grid.dart';
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
 import 'package:aperture/ui/change_password_screen.dart';

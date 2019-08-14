@@ -6,8 +6,10 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:flutter/material.dart'
-    show BuildContext, FocusNode, Navigator, TextEditingController;
+    show BuildContext, Navigator, TextEditingController;
 import 'package:rxdart/subjects.dart';
+
+// TODO needs tweaking
 
 class SearchModel extends BaseModel {
   final _repository = locator<Repository>();

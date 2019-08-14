@@ -12,6 +12,7 @@ import 'package:aperture/view_models/collection_list.dart';
 import 'package:aperture/view_models/collection_post_grid.dart';
 import 'package:aperture/view_models/detailed_post.dart';
 import 'package:aperture/view_models/edit_profile.dart';
+import 'package:aperture/view_models/login.dart';
 import 'package:aperture/view_models/search.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:aperture/view_models/feed.dart';
@@ -40,6 +41,7 @@ void setupLocator(SharedPreferences prefs) {
   //TODO turn to LazySingleton for production
   locator.registerFactory(() => FeedModel());
 
+  locator.registerFactory(() => LoginModel());
   locator.registerFactory(() => RecommendedTopicsModel());
   locator.registerFactory(() => BasicPostModel());
   locator.registerFactory(() => DetailedPostModel());

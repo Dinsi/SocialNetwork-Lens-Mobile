@@ -171,18 +171,20 @@ class EditProfileScreen extends StatelessWidget {
     EditProfileField nextField,
     bool multiline = false,
   }) {
+    final existsNextField = nextField != null;
+
     return TextFormField(
       controller: model.textControllers[currentField],
       focusNode: model.focusNodes[currentField],
       textInputAction:
-          nextField != null ? TextInputAction.next : TextInputAction.done,
+          existsNextField ? TextInputAction.next : TextInputAction.done,
       keyboardType: multiline ? TextInputType.multiline : TextInputType.text,
       inputFormatters: [
         LengthLimitingTextInputFormatter(characterLimit),
       ],
       onFieldSubmitted: (term) {
         model.focusNodes[currentField].unfocus();
-        nextField != null
+        existsNextField
             ? FocusScope.of(context).requestFocus(model.focusNodes[nextField])
             : model.saveProfile(context);
       },

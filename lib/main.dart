@@ -81,20 +81,17 @@ class _MyAppState extends State<MyApp> {
         title: 'Aperture',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          brightness: Brightness.light,
           fontFamily: "SourceSansPro",
           iconTheme: IconThemeData(color: Colors.black),
           appBarTheme: AppBarTheme(
             color: Colors.white,
-            textTheme: Theme.of(context).textTheme.merge(
-                  TextTheme(
-                    title: TextStyle(color: Colors.black),
-                  ),
-                ),
-            iconTheme: Theme.of(context).iconTheme.merge(
-                  IconThemeData(
-                    color: Colors.black,
-                  ),
-                ),
+            textTheme: Theme.of(context)
+                .textTheme
+                .copyWith(title: TextStyle(color: Colors.black)),
+            iconTheme:
+                Theme.of(context).iconTheme.copyWith(color: Colors.black),
           ),
           cardTheme: CardTheme(
             margin: const EdgeInsets.all(8.0),
@@ -103,6 +100,7 @@ class _MyAppState extends State<MyApp> {
               borderRadius: BorderRadius.circular(20.0),
             ),
           ),
+          buttonTheme: ButtonThemeData(buttonColor: Colors.white),
         ),
         initialRoute: this.widget.initialRoute,
         onGenerateRoute: Router.routes,

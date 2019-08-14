@@ -15,6 +15,7 @@ import 'package:aperture/resources/token_api_provider.dart';
 import 'package:aperture/resources/topic_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
 import 'package:aperture/view_models/edit_profile.dart';
+import 'package:aperture/view_models/login.dart';
 import 'package:aperture/view_models/shared/basic_post.dart'
     show ChangeVoteAction;
 import 'package:aperture/view_models/shared/subscription_app_bar.dart'
@@ -50,7 +51,7 @@ class Repository {
   Future<int> login(String username, String password) =>
       tokenApiProvider.login(username, password);
 
-  Future<int> register(Map<String, String> fields) =>
+  Future<int> register(Map<LoginField, String> fields) =>
       tokenApiProvider.register(fields);
 
   Future<List<Topic>> recommendedTopics() =>

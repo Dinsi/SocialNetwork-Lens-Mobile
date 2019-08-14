@@ -40,24 +40,14 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final Map<EditProfileField, FocusNode> _focusNodes = {
-    // First name
-    EditProfileField.FirstName: FocusNode(),
-    // Last name
-    EditProfileField.LastName: FocusNode(),
-    // Headline
-    EditProfileField.Headline: FocusNode(),
-    // Location
-    EditProfileField.Location: FocusNode(),
-    // Bio
-    EditProfileField.Bio: FocusNode(),
-    // Public email
-    EditProfileField.PublicEmail: FocusNode(),
-    // Website
-    EditProfileField.Website: FocusNode(),
-  };
+  final Map<EditProfileField, FocusNode> _focusNodes = Map.unmodifiable(
+    Map.fromIterables(
+      EditProfileField.values,
+      List.generate(EditProfileField.values.length, (_) => FocusNode()),
+    ),
+  );
 
-  final Map<EditProfileField, TextEditingController> _textControllers = {};
+  Map<EditProfileField, TextEditingController> _textControllers;
 
   //////////////////////////////////////////////////////////////////////
 
@@ -68,7 +58,7 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
   void init() {
     User user = _appInfo.currentUser;
 
-    _textControllers.addAll({
+    _textControllers = Map.unmodifiable({
       // First name
       EditProfileField.FirstName: TextEditingController(text: user.firstName),
       // Last name

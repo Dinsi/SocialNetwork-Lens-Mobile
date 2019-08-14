@@ -2,6 +2,7 @@ import 'dart:convert' show jsonEncode, jsonDecode;
 import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
 
 import 'package:aperture/resources/base_api_provider.dart';
+import 'package:aperture/view_models/login.dart';
 import 'package:http/http.dart' show Client;
 import 'package:http/http.dart';
 
@@ -32,11 +33,19 @@ class TokenApiProvider extends BaseApiProvider {
     }
   }
 
-  Future<int> register(Map<String, String> fields) async {
+  Future<int> register(Map<LoginField, String> fields) async {
     print('_token_register_');
 
+    final requestFields = {
+      'username': fields[LoginField.SignUpUsername],
+      'first_name': fields[LoginField.SignUpFirstName],
+      'last_name': fields[LoginField.SignUpLastName],
+      'email': fields[LoginField.SignUpEmail],
+      'password': fields[LoginField.SignUpPassword]
+    };
+
     final response = await client.post('${super.baseUrl}users/',
-        body: jsonEncode(fields),
+        body: jsonEncode(requestFields),
         headers: {HttpHeaders.contentTypeHeader: ContentType.json.value});
 
     print(response.statusCode);
