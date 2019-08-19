@@ -5,7 +5,8 @@ import 'package:aperture/ui/shared/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-const double _iconSideSize = 40.0;
+const _iconSideSize = 30.0;
+const _spaceBetweenImageAndName = 12.0;
 
 class CommentTile extends StatelessWidget {
   final Comment comment;
@@ -23,7 +24,49 @@ class CommentTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              isSelf
+                  ? Consumer<User>(
+                      builder: (_, currentUser, __) => UserAvatar(
+                        isCircle: true,
+                        side: _iconSideSize,
+                        user: currentUser,
+                        onTap: () => onPressed(context, comment.user),
+                      ),
+                    )
+                  : UserAvatar(
+                      isCircle: true,
+                      side: _iconSideSize,
+                      user: comment.user,
+                      onTap: () => onPressed(context, comment.user),
+                    ),
+              const SizedBox(width: _spaceBetweenImageAndName),
+              Flexible(
+                child: GestureDetector(
+                  onTap: () => onPressed(context, comment.user),
+                  child: Text(
+                    comment.user.name,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: _iconSideSize + _spaceBetweenImageAndName,
+            ),
+            child: Text(comment.text),
+          ),
+        ],
+      ),
+
+      /*Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           isSelf
@@ -59,7 +102,7 @@ class CommentTile extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      ),*/
     );
   }
 }

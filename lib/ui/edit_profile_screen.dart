@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aperture/ui/core/base_view.dart';
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -27,14 +28,14 @@ class EditProfileScreen extends StatelessWidget {
                     icon: Icon(
                       Icons.check,
                       color: model.state == EditProfileViewState.Idle
-                          ? Colors.blue
+                          ? Colors.red
                           : Colors.grey,
                     ),
                     label: Text(
                       'SAVE',
                       style: Theme.of(context).textTheme.button.copyWith(
                             color: model.state == EditProfileViewState.Idle
-                                ? Colors.blue
+                                ? Colors.red
                                 : Colors.grey,
                           ),
                     ),
@@ -188,19 +189,7 @@ class EditProfileScreen extends StatelessWidget {
             ? FocusScope.of(context).requestFocus(model.focusNodes[nextField])
             : model.saveProfile(context);
       },
-      style: Theme.of(context).textTheme.headline,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(12.0),
-        labelText: labelText,
-        labelStyle: Theme.of(context)
-            .textTheme
-            .headline
-            .copyWith(color: Colors.black45),
-        alignLabelWithHint: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(0.0),
-        ),
-      ),
+      decoration: InputDecoration(labelText: labelText),
     );
   }
 }

@@ -97,20 +97,11 @@ class CollectionListModel extends BaseModel {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const Text('Name (max. 64):'),
-            const SizedBox(
-              height: 8.0,
-            ),
+            const SizedBox(height: 8.0),
             TextField(
               controller: _newCollectionController,
               textCapitalization: TextCapitalization.sentences,
               inputFormatters: [LengthLimitingTextInputFormatter(64)],
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(12.0),
-                alignLabelWithHint: true,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-              ),
             ),
           ],
         ),

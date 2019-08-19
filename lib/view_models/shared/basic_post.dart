@@ -60,7 +60,7 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
     );
   }
 
-  Future<String> _navigateToCollectionList(BuildContext context) async {
+  Future<String> navigateToCollectionList(BuildContext context) async {
     // TODO navigateToCollections?
     return await Navigator.of(context).pushNamed(
       RouteName.collectionList,
@@ -168,7 +168,7 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
 
   Future<void> onSelected(BuildContext context, int value) async {
     if (value == 1) {
-      String collectionName = await _navigateToCollectionList(context);
+      String collectionName = await navigateToCollectionList(context);
 
       if (collectionName != null) {
         showDialog(

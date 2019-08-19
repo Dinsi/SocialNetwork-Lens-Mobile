@@ -51,203 +51,188 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
 
         return Future.value(true);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('New Post'),
-          leading: BackButton(),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              GestureDetector(
-                onTap: _loadImage,
-                child: StreamBuilder<String>(
-                  stream: uploadPostBloc.image,
-                  initialData: 'initialContainer',
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    switch (snapshot.data) {
-                      case 'initialContainer':
-                        return Container(
-                          height: 250.0,
-                          color: Colors.black26,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10.0),
-                                child: ClipOval(
-                                  child: Container(
-                                    color: Colors.blue,
-                                    child: const Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                      size: 65.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Text(
-                                'Click here to\nupload an image',
-                                style: TextStyle(fontSize: 20.0),
-                              ),
-                            ],
-                          ),
-                        );
-
-                      case 'image':
-                        return Image.file(
-                          _image,
-                          fit: BoxFit.fitWidth,
-                        );
-
-                      default:
-                        return Container();
-                    }
-                  },
-                ),
-              ),
-              const Divider(
-                height: 10.0,
-                color: Colors.transparent,
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: TextField(
-                  style: Theme.of(context).textTheme.headline,
-                  decoration: InputDecoration(
-                    labelText: "Title",
-                    labelStyle: Theme.of(context)
-                        .textTheme
-                        .headline
-                        .copyWith(color: Colors.black45),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(0.0),
-                    ),
-                  ),
-                  keyboardType: TextInputType.text,
-                  maxLength: maxLengthTitle,
-                  onChanged: (v) => _checkConditions("title", v),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: TextField(
-                  style: Theme.of(context).textTheme.headline,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(12.0),
-                    labelText: "Description",
-                    labelStyle: Theme.of(context)
-                        .textTheme
-                        .headline
-                        .copyWith(color: Colors.black45),
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(0.0),
-                    ),
-                  ),
-                  maxLines: 5,
-                  keyboardType: TextInputType.multiline,
-                  maxLength: maxLengthDescription,
-                  onChanged: (v) => _checkConditions("description", v),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30.0, 8.0, 30.0, 25.0),
-                child: StreamBuilder<String>(
-                    stream: uploadPostBloc.buttonWidget,
-                    initialData: 'textInactive',
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('New Post'),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: _loadImage,
+                  child: StreamBuilder<String>(
+                    stream: uploadPostBloc.image,
+                    initialData: 'initialContainer',
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
                       switch (snapshot.data) {
-                        case 'text':
+                        case 'initialContainer':
                           return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.blue[600],
-                              borderRadius: BorderRadius.circular(9.0),
-                            ),
-                            child: MaterialButton(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.blueGrey,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(9.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 42.0),
-                                child: Text(
-                                  'Upload Post',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline
-                                      .copyWith(
-                                          color: Colors.white, fontSize: 23.0),
+                            height: 250.0,
+                            color: Colors.black26,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: ClipOval(
+                                    child: Container(
+                                      color: Colors.blue,
+                                      child: const Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: 65.0,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              onPressed: () => _uploadPost(),
-                              //showInSnackBar("Login button pressed")),
+                                const Text(
+                                  'Click here to\nupload an image',
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                              ],
                             ),
                           );
 
-                        case 'textInactive':
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(9.0),
-                            ),
-                            child: MaterialButton(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.blueGrey,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(9.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 42.0),
-                                child: Text(
-                                  'Upload Post',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline
-                                      .copyWith(
-                                          color: Colors.white, fontSize: 23.0),
-                                ),
-                              ),
-                              onPressed: null,
-                              //showInSnackBar("Login button pressed")),
-                            ),
-                          );
-
-                        case 'indicator':
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(9.0),
-                            ),
-                            child: MaterialButton(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.blueGrey,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(9.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 42.0),
-                                child: getWhiteCircularIndicator(),
-                              ),
-                              onPressed: null,
-                              //showInSnackBar("Login button pressed")),
-                            ),
+                        case 'image':
+                          return Image.file(
+                            _image,
+                            fit: BoxFit.fitWidth,
                           );
 
                         default:
                           return Container();
                       }
-                    }),
-              ),
-            ],
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: <Widget>[
+                      TextField(
+                        decoration: InputDecoration(labelText: "Title"),
+                        keyboardType: TextInputType.text,
+                        maxLength: maxLengthTitle,
+                        onChanged: (v) => _checkConditions("title", v),
+                      ),
+                      const SizedBox(height: 8.0),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: "Description",
+                          alignLabelWithHint: true,
+                        ),
+                        maxLines: 5,
+                        keyboardType: TextInputType.multiline,
+                        maxLength: maxLengthDescription,
+                        onChanged: (v) => _checkConditions("description", v),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 25.0),
+                        child: StreamBuilder<String>(
+                            stream: uploadPostBloc.buttonWidget,
+                            initialData: 'textInactive',
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> snapshot) {
+                              switch (snapshot.data) {
+                                case 'text':
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue[600],
+                                      borderRadius: BorderRadius.circular(9.0),
+                                    ),
+                                    child: MaterialButton(
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.blueGrey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(9.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10.0, horizontal: 42.0),
+                                        child: Text(
+                                          'Upload Post',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline
+                                              .copyWith(
+                                                  color: Colors.white,
+                                                  fontSize: 23.0),
+                                        ),
+                                      ),
+                                      onPressed: () => _uploadPost(),
+                                      //showInSnackBar("Login button pressed")),
+                                    ),
+                                  );
+
+                                case 'textInactive':
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(9.0),
+                                    ),
+                                    child: MaterialButton(
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.blueGrey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(9.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10.0, horizontal: 42.0),
+                                        child: Text(
+                                          'Upload Post',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline
+                                              .copyWith(
+                                                  color: Colors.white,
+                                                  fontSize: 23.0),
+                                        ),
+                                      ),
+                                      onPressed: null,
+                                      //showInSnackBar("Login button pressed")),
+                                    ),
+                                  );
+
+                                case 'indicator':
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(9.0),
+                                    ),
+                                    child: MaterialButton(
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.blueGrey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(9.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10.0, horizontal: 42.0),
+                                        child: getWhiteCircularIndicator(),
+                                      ),
+                                      onPressed: null,
+                                      //showInSnackBar("Login button pressed")),
+                                    ),
+                                  );
+
+                                default:
+                                  return Container();
+                              }
+                            }),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

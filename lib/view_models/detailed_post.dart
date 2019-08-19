@@ -103,10 +103,15 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
 
   /////////////////////////////////////////////////////////////
   // * on__ Functions
-  Future onPressed(BuildContext context) async {
+  Future onCommentPublish(BuildContext context) async {
+    if (_commentTextController.text.trim().isEmpty) {
+      return;
+    }
+
     setState(DetailedPostViewState.Publishing);
 
-    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
+
     String newComment = _commentTextController.text.trim();
     _commentTextController.clear();
 
@@ -114,7 +119,8 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
         _basicPostModel.post.id, newComment); // TODO assuming result is valid
 
     if (!listSubject.isClosed) {
-      listSubject.sink.add(listSubject.value..insert(0, newCommentObj));
+      listSubject.sink.add(UnmodifiableListView(
+          List.from(listSubject.value)..insert(0, newCommentObj)));
     }
 
     _basicPostModel.post.commentsLength++;
@@ -173,6 +179,8 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   Post get post => _basicPostModel.post;
   VoidCallback get onUpvoteOrRemove => _basicPostModel.onUpvoteOrRemove;
   VoidCallback get onDownvoteOrRemove => _basicPostModel.onDownvoteOrRemove;
+  Future<String> Function(BuildContext) get navigateToCollectionList =>
+      _basicPostModel.navigateToCollectionList;
 
   ScrollController get scrollController => _scrollController;
   TextEditingController get commentTextController => _commentTextController;

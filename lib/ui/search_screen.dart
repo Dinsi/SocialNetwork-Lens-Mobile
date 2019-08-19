@@ -45,21 +45,14 @@ class SearchScreen extends StatelessWidget {
                           controller: model.searchTextController,
                           cursorColor: Colors.grey[600],
                           keyboardType: TextInputType.text,
+                          style: TextStyle(fontSize: 16.0),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.only(top: 6.0),
                             isDense: true,
                             hintStyle: const TextStyle(color: Colors.grey),
                             hintText: 'Search...',
-                            enabledBorder: const UnderlineInputBorder(
-                              borderSide: const BorderSide(
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                            focusedBorder: const UnderlineInputBorder(
-                              borderSide: const BorderSide(
-                                style: BorderStyle.none,
-                              ),
-                            ),
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
                           ),
                         ),
                       ),

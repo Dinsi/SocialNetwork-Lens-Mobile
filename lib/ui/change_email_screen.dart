@@ -1,4 +1,5 @@
 import 'package:aperture/ui/core/base_view.dart';
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/change_email.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -23,14 +24,14 @@ class ChangeEmailScreen extends StatelessWidget {
                     icon: Icon(
                       Icons.check,
                       color: model.state == ChangeEmailViewState.Idle
-                          ? Colors.blue
+                          ? Colors.red
                           : Colors.grey,
                     ),
                     label: Text(
                       'SAVE',
                       style: Theme.of(context).textTheme.button.copyWith(
                             color: model.state == ChangeEmailViewState.Idle
-                                ? Colors.blue
+                                ? Colors.red
                                 : Colors.grey,
                           ),
                     ),
@@ -64,19 +65,7 @@ class ChangeEmailScreen extends StatelessWidget {
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(128),
                       ],
-                      style: Theme.of(context).textTheme.headline,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(12.0),
-                        labelText: "New Email",
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .headline
-                            .copyWith(color: Colors.black45),
-                        alignLabelWithHint: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
+                      decoration: InputDecoration(labelText: "New Email"),
                     ),
                     const SizedBox(
                       height: 10.0,
@@ -98,18 +87,8 @@ class ChangeEmailScreen extends StatelessWidget {
                             model.passwordFocusNode.unfocus();
                             model.updateUserEmail(context);
                           },
-                          style: Theme.of(context).textTheme.headline,
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(12.0),
                             labelText: "Password",
-                            labelStyle: Theme.of(context)
-                                .textTheme
-                                .headline
-                                .copyWith(color: Colors.black45),
-                            alignLabelWithHint: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(0.0),
-                            ),
                             suffixIcon: IconButton(
                               splashColor: Colors.transparent,
                               icon: Icon(FontAwesomeIcons.eye),

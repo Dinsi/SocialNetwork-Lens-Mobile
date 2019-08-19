@@ -15,7 +15,7 @@ class ImageContainer extends StatelessWidget {
       @required this.imageWidth,
       @required this.onTap,
       @required this.onDoubleTap,
-      @required this.paddingDiff});
+      this.paddingDiff = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +50,8 @@ class ImageContainer extends StatelessWidget {
       return imageHeight.toDouble();
     }
 
-    return ((MediaQuery.of(context).size.width - paddingDiff) * imageHeight / imageWidth);
+    return ((MediaQuery.of(context).size.width - paddingDiff) *
+        imageHeight /
+        imageWidth);
   }
 }

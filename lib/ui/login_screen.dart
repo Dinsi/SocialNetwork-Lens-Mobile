@@ -53,7 +53,7 @@ class LoginScreen extends StatelessWidget {
               style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 25.0),
+          const SizedBox(height: 10.0),
           _buildTextField(
             context,
             model,
@@ -85,7 +85,7 @@ class LoginScreen extends StatelessWidget {
             model,
             'SIGN IN',
           ),
-          const SizedBox(height: 288.5),
+          const SizedBox(height: 306),
           Align(
             alignment: Alignment.centerRight,
             child: RaisedButton(
@@ -278,7 +278,7 @@ class LoginScreen extends StatelessWidget {
     final isPassword = obscureText != null;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 6.0),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 4.0),
       child: TextField(
         controller: model.textControllers[currentField],
         focusNode: model.focusNodes[currentField],
@@ -296,7 +296,6 @@ class LoginScreen extends StatelessWidget {
               : model.signInOrSignUp(context);
         },
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(12.0),
           labelText: labelText,
           suffixIcon: isPassword
               ? GestureDetector(

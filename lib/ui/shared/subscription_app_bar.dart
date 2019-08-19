@@ -19,7 +19,7 @@ class SubscriptionAppBar extends StatelessWidget
     this.leading,
     @required this.title,
     @required this.topicOrUser,
-  })  : this.actionColor = actionColor ?? Colors.blue,
+  })  : this.actionColor = actionColor ?? Colors.red,
         this.disabledActionColor = disabledActionColor ?? Colors.grey;
 
   @override

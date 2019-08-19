@@ -88,6 +88,8 @@ class LoginModel extends BaseModel {
   Future<void> _signIn(BuildContext context) async {
     _buttonsController.add(false);
 
+    FocusScope.of(context).unfocus();
+
     final username = textControllers[LoginField.SignInUsername].text.trim();
     final password = textControllers[LoginField.SignInPassword].text;
 
@@ -120,6 +122,8 @@ class LoginModel extends BaseModel {
 
   Future<void> _signUp(BuildContext context) async {
     _buttonsController.add(false);
+
+    FocusScope.of(context).unfocus();
 
     final username = textControllers[LoginField.SignUpUsername].text.trim();
     final firstName = textControllers[LoginField.SignUpFirstName].text.trim();

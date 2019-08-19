@@ -39,11 +39,14 @@ class _DescriptionTextState extends State<DescriptionText>
   @override
   Widget build(BuildContext context) {
     if (widget.withHashtags) {
-      return _buildTextSpans();
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: _buildTextSpans(),
+      );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: (_textSplits.length == 1
           ? Text(
               _textSplits.first,
@@ -91,39 +94,28 @@ class _DescriptionTextState extends State<DescriptionText>
   }
 
   Widget _buildTextSpans() {
-    TextSpan descriptionTextSpan = TextSpan(
-      children: <TextSpan>[],
-      style: TextStyle(fontSize: 16.0, color: Colors.black),
-    );
-
-    _textSplits.forEach((textSplit) {
-      if (textSplit.startsWith('#')) {
-        descriptionTextSpan.children.add(
-          TextSpan(
-            text: textSplit,
-            style: TextStyle(color: Colors.blue),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () =>
-                  // TODO navigateToTopicFeed
-                  Navigator.of(context).pushNamed(
-                    RouteName.topicFeed,
-                    arguments: textSplit.replaceFirst('#', ''),
-                  ),
-          ),
-        );
-      } else {
-        descriptionTextSpan.children.add(
-          TextSpan(
-            text: textSplit,
-          ),
-        );
-      }
-    });
-
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      child: RichText(
-        text: descriptionTextSpan,
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(fontSize: 16.0, color: Colors.black),
+        children: <TextSpan>[
+          for (final textSplit in _textSplits)
+            if (textSplit.startsWith('#'))
+              TextSpan(
+                text: textSplit,
+                style: TextStyle(color: Colors.blue),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () =>
+                      // TODO navigateToTopicFeed
+                      Navigator.of(context).pushNamed(
+                        RouteName.topicFeed,
+                        arguments: textSplit.replaceFirst('#', ''),
+                      ),
+              )
+            else
+              TextSpan(
+                text: textSplit,
+              )
+        ],
       ),
     );
   }

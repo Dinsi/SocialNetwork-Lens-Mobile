@@ -1,4 +1,5 @@
 import 'package:aperture/ui/core/base_view.dart';
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/change_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -23,7 +24,7 @@ class ChangePasswordScreen extends StatelessWidget {
                     icon: Icon(
                       Icons.check,
                       color: model.state == ChangePasswordViewState.Idle
-                          ? Colors.blue
+                          ? Colors.red
                           : Colors.grey,
                     ),
                     label: Text(
@@ -31,7 +32,7 @@ class ChangePasswordScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.button.merge(
                             TextStyle(
                               color: model.state == ChangePasswordViewState.Idle
-                                  ? Colors.blue
+                                  ? Colors.red
                                   : Colors.grey,
                             ),
                           ),
@@ -120,18 +121,8 @@ class ChangePasswordScreen extends StatelessWidget {
                   model.focusNodes[currentField].unfocus();
                   model.updateUserPassword(context);
                 },
-          style: Theme.of(context).textTheme.headline,
           decoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(12.0),
             labelText: label,
-            labelStyle: Theme.of(context)
-                .textTheme
-                .headline
-                .copyWith(color: Colors.black45),
-            alignLabelWithHint: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(0.0),
-            ),
             suffixIcon: IconButton(
               splashColor: Colors.transparent,
               icon: Icon(FontAwesomeIcons.eye),
