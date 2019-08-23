@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aperture/ui/account_settings_screen.dart';
 import 'package:aperture/ui/change_email_screen.dart';
 import 'package:aperture/ui/change_password_screen.dart';
@@ -51,7 +53,11 @@ abstract class Router {
         return MaterialPageRoute<Null>(builder: (context) => UserInfoScreen());
 
       case RouteName.uploadPost:
-        return MaterialPageRoute<int>(builder: (context) => UploadPostScreen());
+        return MaterialPageRoute<int>(
+          builder: (context) => UploadPostScreen(
+            file: settings.arguments as File,
+          ),
+        );
 
       case RouteName.feed:
         return MaterialPageRoute<Null>(builder: (context) => FeedScreen());

@@ -29,6 +29,8 @@ class LoginModel extends BaseModel {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final pageController = PageController();
+  final signInPageStorageKey = PageStorageKey('signIn');
+  final signUpPageStorageKey = PageStorageKey('signUp');
 
   final Map<LoginField, TextEditingController> textControllers =
       Map.unmodifiable(
@@ -106,7 +108,7 @@ class LoginModel extends BaseModel {
       if (user != null) {
         Navigator.of(context).pushReplacementNamed(!user.hasFinishedRegister
             ? RouteName.recommendedTopics
-            : RouteName.userInfo);
+            : RouteName.feed);
         return;
       }
 

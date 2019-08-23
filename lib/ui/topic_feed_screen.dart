@@ -22,11 +22,17 @@ class TopicFeedScreen extends StatelessWidget {
               topicOrUser: topic,
               title: Text("#$topic"),
             ),
-            body: ScrollLoadingListView(
-              model: model,
-              widgetAdapter: (ObjectKey key, Post post) => BasicPost(
-                key: key,
-                post: post,
+            body: RefreshIndicator(
+              onRefresh: model.onRefresh,
+              child: NotificationListener<ScrollNotification>(
+                onNotification: model.onNotification,
+                child: ScrollLoadingListView(
+                  model: model,
+                  widgetAdapter: (ObjectKey key, Post post) => BasicPost(
+                    key: key,
+                    post: post,
+                  ),
+                ),
               ),
             ),
           ),

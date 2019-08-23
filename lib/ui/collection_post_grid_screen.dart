@@ -1,4 +1,5 @@
 import 'package:aperture/ui/core/base_view.dart';
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/collection_post_grid.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +21,8 @@ class CollectionPostGridScreen extends StatelessWidget {
               title: Text(model.collectionName),
             ),
             body: model.state == CollectionPostGridViewState.Loading
-                ? const Center(
-                    child: const CircularProgressIndicator(),
+                ? Center(
+                    child: defaultCircularIndicator(),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(3.0),

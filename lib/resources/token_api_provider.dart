@@ -25,7 +25,7 @@ class TokenApiProvider extends BaseApiProvider {
 
         return 0;
 
-      case HttpStatus.badRequest:
+      case HttpStatus.unauthorized:
         return 1;
 
       default:

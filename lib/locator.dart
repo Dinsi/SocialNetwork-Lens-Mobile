@@ -20,6 +20,7 @@ import 'package:aperture/view_models/recommended_topics.dart';
 import 'package:aperture/view_models/shared/subscription_app_bar.dart';
 import 'package:aperture/view_models/topic_feed.dart';
 import 'package:aperture/view_models/topic_list.dart';
+import 'package:aperture/view_models/upload_post.dart';
 import 'package:aperture/view_models/user_profile.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,4 +56,5 @@ void setupLocator(SharedPreferences prefs) {
   locator.registerFactory(() => CollectionListModel());
   locator.registerFactory(() => CollectionPostGridModel());
   locator.registerFactory(() => SearchModel());
+  locator.registerFactory(() => UploadPostModel());
 }

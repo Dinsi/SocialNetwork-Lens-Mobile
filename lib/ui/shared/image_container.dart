@@ -26,6 +26,7 @@ class ImageContainer extends StatelessWidget {
         image: DecorationImage(
           image: NetworkImage(imageUrl),
           fit: BoxFit.fitWidth,
+          // TODO With Stack
           /*FadeInImage.memoryNetwork(
               fit: BoxFit.fitWidth,
               placeholder: kTransparentImage,

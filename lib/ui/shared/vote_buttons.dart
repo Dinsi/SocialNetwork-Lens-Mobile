@@ -2,36 +2,37 @@ import 'package:aperture/utils/utils.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class VoteButtons extends StatelessWidget {
-  final BasicPostModel model;
-
-  const VoteButtons({@required this.model});
-
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        _buildVoteButton(model, true),
-        SizedBox(
-          width: 50.0,
-          child: Center(
-            child: Text(
-              nFormatter(model.post.votes.toDouble()),
-              style: TextStyle(
-                fontSize: 17.0,
-                fontWeight: FontWeight.bold,
-                color: model.state == BasicPostViewState.UpVote
-                    ? Colors.blue
-                    : Colors.grey[600],
+    return Consumer<BasicPostModel>(
+      builder: (context, model, _) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            _buildVoteButton(model, true),
+            SizedBox(
+              width: 50.0,
+              child: Center(
+                child: Text(
+                  nFormatter(model.post.votes.toDouble()),
+                  style: TextStyle(
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold,
+                    color: model.state == BasicPostViewState.UpVote
+                        ? Colors.blue
+                        : Colors.grey[600],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        _buildVoteButton(model, false),
-      ],
+            _buildVoteButton(model, false),
+          ],
+        );
+      },
     );
   }
 
@@ -43,7 +44,9 @@ class VoteButtons extends StatelessWidget {
             ? () => model.onUpvoteOrRemove()
             : () => model.onDownvoteOrRemove(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: isUpvote
+              ? const EdgeInsets.symmetric(horizontal: 12.0)
+              : const EdgeInsets.only(left: 12.0, right: 8.0),
           child: isUpvote
               ? Icon(
                   FontAwesomeIcons.arrowAltCircleUp,

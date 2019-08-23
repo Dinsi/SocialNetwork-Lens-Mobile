@@ -6,6 +6,8 @@ import 'package:aperture/ui/shared/basic_post.dart';
 import 'package:aperture/ui/shared/description_text.dart';
 import 'package:aperture/ui/shared/loading_lists/no_scroll_loading_list_view.dart';
 import 'package:aperture/ui/shared/subscription_app_bar.dart';
+import 'package:aperture/ui/shared/user_avatar.dart';
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,19 +28,7 @@ class UserProfileScreen extends StatelessWidget {
               : Scaffold(
                   appBar: SubscriptionAppBar(
                     topicOrUser: model.user.username,
-                    backgroundColor: Colors.blue,
-                    actionColor: Colors.white,
-                    disabledActionColor: Colors.grey[300],
-                    leading: BackButton(
-                      color: Colors.white,
-                    ),
-                    title: Text(
-                      model.user.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subhead
-                          .copyWith(color: Colors.white),
-                    ),
+                    title: Text(model.isSelf ? 'My profile' : 'Profile'),
                   ),
                   body: RefreshIndicator(
                     onRefresh: model.onRefresh,
@@ -58,19 +48,29 @@ class UserProfileScreen extends StatelessWidget {
                                       children: <Widget>[
                                         Consumer<User>(
                                           builder: (_, currentUser, __) =>
-                                              _buildCircleAvatar(currentUser),
+                                              _buildUserAvatar(currentUser),
                                         ),
                                         Positioned(
                                           height: 125.0,
                                           right: 15.0,
-                                          child: IconButton(
-                                            icon: Icon(
-                                              Icons.edit,
-                                              color: Colors.blue,
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: Colors.blue,
+                                                width: 3.0,
+                                              ),
                                             ),
-                                            alignment: Alignment.center,
-                                            onPressed: () => model
-                                                .navigateToEditProfile(context),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.edit,
+                                                color: Colors.blue,
+                                              ),
+                                              alignment: Alignment.center,
+                                              onPressed: () =>
+                                                  model.navigateToEditProfile(
+                                                      context),
+                                            ),
                                           ),
                                         )
                                       ],
@@ -80,7 +80,7 @@ class UserProfileScreen extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 16.0,
                                     ),
-                                    child: _buildCircleAvatar(model.user),
+                                    child: _buildUserAvatar(model.user),
                                   ),
                             if (model.user.headline != null)
                               Padding(
@@ -96,6 +96,8 @@ class UserProfileScreen extends StatelessWidget {
                             ),
                             if (model.user.location != null)
                               Text(model.user.location),
+                            if (model.user.publicEmail != null)
+                              Text(model.user.publicEmail),
                             if (model.user.website != null)
                               model.clickableURL
                                   ? GestureDetector(
@@ -145,30 +147,15 @@ class UserProfileScreen extends StatelessWidget {
 
   Widget _buildLoadingScaffold() {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        leading: BackButton(
-          color: Colors.white,
-        ),
-      ),
-      body: const Center(
-        child: const CircularProgressIndicator(
-          valueColor: const AlwaysStoppedAnimation<Color>(
-            Colors.blueGrey,
-          ),
-        ),
+      appBar: AppBar(),
+      body: Center(
+        child: defaultCircularIndicator(),
       ),
     );
   }
 
-  Widget _buildCircleAvatar(CompactUser user) {
-    return CircleAvatar(
-      radius: 65.0,
-      backgroundColor: Colors.grey[300],
-      backgroundImage: user.avatar == null
-          ? AssetImage('assets/img/user_placeholder.png')
-          : NetworkImage(user.avatar),
-    );
+  Widget _buildUserAvatar(CompactUser user) {
+    return UserAvatar(isCircle: true, side: 130.0, user: user);
   }
 
   // TODO _buildUserInfoSection(UserProfileModel model) {}

@@ -5,8 +5,12 @@ import 'package:flutter/widgets.dart';
 class ScrollLoadingListView<T> extends LoadingListView<T> {
   ScrollLoadingListView(
       {@required BaseFeedMixin<T> model,
-      @required WidgetAdapter<T> widgetAdapter})
-      : super(model: model, widgetAdapter: widgetAdapter);
+      @required WidgetAdapter<T> widgetAdapter,
+      bool sliver})
+      : super(
+            model: model,
+            widgetAdapter: widgetAdapter,
+            sliver: sliver ?? false);
 
   @override
   _ScrollLoadingListViewState<T> createState() =>

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aperture/router.dart';
 import 'package:aperture/view_models/user_info_screen_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key key}) : super(key: key);
@@ -13,7 +14,13 @@ class UserInfoScreen extends StatefulWidget {
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
   Future<void> _uploadPost() async {
-    int result = await Navigator.of(context).pushNamed(RouteName.uploadPost);
+    final imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (imageFile == null) {
+      return;
+    }
+
+    final result = await Navigator.of(context)
+        .pushNamed<int>(RouteName.uploadPost, arguments: imageFile);
 
     switch (result) {
       case 0:

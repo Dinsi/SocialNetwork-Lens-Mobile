@@ -37,7 +37,7 @@ class UserAvatar extends StatelessWidget {
                 : null,
           )
         : ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(8.0),
             child: Container(
               height: side,
               width: side,

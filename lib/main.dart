@@ -52,7 +52,7 @@ Future<String> _getInitialRoute() async {
     if (!user.hasFinishedRegister) {
       return RouteName.recommendedTopics;
     } else {
-      return RouteName.userInfo;
+      return RouteName.feed;
     }
   }
 }
@@ -82,7 +82,6 @@ class _MyAppState extends State<MyApp> {
         title: 'Aperture',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
           cursorColor: Colors.red,
           primarySwatch: Colors.red,
           primaryColor: Colors.white,
@@ -104,7 +103,7 @@ class _MyAppState extends State<MyApp> {
           fontFamily: "SourceSansPro",
           iconTheme: IconThemeData(color: Colors.black),
           cardTheme: CardTheme(
-            margin: const EdgeInsets.all(8.0),
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
             clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -114,7 +113,7 @@ class _MyAppState extends State<MyApp> {
             contentPadding: const EdgeInsets.all(12.0),
             labelStyle: textFieldtextStyle.copyWith(color: Colors.black45),
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.red),
+              borderSide: BorderSide(color: Colors.grey),
             ),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.red, width: 2.0),

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 const textFieldtextStyle = TextStyle(fontSize: 18.0);
 
-CircularProgressIndicator getWhiteCircularIndicator() =>
-    CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+CircularProgressIndicator defaultCircularIndicator() =>
+    const CircularProgressIndicator(
+      valueColor: const AlwaysStoppedAnimation<Color>(
+        Colors.blueGrey,
+      ),
     );
 
 void showInSnackBar(

@@ -1,4 +1,5 @@
 import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/core/mixins/base_feed.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +10,9 @@ const _circularIndicatorHeight = 100.0;
 abstract class LoadingListView<T> extends StatefulWidget {
   final BaseFeedMixin<T> model;
   final WidgetAdapter<T> widgetAdapter;
+  final bool sliver;
 
-  LoadingListView({this.model, this.widgetAdapter});
+  LoadingListView({this.model, this.widgetAdapter, this.sliver = false});
 }
 
 abstract class LoadingListViewState<T, LListViewT extends LoadingListView<T>>
@@ -31,48 +33,72 @@ abstract class LoadingListViewState<T, LListViewT extends LoadingListView<T>>
         if (snapshot.hasData) {
           return _buildList(snapshot.data);
         } else {
-          return const Center(
-            child: const SizedBox(
+          Widget circularIndicator = Center(
+            child: SizedBox(
               height: 70.0,
-              child: const Center(
-                child: const CircularProgressIndicator(
-                  valueColor:
-                      const AlwaysStoppedAnimation<Color>(Colors.blueGrey),
-                ),
+              child: Center(
+                child: defaultCircularIndicator(),
               ),
             ),
           );
+
+          return widget.sliver
+              ? SliverFillRemaining(
+                  child: circularIndicator,
+                )
+              : circularIndicator;
         }
       },
     );
   }
 
   Widget _buildList(List<T> list) {
-    return ListView.builder(
-      itemCount: widget.model.existsNext ? list.length + 1 : list.length,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == list.length && widget.model.existsNext) {
-          return const SizedBox(
-            height: _circularIndicatorHeight,
-            child: const Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
-              child: const Center(
-                child: const CircularProgressIndicator(
-                  valueColor:
-                      const AlwaysStoppedAnimation<Color>(Colors.blueGrey),
-                ),
-              ),
-            ),
-          );
-        }
+    final isScrollList = widget is ScrollLoadingListView;
 
-        return widget.widgetAdapter(ObjectKey(list[index]), list[index]);
-      },
-      physics: (widget is ScrollLoadingListView
-          ? const AlwaysScrollableScrollPhysics()
-          : null),
-      primary: widget is ScrollLoadingListView,
-      shrinkWrap: !(widget is ScrollLoadingListView),
-    );
+    Function(BuildContext, int) itemBuilder = (context, index) {
+      final tWidget = widget.widgetAdapter(ObjectKey(list[index]), list[index]);
+      if (index == list.length - 1) {
+        return Column(
+          children: <Widget>[
+            const SizedBox(height: 8.0),
+            tWidget,
+            !widget.model.existsNext
+                ? const SizedBox(height: 8.0)
+                : SizedBox(
+                    height: _circularIndicatorHeight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                      child: Center(
+                        child: defaultCircularIndicator(),
+                      ),
+                    ),
+                  ),
+          ],
+        );
+      }
+
+      return Column(
+        children: <Widget>[
+          const SizedBox(height: 8.0),
+          tWidget,
+        ],
+      );
+    };
+
+    return widget.sliver
+        ? SliverList(
+            delegate: SliverChildBuilderDelegate(
+              itemBuilder,
+              childCount: list.length,
+            ),
+          )
+        : ListView.builder(
+            itemCount: list.length,
+            itemBuilder: itemBuilder,
+            physics:
+                isScrollList ? const AlwaysScrollableScrollPhysics() : null,
+            primary: isScrollList,
+            shrinkWrap: !isScrollList,
+          );
   }
 }

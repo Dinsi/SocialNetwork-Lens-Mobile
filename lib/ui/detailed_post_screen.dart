@@ -45,13 +45,10 @@ class DetailedPostScreen extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     Expanded(
-                      child: SingleChildScrollView(
+                      child: ListView(
                         controller: model.scrollController,
-                        child: Column(
-                          key: model.columnKey,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: _buildWidgetList(context, model),
-                        ),
+                        key: model.listViewKey,
+                        children: _buildWidgetList(context, model),
                       ),
                     ),
                     _buildNewCommentSection(context, model),
@@ -175,7 +172,10 @@ class DetailedPostScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              VoteButtons(model: basicPostModel),
+              ChangeNotifierProvider<BasicPostModel>.value(
+                value: basicPostModel,
+                child: VoteButtons(),
+              ),
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: SizedBox(

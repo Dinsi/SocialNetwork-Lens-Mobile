@@ -25,7 +25,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   String _nextLink;
   bool _toComments;
 
-  final columnKey = GlobalKey();
+  final listViewKey = GlobalKey();
   ScrollController _scrollController = ScrollController();
   TextEditingController _commentTextController = TextEditingController();
   FocusNode _commentFocusNode = FocusNode();
@@ -170,7 +170,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
 
   void _calculateInitialHeight() {
     final RenderBox columnRenderBox =
-        columnKey.currentContext.findRenderObject();
+        listViewKey.currentContext.findRenderObject();
     _initialHeight = columnRenderBox.size.height;
   }
 

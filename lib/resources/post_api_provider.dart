@@ -7,11 +7,11 @@ import 'package:aperture/resources/base_api_provider.dart';
 import 'package:aperture/view_models/shared/basic_post.dart'
     show ChangeVoteAction;
 import 'package:async/async.dart';
-import 'package:flutter/foundation.dart' show compute;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:http/http.dart'
     show ByteStream, Client, MultipartFile, MultipartRequest;
 import 'package:http_parser/http_parser.dart';
-import 'package:image/image.dart' show Image, decodeImage;
 import 'package:path/path.dart';
 
 class PostApiProvider extends BaseApiProvider {
@@ -41,7 +41,7 @@ class PostApiProvider extends BaseApiProvider {
       HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
     });
 
-    print(response.body.toString());
+    debugPrint(response.body.toString(), wrapWidth: 1024);
 
     if (response.statusCode == HttpStatus.ok) {
       if (response.body.isEmpty) {
@@ -100,18 +100,18 @@ class PostApiProvider extends BaseApiProvider {
     );
     request.files.add(multipartFile);
 
-    Image image = await compute<List<int>, Image>(
-        decodeImage, imageFile.readAsBytesSync());
+    final decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
 
     request.fields.addAll({
       'title': title,
       'description': description,
-      'width': image.width.toString(),
-      'height': image.height.toString(),
+      'width': decodedImage.width.toString(),
+      'height': decodedImage.height.toString(),
     });
 
     request.headers.addAll(
-        {HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken});
+      {HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken},
+    );
 
     final response = await request.send();
     print(response.statusCode);

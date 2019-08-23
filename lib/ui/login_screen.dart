@@ -9,9 +9,6 @@ const _buttonBorderColor = Color(0xFFF66839);
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final screenHeight = mediaQuery.size.height - mediaQuery.padding.vertical;
-
     return SafeArea(
       child: SimpleBaseView<LoginModel>(
         builder: (context, model, _) {
@@ -23,15 +20,12 @@ class LoginScreen extends StatelessWidget {
                 overscroll.disallowGlow();
                 return true;
               },
-              child: SizedBox(
-                height: screenHeight,
-                child: PageView(
-                  controller: model.pageController,
-                  children: <Widget>[
-                    _buildSignIn(context, model),
-                    _buildSignUp(context, model),
-                  ],
-                ),
+              child: PageView(
+                controller: model.pageController,
+                children: <Widget>[
+                  _buildSignIn(context, model),
+                  _buildSignUp(context, model),
+                ],
               ),
             ),
           );
@@ -41,199 +35,189 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _buildSignIn(BuildContext context, LoginModel model) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 25.0),
-          Padding(
-            padding: const EdgeInsets.only(left: 32.0),
-            child: Text(
-              "Sign In",
-              style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-            ),
+    return ListView(
+      key: model.signInPageStorageKey,
+      children: <Widget>[
+        const SizedBox(height: 25.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0),
+          child: Text(
+            "Sign In",
+            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10.0),
-          _buildTextField(
-            context,
-            model,
-            currentField: LoginField.SignInUsername,
-            nextField: LoginField.SignInPassword,
-            labelText: 'Username',
-          ),
-          StreamBuilder<bool>(
-              initialData: true,
-              stream: model.getObscureStream(LoginField.SignInPassword),
-              builder: (context, snapshot) {
-                final isObscure = snapshot.data;
+        ),
+        const SizedBox(height: 10.0),
+        _buildTextField(
+          context,
+          model,
+          currentField: LoginField.SignInUsername,
+          nextField: LoginField.SignInPassword,
+          labelText: 'Username',
+        ),
+        StreamBuilder<bool>(
+            initialData: true,
+            stream: model.getObscureStream(LoginField.SignInPassword),
+            builder: (context, snapshot) {
+              final isObscure = snapshot.data;
 
-                return _buildTextField(
-                  context,
-                  model,
-                  currentField: LoginField.SignInPassword,
-                  labelText: 'Password',
-                  obscureText: isObscure,
-                );
-              }),
-          Container(
-            padding: const EdgeInsets.only(right: 16.0),
-            alignment: Alignment.centerRight,
-            child: Text("Forgot your password?"),
-          ),
-          const SizedBox(height: 30.0),
-          _buildButton(
-            model,
-            'SIGN IN',
-          ),
-          const SizedBox(height: 306),
-          Align(
-            alignment: Alignment.centerRight,
-            child: RaisedButton(
-              padding: const EdgeInsets.fromLTRB(40.0, 16.0, 30.0, 16.0),
-              color: Colors.yellow,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30.0),
-                      bottomLeft: Radius.circular(30.0))),
-              onPressed: model.togglePage,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    "SIGN UP",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                  ),
-                  const SizedBox(width: 40.0),
-                  Icon(
-                    FontAwesomeIcons.arrowRight,
-                    size: 18.0,
-                  )
-                ],
-              ),
+              return _buildTextField(
+                context,
+                model,
+                currentField: LoginField.SignInPassword,
+                labelText: 'Password',
+                obscureText: isObscure,
+              );
+            }),
+        Container(
+          padding: const EdgeInsets.only(right: 16.0),
+          alignment: Alignment.centerRight,
+          child: Text("Forgot your password?"),
+        ),
+        const SizedBox(height: 30.0),
+        _buildButton(
+          model,
+          'SIGN IN',
+        ),
+        const SizedBox(height: 30.0),
+        Align(
+          alignment: Alignment.centerRight,
+          child: RaisedButton(
+            padding: const EdgeInsets.fromLTRB(40.0, 16.0, 30.0, 16.0),
+            color: Colors.yellow,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0))),
+            onPressed: model.togglePage,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  "SIGN UP",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                ),
+                const SizedBox(width: 40.0),
+                Icon(FontAwesomeIcons.arrowRight, size: 18.0)
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 30.0),
+      ],
     );
   }
 
   Widget _buildSignUp(BuildContext context, LoginModel model) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 25.0),
-          Padding(
-            padding: const EdgeInsets.only(left: 32.0),
-            child: Text(
-              "Sign Up",
-              style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+    return ListView(
+      key: model.signUpPageStorageKey,
+      children: <Widget>[
+        const SizedBox(height: 25.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0),
+          child: Text(
+            "Sign Up",
+            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        _buildTextField(
+          context,
+          model,
+          currentField: LoginField.SignUpUsername,
+          nextField: LoginField.SignUpFirstName,
+          labelText: 'Username',
+          characterLimit: 150,
+        ),
+        _buildTextField(
+          context,
+          model,
+          currentField: LoginField.SignUpFirstName,
+          nextField: LoginField.SignUpLastName,
+          labelText: 'First name',
+          characterLimit: 30,
+        ),
+        _buildTextField(
+          context,
+          model,
+          currentField: LoginField.SignUpLastName,
+          nextField: LoginField.SignUpEmail,
+          labelText: 'Last Name',
+          characterLimit: 150,
+        ),
+        _buildTextField(
+          context,
+          model,
+          currentField: LoginField.SignUpEmail,
+          nextField: LoginField.SignUpPassword,
+          labelText: 'Email',
+          keyboardType: TextInputType.emailAddress,
+        ),
+        StreamBuilder<bool>(
+          stream: model.getObscureStream(LoginField.SignUpPassword),
+          initialData: true,
+          builder: (context, snapshot) {
+            final isObscure = snapshot.data;
+
+            return _buildTextField(
+              context,
+              model,
+              currentField: LoginField.SignUpPassword,
+              nextField: LoginField.SignUpConfirmPassword,
+              labelText: 'Password (min: 6 / max: 16)',
+              characterLimit: 16,
+              obscureText: isObscure,
+            );
+          },
+        ),
+        StreamBuilder<bool>(
+          stream: model.getObscureStream(LoginField.SignUpConfirmPassword),
+          initialData: true,
+          builder: (context, snapshot) {
+            final isObscure = snapshot.data;
+
+            return _buildTextField(
+              context,
+              model,
+              currentField: LoginField.SignUpConfirmPassword,
+              labelText: 'Confirm password',
+              characterLimit: 16,
+              obscureText: isObscure,
+            );
+          },
+        ),
+        const SizedBox(height: 20.0),
+        _buildButton(model, 'SIGN UP'),
+        const SizedBox(height: 30.0),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: RaisedButton(
+            padding: const EdgeInsets.fromLTRB(30.0, 16.0, 40.0, 16.0),
+            color: Colors.yellow,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0))),
+            onPressed: model.togglePage,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(
+                  FontAwesomeIcons.arrowLeft,
+                  size: 18.0,
+                ),
+                const SizedBox(width: 40.0),
+                Text(
+                  "SIGN IN",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 10.0),
-          _buildTextField(
-            context,
-            model,
-            currentField: LoginField.SignUpUsername,
-            nextField: LoginField.SignUpFirstName,
-            labelText: 'Username',
-            characterLimit: 150,
-          ),
-          _buildTextField(
-            context,
-            model,
-            currentField: LoginField.SignUpFirstName,
-            nextField: LoginField.SignUpLastName,
-            labelText: 'First name',
-            characterLimit: 30,
-          ),
-          _buildTextField(
-            context,
-            model,
-            currentField: LoginField.SignUpLastName,
-            nextField: LoginField.SignUpEmail,
-            labelText: 'Last Name',
-            characterLimit: 150,
-          ),
-          _buildTextField(
-            context,
-            model,
-            currentField: LoginField.SignUpEmail,
-            nextField: LoginField.SignUpPassword,
-            labelText: 'Email',
-            keyboardType: TextInputType.emailAddress,
-          ),
-          StreamBuilder<bool>(
-            stream: model.getObscureStream(LoginField.SignUpPassword),
-            initialData: true,
-            builder: (context, snapshot) {
-              final isObscure = snapshot.data;
-
-              return _buildTextField(
-                context,
-                model,
-                currentField: LoginField.SignUpPassword,
-                nextField: LoginField.SignUpConfirmPassword,
-                labelText: 'Password (min: 6 / max: 16)',
-                characterLimit: 16,
-                obscureText: isObscure,
-              );
-            },
-          ),
-          StreamBuilder<bool>(
-            stream: model.getObscureStream(LoginField.SignUpConfirmPassword),
-            initialData: true,
-            builder: (context, snapshot) {
-              final isObscure = snapshot.data;
-
-              return _buildTextField(
-                context,
-                model,
-                currentField: LoginField.SignUpConfirmPassword,
-                labelText: 'Confirm password',
-                characterLimit: 16,
-                obscureText: isObscure,
-              );
-            },
-          ),
-          const SizedBox(height: 20.0),
-          _buildButton(
-            model,
-            'SIGN UP',
-          ),
-          const SizedBox(height: 30.0),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: RaisedButton(
-              padding: const EdgeInsets.fromLTRB(30.0, 16.0, 40.0, 16.0),
-              color: Colors.yellow,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0))),
-              onPressed: model.togglePage,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.arrowLeft,
-                    size: 18.0,
-                  ),
-                  const SizedBox(width: 40.0),
-                  Text(
-                    "SIGN IN",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 30.0),
+      ],
     );
   }
 
@@ -278,7 +262,7 @@ class LoginScreen extends StatelessWidget {
     final isPassword = obscureText != null;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 4.0),
       child: TextField(
         controller: model.textControllers[currentField],
         focusNode: model.focusNodes[currentField],

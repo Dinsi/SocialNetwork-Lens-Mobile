@@ -6,6 +6,8 @@ import 'package:aperture/resources/repository.dart';
 import 'package:aperture/view_models/core/base_model.dart';
 import 'package:aperture/view_models/core/mixins/base_feed.dart';
 
+const _backendListSize = 20;
+
 class TopicFeedModel extends BaseModel with BaseFeedMixin<Post> {
   final Repository _repository = locator<Repository>();
 
@@ -17,23 +19,31 @@ class TopicFeedModel extends BaseModel with BaseFeedMixin<Post> {
 
   @override
   Future<void> fetch(bool refresh) async {
-    UnmodifiableListView<Post> fetchedList;
+    int fetchedListSize;
+    UnmodifiableListView<Post> postList;
+
     if (refresh || !listSubject.hasValue) {
-      fetchedList = UnmodifiableListView<Post>(
-          await _repository.fetchPostsByTopic(null, _topic));
+      final fetchedList = await _repository.fetchPostsByTopic(null, _topic);
+
+      fetchedListSize = fetchedList.length;
+
+      postList = UnmodifiableListView<Post>(fetchedList);
     } else {
-      fetchedList = UnmodifiableListView<Post>(
-          List<Post>.from(listSubject.value)
-            ..addAll(await _repository.fetchPostsByTopic(
-                listSubject.value.last.id, _topic)));
+      final fetchedList = await _repository.fetchPostsByTopic(
+          listSubject.value.last.id, _topic);
+
+      fetchedListSize = fetchedList.length;
+
+      postList = UnmodifiableListView<Post>(
+          List<Post>.from(listSubject.value)..addAll(fetchedList));
     }
 
-    if (fetchedList.length != 20) {
+    if (fetchedListSize != _backendListSize) {
       existsNext = false;
     }
 
     if (!listSubject.isClosed) {
-      listSubject.sink.add(fetchedList);
+      listSubject.sink.add(postList);
     }
   }
 

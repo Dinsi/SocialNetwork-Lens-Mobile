@@ -13,6 +13,8 @@ import 'package:aperture/models/users/user.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+const _backendListSize = 20;
+
 enum UserProfileViewState { Loading, Done }
 
 class UserProfileModel extends StateModel<UserProfileViewState>
@@ -31,23 +33,32 @@ class UserProfileModel extends StateModel<UserProfileViewState>
 
   @override
   Future<void> fetch(bool refresh) async {
-    UnmodifiableListView<Post> fetchedList;
+    int fetchedListSize;
+    UnmodifiableListView<Post> postList;
+
     if (refresh || !listSubject.hasValue) {
-      fetchedList = UnmodifiableListView<Post>(
-          await _repository.fetchPostsByTopic(null, _user.username));
+      final fetchedList =
+          await _repository.fetchPostsByTopic(null, _user.username);
+
+      fetchedListSize = fetchedList.length;
+
+      postList = UnmodifiableListView<Post>(fetchedList);
     } else {
-      fetchedList = UnmodifiableListView<Post>(
-          List<Post>.from(listSubject.value)
-            ..addAll(await _repository.fetchPostsByTopic(
-                listSubject.value.last.id, _user.username)));
+      final fetchedList = await _repository.fetchPostsByTopic(
+          listSubject.value.last.id, _user.username);
+
+      fetchedListSize = fetchedList.length;
+
+      postList = UnmodifiableListView<Post>(
+          List<Post>.from(listSubject.value)..addAll(fetchedList));
     }
 
-    if (fetchedList.length != 20) {
+    if (fetchedListSize != _backendListSize) {
       existsNext = false;
     }
 
     if (!listSubject.isClosed) {
-      listSubject.sink.add(fetchedList);
+      listSubject.sink.add(postList);
     }
   }
 

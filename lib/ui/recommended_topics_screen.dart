@@ -1,4 +1,5 @@
 import 'package:aperture/ui/core/base_view.dart';
+import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/recommended_topics.dart';
 import 'package:flutter/material.dart';
 
@@ -28,10 +29,10 @@ class RecommendedTopicsScreen extends StatelessWidget {
                     ),
                   ),
                   model.state == RecTopViewState.Loading
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 150.0,
                           child: Center(
-                            child: CircularProgressIndicator(),
+                            child: defaultCircularIndicator(),
                           ),
                         )
                       : Wrap(

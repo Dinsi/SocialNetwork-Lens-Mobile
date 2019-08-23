@@ -5,7 +5,8 @@ import 'package:flutter/widgets.dart';
 class NoScrollLoadingListView<T> extends LoadingListView<T> {
   NoScrollLoadingListView(
       {@required BaseFeedMixin<T> model,
-      @required WidgetAdapter<T> widgetAdapter})
+      @required WidgetAdapter<T> widgetAdapter,
+      bool sliver})
       : super(model: model, widgetAdapter: widgetAdapter);
 
   @override

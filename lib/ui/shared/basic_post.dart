@@ -9,28 +9,20 @@ import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-const double _iconSideSize = 35.0;
-const double _defaultHeight = 60.0;
+const _iconSideSize = 35.0;
+const _defaultHeight = 50.0;
 
 class BasicPost extends StatelessWidget {
-  final bool delegatingModel;
   final Post post;
 
-  const BasicPost({Key key, this.delegatingModel = false, this.post})
-      : assert((delegatingModel == true && post == null) ||
-            (delegatingModel == false && post != null)),
-        super(key: key);
+  const BasicPost({Key key, this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return delegatingModel
-        ? Consumer<BasicPostModel>(
-            builder: _buildBasicPost,
-          )
-        : ChangeNotifierBaseView<BasicPostModel>(
-            onModelReady: (model) => model.init(post),
-            builder: _buildBasicPost,
-          );
+    return ChangeNotifierBaseView<BasicPostModel>(
+      onModelReady: (model) => model.init(post),
+      builder: _buildBasicPost,
+    );
   }
 
   Widget _buildBasicPost(
@@ -45,15 +37,13 @@ class BasicPost extends StatelessWidget {
             imageUrl: model.post.image,
             imageHeight: model.post.height,
             imageWidth: model.post.width,
-            onTap: !delegatingModel
-                ? () => model.navigateToDetailedPost(context, false)
-                : null, // TODO toFullImageScreen
+            onTap: () => model.navigateToDetailedPost(context, false),
             onDoubleTap: () => model.onUpvoteOrRemove(),
           ),
           Container(
             height: _defaultHeight,
-            margin: const EdgeInsets.only(left: 12.0),
-            child: model.isSelf && !delegatingModel
+            margin: const EdgeInsets.only(left: 8.0),
+            child: model.isSelf
                 ? Consumer<User>(
                     builder: (context, currentUser, __) =>
                         _buildActionRow(context, model, currentUser),
@@ -69,33 +59,32 @@ class BasicPost extends StatelessWidget {
       BuildContext context, BasicPostModel model, CompactUser user) {
     return Row(
       children: <Widget>[
-        if (!delegatingModel)
-          Expanded(
-            child: Row(
-              children: <Widget>[
-                UserAvatar(
-                  side: _iconSideSize,
-                  user: user,
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              UserAvatar(
+                side: _iconSideSize,
+                user: user,
+                onTap: () => model.navigateToUserProfile(context),
+              ),
+              const SizedBox(width: 8.0),
+              Flexible(
+                child: GestureDetector(
                   onTap: () => model.navigateToUserProfile(context),
-                ),
-                const SizedBox(width: 8.0),
-                Flexible(
-                  child: GestureDetector(
-                    onTap: () => model.navigateToUserProfile(context),
-                    child: Text(
-                      user.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.blueGrey,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  child: Text(
+                    user.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        VoteButtons(model: model),
+        ),
+        VoteButtons(),
       ],
     );
   }

@@ -7,6 +7,8 @@ import 'package:aperture/models/search_result.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:flutter/material.dart'
     show BuildContext, Navigator, TextEditingController;
+import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:rxdart/subjects.dart';
 
 // TODO needs tweaking
@@ -14,10 +16,13 @@ import 'package:rxdart/subjects.dart';
 class SearchModel extends BaseModel {
   final _repository = locator<Repository>();
   final _searchResultsController = BehaviorSubject<List<SearchResult>>();
+  final _keyboardNotif = KeyboardVisibilityNotification();
+  int _notifId;
 
   ///////////////////////////
 
   final searchTextController = TextEditingController();
+  final searchFocusNode = FocusNode();
 
   ///////////////////////////
 
@@ -25,7 +30,9 @@ class SearchModel extends BaseModel {
 
   /////////////////////////////////////////////////////////////
   // * Init
-  void init() {
+  void init(BuildContext context) {
+    _notifId = _keyboardNotif.addNewListener(onHide: Navigator.of(context).pop);
+
     searchTextController.addListener(() {
       final queryText = searchTextController.text;
       if (queryText.length == 0 && _searchResultsController.value != null) {
@@ -46,6 +53,9 @@ class SearchModel extends BaseModel {
   /////////////////////////////////////////////////////////////
   // * Dispose
   void dispose() {
+    _keyboardNotif.removeListener(_notifId);
+    _keyboardNotif.dispose();
+
     _searchResultsController.close();
 
     searchTextController.dispose();
@@ -53,18 +63,23 @@ class SearchModel extends BaseModel {
 
   /////////////////////////////////////////////////////////////
   // * Public Functions
-  void navigateToTopicOrUserScreen(BuildContext context, int index) {
+  void navigateToTopicOrUserScreen(BuildContext context, int index) async {
+    _keyboardNotif.removeListener(_notifId);
+
     final targetSearchResult = _searchResultsController.value[index];
 
     targetSearchResult.type == 0
-        ? Navigator.of(context).pushNamed(
+        ? await Navigator.of(context).pushNamed(
             RouteName.topicFeed,
             arguments: targetSearchResult.name,
           )
-        : Navigator.of(context).pushNamed(
+        : await Navigator.of(context).pushNamed(
             RouteName.userProfile,
             arguments: targetSearchResult.userId,
           );
+
+    FocusScope.of(context).requestFocus(searchFocusNode);
+    _notifId = _keyboardNotif.addNewListener(onHide: Navigator.of(context).pop);
   }
 
   /////////////////////////////////////////////////////////////

@@ -64,18 +64,6 @@ class SettingsScreen extends StatelessWidget {
             ),
             _buildListTile(
               context: context,
-              title: 'Logout',
-              onTap: () {
-                _appInfo.clearCache();
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  RouteName.login,
-                  (Route route) => false,
-                );
-              },
-              iconData: FontAwesomeIcons.signOutAlt,
-            ),
-            _buildListTile(
-              context: context,
               title: 'About',
               iconData: FontAwesomeIcons.info,
             ),
@@ -91,10 +79,7 @@ class SettingsScreen extends StatelessWidget {
           @required IconData iconData,
           VoidCallback onTap}) =>
       ListTile(
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.title,
-        ),
+        title: Text(title),
         leading: Icon(iconData),
         onTap: onTap,
       );
