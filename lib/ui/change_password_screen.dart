@@ -1,5 +1,4 @@
 import 'package:aperture/ui/core/base_view.dart';
-import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/change_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -8,6 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class ChangePasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ChangeNotifierBaseView<ChangePasswordModel>(
       builder: (context, model, _) {
         return WillPopScope(
@@ -43,28 +44,27 @@ class ChangePasswordScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: <Widget>[
-                    _buildTextField(model,
-                        label: 'Old Password',
-                        currentField: PasswordField.Old,
-                        nextField: PasswordField.New),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    _buildTextField(model,
-                        label: 'New Password',
-                        currentField: PasswordField.New,
-                        nextField: PasswordField.Confirmed),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    _buildTextField(model,
-                        label: 'Confirm new Password',
-                        currentField: PasswordField.Confirmed),
-                  ],
+              body: Theme(
+                data: theme.copyWith(primaryColor: Colors.red),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: <Widget>[
+                      _buildTextField(model,
+                          label: 'Old Password',
+                          currentField: PasswordField.Old,
+                          nextField: PasswordField.New),
+                      const SizedBox(height: 10.0),
+                      _buildTextField(model,
+                          label: 'New Password',
+                          currentField: PasswordField.New,
+                          nextField: PasswordField.Confirmed),
+                      const SizedBox(height: 10.0),
+                      _buildTextField(model,
+                          label: 'Confirm new Password',
+                          currentField: PasswordField.Confirmed),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -98,11 +98,11 @@ class ChangePasswordScreen extends StatelessWidget {
         break;
     }
 
-    return StreamBuilder(
+    return StreamBuilder<bool>(
       stream: obscureTextStream,
       initialData: true,
       builder: (context, snapshot) {
-        return TextFormField(
+        return TextField(
           controller: model.textControllers[currentField],
           focusNode: model.focusNodes[currentField],
           textInputAction: inputAction,
@@ -111,7 +111,7 @@ class ChangePasswordScreen extends StatelessWidget {
           inputFormatters: [
             LengthLimitingTextInputFormatter(128),
           ],
-          onFieldSubmitted: nextField != null
+          onSubmitted: nextField != null
               ? (term) {
                   model.focusNodes[currentField].unfocus();
                   FocusScope.of(context)

@@ -214,70 +214,75 @@ class DetailedPostScreen extends StatelessWidget {
 
   Widget _buildNewCommentSection(
       BuildContext context, DetailedPostModel model) {
-    return Column(
-      children: <Widget>[
-        Divider(height: 15.0, color: Colors.black45),
-        SizedBox(
-          height: _newCommentIconSideSize + 10.0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const SizedBox(width: 8.0),
-                  Consumer<User>(
-                    builder: (_, currentUser, __) => UserAvatar(
-                      isCircle: true,
-                      side: _newCommentIconSideSize,
-                      user: currentUser,
+    final theme = Theme.of(context);
+
+    return Theme(
+      data: theme.copyWith(primaryColor: Colors.red),
+      child: Column(
+        children: <Widget>[
+          Divider(height: 15.0, color: Colors.black45),
+          SizedBox(
+            height: _newCommentIconSideSize + 10.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const SizedBox(width: 8.0),
+                    Consumer<User>(
+                      builder: (_, currentUser, __) => UserAvatar(
+                        isCircle: true,
+                        side: _newCommentIconSideSize,
+                        user: currentUser,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12.0),
-                  Expanded(
-                    child: TextField(
-                      controller: model.commentTextController,
-                      focusNode: model.commentFocusNode,
-                      style: TextStyle(fontSize: 16.0),
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(1024),
-                      ],
-                      decoration: InputDecoration(
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        hintText: "Add a comment...",
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 5.0,
-                          horizontal: 2.0,
+                    const SizedBox(width: 12.0),
+                    Expanded(
+                      child: TextField(
+                        controller: model.commentTextController,
+                        focusNode: model.commentFocusNode,
+                        style: TextStyle(fontSize: 16.0),
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(1024),
+                        ],
+                        decoration: InputDecoration(
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          hintText: "Add a comment...",
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 5.0,
+                            horizontal: 2.0,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12.0),
-                  GestureDetector(
-                    onTap: () => model.onCommentPublish(context),
-                    child: SizedBox(
-                      height: _newCommentIconSideSize,
-                      width: _newCommentIconSideSize + 10.0,
-                      child: Icon(
-                        FontAwesomeIcons.solidPaperPlane,
-                        size: _newCommentIconSideSize - 5.0,
+                    const SizedBox(width: 12.0),
+                    GestureDetector(
+                      onTap: () => model.onCommentPublish(context),
+                      child: SizedBox(
+                        height: _newCommentIconSideSize,
+                        width: _newCommentIconSideSize + 10.0,
+                        child: Icon(
+                          FontAwesomeIcons.solidPaperPlane,
+                          size: _newCommentIconSideSize - 5.0,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 12.0),
-      ],
+          const SizedBox(height: 12.0),
+        ],
+      ),
     );
   }
 }

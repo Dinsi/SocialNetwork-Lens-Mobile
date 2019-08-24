@@ -88,33 +88,32 @@ class CollectionListModel extends BaseModel {
       _newCollectionController = TextEditingController();
     }
 
+    final theme = Theme.of(context);
+
     final dialogResult = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Create new collection'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text('Name (max. 64):'),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _newCollectionController,
-              textCapitalization: TextCapitalization.sentences,
-              inputFormatters: [LengthLimitingTextInputFormatter(64)],
+      builder: (context) => Theme(
+        data: theme.copyWith(primaryColor: Colors.red),
+        child: AlertDialog(
+          title: Text('Create new collection'),
+          content: TextField(
+            autofocus: true,
+            controller: _newCollectionController,
+            textCapitalization: TextCapitalization.sentences,
+            inputFormatters: [LengthLimitingTextInputFormatter(64)],
+            decoration: InputDecoration(labelText: 'Collection name'),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () => Navigator.of(context).pop<bool>(false),
             ),
+            FlatButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop<bool>(true),
+            )
           ],
         ),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text('CANCEL'),
-            onPressed: () => Navigator.of(context).pop<bool>(false),
-          ),
-          FlatButton(
-            child: const Text('OK'),
-            onPressed: () => Navigator.of(context).pop<bool>(true),
-          )
-        ],
       ),
     );
 

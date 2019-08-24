@@ -45,7 +45,7 @@ class RecommendedTopicsScreen extends StatelessWidget {
                       onPressed: model.state != RecTopViewState.Busy
                           ? () => model.sendTopics(context)
                           : null,
-                      color: Colors.blue,
+                      color: Colors.red,
                       child: const Text(
                         "Continue...",
                         style: TextStyle(
@@ -81,7 +81,7 @@ class RecommendedTopicsScreen extends StatelessWidget {
                   ? Colors.grey[400]
                   : Colors.white,
               border: Border.all(
-                color: Colors.blue,
+                color: Colors.red,
                 width: 4.0,
               ),
               borderRadius: BorderRadius.circular(20.0),

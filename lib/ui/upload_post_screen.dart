@@ -12,6 +12,8 @@ class UploadPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SafeArea(
       child: ChangeNotifierBaseView<UploadPostModel>(
         onModelReady: (model) => model.init(file),
@@ -47,39 +49,42 @@ class UploadPostScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              body: ListView(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () => model.loadImage(),
-                    child: Image.file(model.image, fit: BoxFit.fitWidth),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      children: <Widget>[
-                        TextField(
-                          controller: model.titleTextController,
-                          decoration: InputDecoration(labelText: "Title"),
-                          keyboardType: TextInputType.text,
-                          maxLength: 128,
-                        ),
-                        const SizedBox(height: 8.0),
-                        TextField(
-                          controller: model.descriptionTextController,
-                          decoration: InputDecoration(
-                            labelText: "Description",
-                            alignLabelWithHint: true,
-                          ),
-                          maxLines: 5,
-                          keyboardType: TextInputType.multiline,
-                          maxLength: 1024,
-                        ),
-                      ],
+              body: Theme(
+                data: theme.copyWith(primaryColor: Colors.red),
+                child: ListView(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () => model.loadImage(),
+                      child: Image.file(model.image, fit: BoxFit.fitWidth),
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                ],
+                    const SizedBox(height: 8.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: <Widget>[
+                          TextField(
+                            controller: model.titleTextController,
+                            decoration: InputDecoration(labelText: "Title"),
+                            keyboardType: TextInputType.text,
+                            maxLength: 128,
+                          ),
+                          const SizedBox(height: 8.0),
+                          TextField(
+                            controller: model.descriptionTextController,
+                            decoration: InputDecoration(
+                              labelText: "Description",
+                              alignLabelWithHint: true,
+                            ),
+                            maxLines: 5,
+                            keyboardType: TextInputType.multiline,
+                            maxLength: 1024,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                  ],
+                ),
               ),
             ),
           );

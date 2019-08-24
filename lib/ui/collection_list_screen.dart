@@ -1,3 +1,4 @@
+import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/models/users/user.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/view_models/collection_list.dart';
@@ -56,81 +57,7 @@ class CollectionListScreen extends StatelessWidget {
                                   ),
                                 ),
                               )
-                            : ListView.builder(
-                                itemCount: collectionList.length,
-                                itemBuilder: (context, index) {
-                                  return Material(
-                                    child: InkWell(
-                                      onTap: () =>
-                                          model.onCollectionTap(context, index),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: SizedBox(
-                                          height: 60.0,
-                                          child: Row(
-                                            children: <Widget>[
-                                              Container(
-                                                width: 80.0,
-                                                height: 60.0,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                ),
-                                                child: (collectionList[index]
-                                                            .cover ==
-                                                        null
-                                                    ? null
-                                                    : ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        child: Image.network(
-                                                          collectionList[index]
-                                                              .cover,
-                                                          fit: BoxFit.fitWidth,
-                                                        ),
-                                                      )),
-                                              ),
-                                              const SizedBox(width: 20.0),
-                                              Text(
-                                                collectionList[index].name,
-                                                style: model.isAddToCollection &&
-                                                        model
-                                                            .existsInCollection(
-                                                                index)
-                                                    ? Theme.of(context)
-                                                        .textTheme
-                                                        .title
-                                                        .copyWith(
-                                                            color: Colors.grey)
-                                                    : Theme.of(context)
-                                                        .textTheme
-                                                        .title,
-                                              ),
-                                              const Expanded(
-                                                child: const SizedBox(),
-                                              ),
-                                              Text(
-                                                (collectionList.length == 1
-                                                    ? '1 photo'
-                                                    : '${collectionList[index].length.toString()} photos'),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle
-                                                    .copyWith(
-                                                        color:
-                                                            Colors.grey[600]),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
+                            : _buildCollectionList(model, collectionList);
                       },
                     ),
                   ),
@@ -138,6 +65,71 @@ class CollectionListScreen extends StatelessWidget {
               });
         },
       ),
+    );
+  }
+
+  Widget _buildCollectionList(
+    CollectionListModel model,
+    List<CompactCollection> collectionList,
+  ) {
+    return ListView.builder(
+      itemCount: collectionList.length,
+      itemBuilder: (context, index) {
+        return Material(
+          child: InkWell(
+            onTap: () => model.onCollectionTap(context, index),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                height: 60.0,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: 80.0,
+                      height: 60.0,
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        image: collectionList[index].cover == null
+                            ? null
+                            : DecorationImage(
+                                image: NetworkImage(
+                                  collectionList[index].cover,
+                                ),
+                                fit: BoxFit.fitWidth,
+                              ),
+                      ),
+                    ),
+                    const SizedBox(width: 20.0),
+                    Text(
+                      collectionList[index].name,
+                      style: model.isAddToCollection &&
+                              model.existsInCollection(index)
+                          ? Theme.of(context)
+                              .textTheme
+                              .title
+                              .copyWith(color: Colors.grey)
+                          : Theme.of(context).textTheme.title,
+                    ),
+                    const Expanded(
+                      child: const SizedBox(),
+                    ),
+                    Text(
+                      (collectionList.length == 1
+                          ? '1 photo'
+                          : '${collectionList[index].length.toString()} photos'),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle
+                          .copyWith(color: Colors.grey[600]),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-const textFieldtextStyle = TextStyle(fontSize: 18.0);
-
 CircularProgressIndicator defaultCircularIndicator() =>
     const CircularProgressIndicator(
       valueColor: const AlwaysStoppedAnimation<Color>(

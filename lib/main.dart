@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.red,
           primaryColor: Colors.white,
           textTheme: TextTheme(
-            subhead: textFieldtextStyle,
+            subhead: TextStyle(fontSize: 18.0),
           ),
           primaryTextTheme: TextTheme(
             title: TextStyle(
@@ -111,7 +111,6 @@ class _MyAppState extends State<MyApp> {
           ),
           inputDecorationTheme: InputDecorationTheme(
             contentPadding: const EdgeInsets.all(12.0),
-            labelStyle: textFieldtextStyle.copyWith(color: Colors.black45),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
             ),

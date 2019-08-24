@@ -38,10 +38,7 @@ class AccountSettingsScreen extends StatelessWidget {
   }) {
     return ListTile(
       leading: Icon(icon),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.title,
-      ),
+      title: Text(title),
       onTap: () async {
         int result = await Navigator.of(context).pushNamed(destRoute);
         if (result != null) {

@@ -9,6 +9,8 @@ const _buttonBorderColor = Color(0xFFF66839);
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SafeArea(
       child: SimpleBaseView<LoginModel>(
         builder: (context, model, _) {
@@ -20,12 +22,15 @@ class LoginScreen extends StatelessWidget {
                 overscroll.disallowGlow();
                 return true;
               },
-              child: PageView(
-                controller: model.pageController,
-                children: <Widget>[
-                  _buildSignIn(context, model),
-                  _buildSignUp(context, model),
-                ],
+              child: Theme(
+                data: theme.copyWith(primaryColor: Colors.red),
+                child: PageView(
+                  controller: model.pageController,
+                  children: <Widget>[
+                    _buildSignIn(context, model),
+                    _buildSignUp(context, model),
+                  ],
+                ),
               ),
             ),
           );

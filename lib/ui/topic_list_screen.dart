@@ -27,7 +27,7 @@ class _TopicListScreenState extends State<TopicListScreen> {
                     icon: Icon(
                       Icons.check,
                       color: model.state == TopicListViewState.Idle
-                          ? Colors.blue
+                          ? Colors.red
                           : Colors.grey,
                     ),
                     label: Text(
@@ -35,7 +35,7 @@ class _TopicListScreenState extends State<TopicListScreen> {
                       style: Theme.of(context).textTheme.button.merge(
                             TextStyle(
                               color: model.state == TopicListViewState.Idle
-                                  ? Colors.blue
+                                  ? Colors.red
                                   : Colors.grey,
                             ),
                           ),
