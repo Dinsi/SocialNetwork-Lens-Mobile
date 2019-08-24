@@ -1,12 +1,8 @@
-import 'package:aperture/locator.dart';
-import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingsScreen extends StatelessWidget {
-  final AppInfo _appInfo = locator<AppInfo>();
-
   Future<void> _editProfile(BuildContext context) async {
     int code = await Navigator.of(context).pushNamed(RouteName.editProfile);
     if (code != null) {

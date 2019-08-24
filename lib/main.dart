@@ -5,7 +5,6 @@ import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
-import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show DeviceOrientation, SystemChrome, SystemUiOverlayStyle;
