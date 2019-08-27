@@ -5,6 +5,7 @@ import 'package:aperture/resources/post_api_provider.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/resources/token_api_provider.dart';
 import 'package:aperture/resources/topic_api_provider.dart';
+import 'package:aperture/resources/tournament_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
 import 'package:aperture/view_models/change_email.dart';
 import 'package:aperture/view_models/change_password.dart';
@@ -20,6 +21,7 @@ import 'package:aperture/view_models/recommended_topics.dart';
 import 'package:aperture/view_models/shared/subscription_app_bar.dart';
 import 'package:aperture/view_models/topic_feed.dart';
 import 'package:aperture/view_models/topic_list.dart';
+import 'package:aperture/view_models/tournament.dart';
 import 'package:aperture/view_models/upload_post.dart';
 import 'package:aperture/view_models/user_profile.dart';
 import 'package:get_it/get_it.dart';
@@ -36,6 +38,7 @@ void setupLocator(SharedPreferences prefs) {
   locator.registerLazySingleton(() => TokenApiProvider());
   locator.registerLazySingleton(() => TopicApiProvider());
   locator.registerLazySingleton(() => UserApiProvider());
+  locator.registerLazySingleton(() => TournamentApiProvider());
 
   locator.registerLazySingleton(() => Repository());
 
@@ -57,4 +60,5 @@ void setupLocator(SharedPreferences prefs) {
   locator.registerFactory(() => CollectionPostGridModel());
   locator.registerFactory(() => SearchModel());
   locator.registerFactory(() => UploadPostModel());
+  locator.registerFactory(() => TournamentModel());
 }

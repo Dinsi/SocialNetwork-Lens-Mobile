@@ -1,0 +1,74 @@
+import 'dart:convert' show jsonDecode;
+import 'dart:io';
+
+import 'package:aperture/models/post.dart';
+import 'package:aperture/models/tournament_info.dart';
+import 'package:aperture/resources/base_api_provider.dart';
+import 'package:http/http.dart';
+
+class TournamentApiProvider extends BaseApiProvider {
+  Client client = Client();
+
+  Future<TournamentInfo> fetchInfo() async {
+    print("_tournament_fetchInfo_");
+    final response = await client.get("${super.baseUrl}tournaments/current/",
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
+        });
+
+    print(response.body.toString());
+
+    if (response.statusCode == HttpStatus.ok) {
+      final body = jsonDecode(response.body);
+      return TournamentInfo.fromJson(body);
+    } else {
+      // If that call was not successful, throw an error.
+      throw HttpException('_tournament_fetchInfo_');
+    }
+  }
+
+  Future<List<Post>> fetchPosts(int tournamentId) async {
+    print("_tournament_fetchPosts_");
+    final response = await client.get(
+      "${super.baseUrl}tournaments/$tournamentId/posts/",
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
+      },
+    );
+
+    print(response.body.toString());
+
+    if (response.statusCode == HttpStatus.ok) {
+      final List body = jsonDecode(response.body);
+      return body.map((post) => Post.fromJson(post)).toList();
+    } else {
+      // If that call was not successful, throw an error.
+      throw HttpException('_tournament_fetchPosts_');
+    }
+  }
+
+  Future<int> submitPost(int postId) async {
+    print("_tournament_submitPost_");
+    final response = await client.get(
+      "${super.baseUrl}posts/$postId/submit/",
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
+      },
+    );
+
+    print(response.body.toString());
+
+    switch (response.statusCode) {
+      case HttpStatus.created:
+        return 0;
+      case HttpStatus.notFound:
+        // No active tournament is in progress
+        return 1;
+      case HttpStatus.notAcceptable:
+        // Already made a submission (limit: 1 per user ?)
+        return 2;
+      default:
+        throw HttpException('_tournament_submitPost_');
+    }
+  }
+}

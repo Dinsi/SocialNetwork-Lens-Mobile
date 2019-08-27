@@ -14,6 +14,7 @@ import 'package:aperture/ui/search_screen.dart';
 import 'package:aperture/ui/settings_screen.dart';
 import 'package:aperture/ui/topic_feed_screen.dart';
 import 'package:aperture/ui/topic_list_screen.dart';
+import 'package:aperture/ui/tournament_screen.dart';
 import 'package:aperture/ui/upload_post_screen.dart';
 import 'package:aperture/ui/user_info_screen.dart';
 import 'package:aperture/ui/user_profile_screen.dart';
@@ -37,35 +38,34 @@ abstract class RouteName {
   static const String changePassword = 'changePassword';
   static const String collectionList = 'collectionList';
   static const String collectionPosts = 'collectionPosts';
+  static const String tournament = 'tournament';
 }
 
 abstract class Router {
   static Route<dynamic> routes(RouteSettings settings) {
     switch (settings.name) {
       case RouteName.login:
-        return MaterialPageRoute<Null>(builder: (context) => LoginScreen());
+        return MaterialPageRoute<Null>(builder: (_) => LoginScreen());
 
       case RouteName.recommendedTopics:
         return MaterialPageRoute<Null>(
-            builder: (context) => RecommendedTopicsScreen());
+            builder: (_) => RecommendedTopicsScreen());
 
       case RouteName.userInfo:
-        return MaterialPageRoute<Null>(builder: (context) => UserInfoScreen());
+        return MaterialPageRoute<Null>(builder: (_) => UserInfoScreen());
 
       case RouteName.uploadPost:
         return MaterialPageRoute<int>(
-          builder: (context) => UploadPostScreen(
-            file: settings.arguments as File,
-          ),
+          builder: (_) => UploadPostScreen(file: settings.arguments as File),
         );
 
       case RouteName.feed:
-        return MaterialPageRoute<Null>(builder: (context) => FeedScreen());
+        return MaterialPageRoute<Null>(builder: (_) => FeedScreen());
 
       case RouteName.detailedPost:
         final data = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute<Null>(
-          builder: (context) {
+          builder: (_) {
             return DetailedPostScreen(
               basicPostModel: data['basicPostModel'],
               toComments: data['toComments'] as bool,
@@ -75,45 +75,39 @@ abstract class Router {
 
       case RouteName.topicFeed:
         return MaterialPageRoute<Null>(
-          builder: (context) =>
-              TopicFeedScreen(topic: settings.arguments as String),
+          builder: (_) => TopicFeedScreen(topic: settings.arguments as String),
         );
 
       case RouteName.editProfile:
-        return MaterialPageRoute<int>(
-            builder: (context) => EditProfileScreen());
+        return MaterialPageRoute<int>(builder: (_) => EditProfileScreen());
 
       case RouteName.userProfile:
         return MaterialPageRoute<Null>(
-          builder: (context) =>
-              UserProfileScreen(userId: settings.arguments as int),
+          builder: (_) => UserProfileScreen(userId: settings.arguments as int),
         );
 
       case RouteName.search:
-        return MaterialPageRoute<Null>(builder: (context) => SearchScreen());
+        return MaterialPageRoute<Null>(builder: (_) => SearchScreen());
 
       case RouteName.topicList:
-        return MaterialPageRoute<Null>(builder: (context) => TopicListScreen());
+        return MaterialPageRoute<Null>(builder: (_) => TopicListScreen());
 
       case RouteName.settings:
-        return MaterialPageRoute<Null>(builder: (context) => SettingsScreen());
+        return MaterialPageRoute<Null>(builder: (_) => SettingsScreen());
 
       case RouteName.accountSettings:
-        return MaterialPageRoute<Null>(
-            builder: (context) => AccountSettingsScreen());
+        return MaterialPageRoute<Null>(builder: (_) => AccountSettingsScreen());
 
       case RouteName.changeEmail:
-        return MaterialPageRoute<int>(
-            builder: (context) => ChangeEmailScreen());
+        return MaterialPageRoute<int>(builder: (_) => ChangeEmailScreen());
 
       case RouteName.changePassword:
-        return MaterialPageRoute<int>(
-            builder: (context) => ChangePasswordScreen());
+        return MaterialPageRoute<int>(builder: (_) => ChangePasswordScreen());
 
       case RouteName.collectionList:
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute<String>(
-          builder: (context) => CollectionListScreen(
+          builder: (_) => CollectionListScreen(
             isAddToCollection: args['isAddToCollection'],
             postId: args['postId'] ?? null,
           ),
@@ -122,11 +116,14 @@ abstract class Router {
       case RouteName.collectionPosts:
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute<Null>(
-          builder: (context) => CollectionPostGridScreen(
+          builder: (_) => CollectionPostGridScreen(
             collectionId: args['collId'],
             collectionName: args['collName'],
           ),
         );
+
+      case RouteName.tournament:
+        return MaterialPageRoute<Null>(builder: (_) => TournamentScreen());
 
       default:
         throw FlutterError('Route "${settings.name}" does not exist');

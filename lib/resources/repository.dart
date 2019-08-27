@@ -7,12 +7,14 @@ import 'package:aperture/models/comment.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/models/topic.dart';
+import 'package:aperture/models/tournament_info.dart';
 import 'package:aperture/models/users/user.dart';
 import 'package:aperture/resources/collection_api_provider.dart';
 import 'package:aperture/resources/comment_api_provider.dart';
 import 'package:aperture/resources/post_api_provider.dart';
 import 'package:aperture/resources/token_api_provider.dart';
 import 'package:aperture/resources/topic_api_provider.dart';
+import 'package:aperture/resources/tournament_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
 import 'package:aperture/view_models/edit_profile.dart';
 import 'package:aperture/view_models/login.dart';
@@ -28,6 +30,7 @@ class Repository {
   final userApiProvider = locator<UserApiProvider>();
   final topicsApiProvider = locator<TopicApiProvider>();
   final collectionsApiProvider = locator<CollectionApiProvider>();
+  final tournamentsApiProvider = locator<TournamentApiProvider>();
 
   Future<List<Post>> fetchPosts(int lastPostId) =>
       postsApiProvider.fetchList(lastPostId);
@@ -109,4 +112,13 @@ class Repository {
 
   Future<Collection> fetchCollection(int collectionId) =>
       collectionsApiProvider.fetch(collectionId);
+
+  Future<TournamentInfo> fetchTournamentInfo() =>
+      tournamentsApiProvider.fetchInfo();
+
+  Future<List<Post>> fetchTournamentPosts(int tournamentId) =>
+      tournamentsApiProvider.fetchPosts(tournamentId);
+
+  Future<int> submitPostToCurrentTournament(int postId) =>
+      tournamentsApiProvider.submitPost(postId);
 }

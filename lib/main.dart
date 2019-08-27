@@ -84,6 +84,7 @@ class _MyAppState extends State<MyApp> {
           cursorColor: Colors.red,
           primarySwatch: Colors.red,
           primaryColor: Colors.white,
+          primaryColorBrightness: Brightness.light,
           textTheme: TextTheme(
             subhead: TextStyle(fontSize: 18.0),
           ),

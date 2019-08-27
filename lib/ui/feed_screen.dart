@@ -76,6 +76,12 @@ class FeedScreen extends StatelessWidget {
                     onTap: () => model.navigateTo(context, RouteName.settings),
                   ),
                   _buildListTile(
+                    icon: FontAwesomeIcons.trophy,
+                    title: 'Tournament',
+                    onTap: () =>
+                        model.navigateTo(context, RouteName.tournament),
+                  ),
+                  _buildListTile(
                     icon: FontAwesomeIcons.signOutAlt,
                     title: 'Logout',
                     onTap: () => model.signOut(context),
