@@ -89,49 +89,6 @@ class FeedScreen extends StatelessWidget {
                 ],
               ),
             ),
-            /*FloatingActionButton(
-              onPressed: () {},
-              child: Icon(Icons.add),
-            ),*/
-            /* bottomNavigationBar: BottomNavigationBar(
-              onTap: model.onBottomNavItemTap,
-              backgroundColor: Colors.grey[200],
-              selectedItemColor: Colors.red,
-              currentIndex: model.currentIndex,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(FontAwesomeIcons.listUl),
-                  title: Text('Feed'),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(FontAwesomeIcons.search),
-                  title: Text('Search'),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(FontAwesomeIcons.userAlt),
-                  title: Text('Profile'),
-                ),
-              ],
-            ), */
-            /*AppBar(
-              title: Text('Home'),
-              leading: IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: model.openDrawer,
-              ),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () => model.navigateTo(context, RouteName.search),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => model.uploadNewPost(context),
-                ),
-              ],
-            ),*/
-            /*
-        ),*/
             body: RefreshIndicator(
               onRefresh: model.onRefresh,
               child: NotificationListener<ScrollNotification>(
@@ -142,6 +99,17 @@ class FeedScreen extends StatelessWidget {
                       title: Text('Home'),
                       pinned: false,
                       floating: true,
+                      actions: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () =>
+                              model.navigateTo(context, RouteName.search),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () => model.uploadNewPost(context),
+                        ),
+                      ],
                       bottom: !model.userIsConfirmed
                           ? PreferredSize(
                               preferredSize: Size(double.infinity, 50.0),

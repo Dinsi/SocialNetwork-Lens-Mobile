@@ -4,6 +4,7 @@ import 'dart:convert' show jsonDecode, utf8;
 
 import 'package:aperture/models/post.dart';
 import 'package:aperture/resources/base_api_provider.dart';
+import 'package:aperture/view_models/core/enums/change_vote_action.dart';
 import 'package:aperture/view_models/shared/basic_post.dart'
     show ChangeVoteAction;
 import 'package:async/async.dart';

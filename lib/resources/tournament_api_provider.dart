@@ -27,10 +27,10 @@ class TournamentApiProvider extends BaseApiProvider {
     }
   }
 
-  Future<List<Post>> fetchPosts(int tournamentId) async {
+  Future<List<Post>> fetchPosts() async {
     print("_tournament_fetchPosts_");
     final response = await client.get(
-      "${super.baseUrl}tournaments/$tournamentId/posts/",
+      "${super.baseUrl}tournaments/posts/",
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
       },

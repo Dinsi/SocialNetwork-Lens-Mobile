@@ -16,6 +16,7 @@ import 'package:aperture/resources/token_api_provider.dart';
 import 'package:aperture/resources/topic_api_provider.dart';
 import 'package:aperture/resources/tournament_api_provider.dart';
 import 'package:aperture/resources/user_api_provider.dart';
+import 'package:aperture/view_models/core/enums/change_vote_action.dart';
 import 'package:aperture/view_models/edit_profile.dart';
 import 'package:aperture/view_models/login.dart';
 import 'package:aperture/view_models/shared/basic_post.dart'
@@ -116,8 +117,8 @@ class Repository {
   Future<TournamentInfo> fetchTournamentInfo() =>
       tournamentsApiProvider.fetchInfo();
 
-  Future<List<Post>> fetchTournamentPosts(int tournamentId) =>
-      tournamentsApiProvider.fetchPosts(tournamentId);
+  Future<List<Post>> fetchTournamentPosts() =>
+      tournamentsApiProvider.fetchPosts();
 
   Future<int> submitPostToCurrentTournament(int postId) =>
       tournamentsApiProvider.submitPost(postId);

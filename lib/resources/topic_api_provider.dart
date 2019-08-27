@@ -39,9 +39,10 @@ class TopicApiProvider extends BaseApiProvider {
   Future<Topic> fetchSingle(String topic) async {
     print('_topic_fetchSingle_');
 
-    final response = await client.get('${super.baseUrl}topics/$topic/', headers: {
-      HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
-    });
+    final response = await client.get('${super.baseUrl}topics/$topic/',
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
+        });
 
     print('${response.statusCode.toString()}\n${response.body}');
 

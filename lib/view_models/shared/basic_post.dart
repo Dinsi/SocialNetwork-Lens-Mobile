@@ -4,12 +4,11 @@ import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:aperture/view_models/core/base_model.dart';
+import 'package:aperture/view_models/core/enums/change_vote_action.dart';
 import 'package:flutter/material.dart';
 import 'package:synchronized/synchronized.dart';
 
 enum BasicPostViewState { Inactive, UpVote, DownVote, NoVote }
-
-enum ChangeVoteAction { Up, Down, Remove }
 
 class BasicPostModel extends StateModel<BasicPostViewState> {
   BasicPostModel() : super(BasicPostViewState.Inactive);

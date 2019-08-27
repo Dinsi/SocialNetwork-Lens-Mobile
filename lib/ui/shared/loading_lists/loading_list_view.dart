@@ -1,3 +1,5 @@
+import 'package:aperture/models/post.dart';
+import 'package:aperture/models/search_result.dart';
 import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
 import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/core/mixins/base_feed.dart';
@@ -31,6 +33,28 @@ abstract class LoadingListViewState<T, LListViewT extends LoadingListView<T>>
       stream: widget.model.listStream,
       builder: (BuildContext context, AsyncSnapshot<List<T>> snapshot) {
         if (snapshot.hasData) {
+          if (snapshot.data.isEmpty &&
+              (snapshot.data is List<Post> ||
+                  snapshot.data is List<SearchResult>)) {
+            Widget noPostWidget = Center(
+              child: Text(
+                snapshot.data is List<Post>
+                    ? 'There are no posts here!'
+                    : 'No results',
+                style: Theme.of(context)
+                    .textTheme
+                    .subhead
+                    .copyWith(color: Colors.grey),
+              ),
+            );
+
+            return widget.sliver
+                ? SliverFillRemaining(
+                    child: noPostWidget,
+                  )
+                : noPostWidget;
+          }
+
           return _buildList(snapshot.data);
         } else {
           Widget circularIndicator = Center(

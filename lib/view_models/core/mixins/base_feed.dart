@@ -68,6 +68,7 @@ mixin BaseFeedMixin<T> {
 
   Future<void> onRefresh() {
     request?.timeout(const Duration());
+    request = null;
     existsNext = true;
     return lockedLoadNext(true);
   }
