@@ -1,124 +1,268 @@
+import 'package:aperture/models/post.dart';
+import 'package:aperture/router.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/core/enums/change_vote_action.dart';
+import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:aperture/view_models/tournament.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class TournamentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ChangeNotifierBaseView<TournamentModel>(
-        onModelReady: (model) => model.init(),
-        builder: (context, model, _) {
-          switch (model.state) {
-            case TournamentViewState.Loading:
-              return Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0.0,
-                ),
-                body: Center(
-                  child: defaultCircularIndicator(),
-                ),
-              );
-              break;
-
-            case TournamentViewState.Inactive:
-              return Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0.0,
-                ),
-                body: Center(
-                  child: Text(
-                    'There is no active tournament\nin progress',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subhead
-                        .copyWith(color: Colors.grey),
+      child: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowGlow();
+          return false;
+        },
+        child: ChangeNotifierBaseView<TournamentModel>(
+          onModelReady: (model) => model.init(),
+          builder: (context, model, _) {
+            switch (model.state) {
+              case TournamentViewState.Loading:
+                return Scaffold(
+                  appBar: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0.0,
                   ),
-                ),
-              );
-              break;
+                  body: Center(
+                    child: defaultCircularIndicator(),
+                  ),
+                );
+                break;
 
-            default:
-              return Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0.0,
-                ),
-                bottomNavigationBar: model.noPostExists
-                    ? null
-                    : BottomAppBar(
-                        color: Colors.transparent,
-                        elevation: 0.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              _buildRoundIconButton(
-                                icon: FontAwesomeIcons.arrowAltCircleDown,
-                                iconColor: Colors.red,
-                                onPressed: () => model.changeVote(
-                                  context,
-                                  ChangeVoteAction.Down,
-                                ),
-                              ),
-                              _buildRoundIconButton(
-                                icon: FontAwesomeIcons.arrowAltCircleUp,
-                                iconColor: Colors.blue,
-                                onPressed: () => model.changeVote(
-                                  context,
-                                  ChangeVoteAction.Up,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+              case TournamentViewState.Inactive:
+                return Scaffold(
+                  appBar: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0.0,
+                  ),
+                  body: Center(
+                    child: Text(
+                      'There is no active tournament\nin progress',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subhead
+                          .copyWith(color: Colors.grey),
+                    ),
+                  ),
+                );
+                break;
+
+              case TournamentViewState.ActivePhase1:
+                return _buildPhase1Setup(context, model);
+
+              case TournamentViewState.ActivePhase2:
+                return _buildPhase2Setup(context, model);
+
+              default:
+                return Container();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhase1Setup(BuildContext context, TournamentModel model) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+      bottomNavigationBar: model.noPostExists
+          ? null
+          : BottomAppBar(
+              color: Colors.transparent,
+              elevation: 0.0,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    _buildRoundIconButton(
+                      side: 60.0,
+                      icon: FontAwesomeIcons.arrowAltCircleDown,
+                      iconColor: Colors.red,
+                      onPressed: () => model.changeVotePh1(
+                        context,
+                        ChangeVoteAction.Down,
                       ),
-                body: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: model.currentIndex == null
-                        ? Text(
-                            "Congratulations!\n\nIt looks like you already voted for all posts\nCome back later to participate in the final vote",
-                            style: Theme.of(context).textTheme.subhead.copyWith(
-                                  color: Colors.grey[600],
-                                ),
-                            textAlign: TextAlign.center,
+                    ),
+                    _buildRoundIconButton(
+                      side: 60.0,
+                      icon: FontAwesomeIcons.arrowAltCircleUp,
+                      iconColor: Colors.blue,
+                      onPressed: () => model.changeVotePh1(
+                        context,
+                        ChangeVoteAction.Up,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: model.currentIndex == null
+              ? Text(
+                  'Congratulations!\n\n' +
+                      'It looks like you already voted for all posts\n' +
+                      'Come back later to participate in the final vote',
+                  style: Theme.of(context).textTheme.subhead.copyWith(
+                        color: Colors.grey[600],
+                      ),
+                  textAlign: TextAlign.center,
+                )
+              : model.currentIndex == -1
+                  ? Card(
+                      child: Center(
+                        child: defaultCircularIndicator(),
+                      ),
+                    )
+                  : Card(
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          Center(
+                            child: defaultCircularIndicator(),
+                          ),
+                          Image.network(
+                            model.currentPost.image,
+                            fit: BoxFit.cover,
                           )
-                        : Card(
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: <Widget>[
-                                Center(
-                                  child: defaultCircularIndicator(),
-                                ),
-                                Image.network(
-                                  model.currentPost.image,
-                                  fit: BoxFit.cover,
-                                )
-                              ],
+                        ],
+                      ),
+                    ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhase2Setup(BuildContext context, TournamentModel model) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Text(
+              'Pick the best!',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle
+                  .copyWith(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              model.tournamentName,
+              style: Theme.of(context).textTheme.title,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: GridView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: model.listLength,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                  childAspectRatio: 0.7,
+                ),
+                itemBuilder: (_, index) {
+                  Post targetPost = model.getPostByIndex(index);
+                  final userNames = targetPost.user.name.split(' ');
+                  final basicPostModel = model.getBasicPostModel(index);
+
+                  return Card(
+                    margin: EdgeInsets.zero,
+                    child: ChangeNotifierProvider<BasicPostModel>.value(
+                      value: basicPostModel,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () => Navigator.of(context).pushNamed(
+                                RouteName.detailedPost,
+                                arguments: {'basicPostModel': basicPostModel}),
+                            child: Image.network(
+                              basicPostModel.post.image,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                  ),
-                ),
-              );
-          }
-        },
+                          Positioned(
+                            left: 0.0,
+                            right: 0.0,
+                            bottom: 0.0,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(0.7),
+                                  ],
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Text(
+                                        '${userNames[0]}\n${userNames[userNames.length - 1]}',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    Consumer<BasicPostModel>(
+                                      builder: (_, targetModel, __) =>
+                                          _buildRoundIconButton(
+                                        side: 30.0,
+                                        icon: Icons.star,
+                                        iconColor: targetModel.state ==
+                                                BasicPostViewState.UpVote
+                                            ? Colors.amber
+                                            : Colors.grey,
+                                        onPressed: () =>
+                                            model.changeVotePh2(index),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildRoundIconButton(
-      {IconData icon, Color iconColor, VoidCallback onPressed}) {
+      {double side, IconData icon, Color iconColor, VoidCallback onPressed}) {
     return Container(
-      width: 60.0,
-      height: 60.0,
+      width: side,
+      height: side,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white,

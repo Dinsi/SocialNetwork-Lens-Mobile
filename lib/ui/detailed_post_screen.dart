@@ -25,9 +25,9 @@ class DetailedPostScreen extends StatelessWidget {
   final BasicPostModel basicPostModel;
 
   const DetailedPostScreen({
-    @required this.toComments,
+    bool toComments,
     @required this.basicPostModel,
-  });
+  }) : this.toComments = toComments ?? false;
 
   @override
   Widget build(BuildContext context) {
