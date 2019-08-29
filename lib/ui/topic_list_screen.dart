@@ -1,3 +1,4 @@
+import 'package:aperture/models/search_result.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/view_models/core/enums/checkbox_state.dart';
 import 'package:aperture/view_models/topic_list.dart';
@@ -49,16 +50,28 @@ class _TopicListScreenState extends State<TopicListScreen> {
               body: ListView.builder(
                 itemCount: model.topics.length,
                 itemBuilder: (context, index) {
+                  IconData iconData;
+                  switch (model.topics[index].type) {
+                    case SearchResultType.hashtag:
+                      iconData = FontAwesomeIcons.hashtag;
+                      break;
+
+                    case SearchResultType.city:
+                      iconData = Icons.location_city;
+                      break;
+
+                    case SearchResultType.user:
+                      iconData = FontAwesomeIcons.userAlt;
+                      break;
+
+                    default:
+                  }
                   return ListTile(
                     title: Text(
                       '${model.topics[index]}',
                       style: Theme.of(context).textTheme.title,
                     ),
-                    leading: Icon(
-                      model.topics[index].type == 0
-                          ? FontAwesomeIcons.hashtag
-                          : FontAwesomeIcons.userAlt,
-                    ),
+                    leading: Icon(iconData),
                     trailing: StreamBuilder<CheckBoxState>(
                       stream: model.getStreamByIndex(index),
                       initialData: CheckBoxState.Checked,

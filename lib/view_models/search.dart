@@ -1,101 +1,108 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:aperture/router.dart';
 import 'package:aperture/view_models/core/base_model.dart';
 import 'package:aperture/locator.dart';
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/resources/repository.dart';
+import 'package:aperture/view_models/core/mixins/base_feed.dart';
 import 'package:flutter/material.dart'
     show BuildContext, Navigator, TextEditingController;
 import 'package:flutter/material.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:rxdart/subjects.dart';
 
-// TODO needs tweaking
+const _backendListSize = 20;
 
-class SearchModel extends BaseModel {
+// TODO implement either switches or '@'/'#' specific searches
+class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
   final _repository = locator<Repository>();
-  final _searchResultsController = BehaviorSubject<List<SearchResult>>();
-  final _keyboardNotif = KeyboardVisibilityNotification();
-  int _notifId;
+  final _isFetchingController = BehaviorSubject<bool>.seeded(false);
 
   ///////////////////////////
 
   final searchTextController = TextEditingController();
   final searchFocusNode = FocusNode();
 
-  ///////////////////////////
-
-  Future _searchRequest;
-
   /////////////////////////////////////////////////////////////
   // * Init
   void init(BuildContext context) {
-    _notifId = _keyboardNotif.addNewListener(onHide: Navigator.of(context).pop);
-
     searchTextController.addListener(() {
       final queryText = searchTextController.text;
-      if (queryText.length == 0 && _searchResultsController.value != null) {
-        _searchResultsController.sink.add(null);
+      if (queryText.length < 3) {
+        if (_isFetchingController.value == true) {
+          _isFetchingController.sink.add(false);
+          // Clear the list
+          listSubject.sink.add(null);
+        }
+
         return;
       }
 
-      if (queryText.length >= 3) {
-        _searchRequest?.timeout(const Duration());
-
-        _searchRequest = _fetchSearchResults(queryText).whenComplete(() {
-          _searchRequest = null;
-        });
+      if (_isFetchingController.value == false) {
+        _isFetchingController.sink.add(true);
       }
+
+      onRefresh();
     });
   }
 
   /////////////////////////////////////////////////////////////
   // * Dispose
   void dispose() {
-    _keyboardNotif.removeListener(_notifId);
-    _keyboardNotif.dispose();
-
-    _searchResultsController.close();
+    super.dispose();
+    _isFetchingController.close();
 
     searchTextController.dispose();
   }
 
   /////////////////////////////////////////////////////////////
-  // * Public Functions
-  void navigateToTopicOrUserScreen(BuildContext context, int index) async {
-    _keyboardNotif.removeListener(_notifId);
+  // * Override Functions
+  @override
+  Future<void> fetch(bool refresh) async {
+    final queryText = searchTextController.text;
+    List<SearchResult> fetchedList;
+    int fetchedListSize;
 
-    final targetSearchResult = _searchResultsController.value[index];
+    if (refresh || !listSubject.hasValue) {
+      fetchedList = await _repository.fetchSearchResults(queryText, null);
 
-    targetSearchResult.type == 0
-        ? await Navigator.of(context).pushNamed(
-            RouteName.topicFeed,
-            arguments: targetSearchResult.name,
-          )
-        : await Navigator.of(context).pushNamed(
-            RouteName.userProfile,
-            arguments: targetSearchResult.userId,
-          );
+      fetchedListSize = fetchedList.length;
+    } else {
+      fetchedList = await _repository.fetchSearchResults(
+          queryText, listSubject.value.last.id);
 
-    FocusScope.of(context).requestFocus(searchFocusNode);
-    _notifId = _keyboardNotif.addNewListener(onHide: Navigator.of(context).pop);
-  }
+      fetchedListSize = fetchedList.length;
 
-  /////////////////////////////////////////////////////////////
-  // * Private Functions
-  Future<void> _fetchSearchResults(String queryText) async {
-    List<SearchResult> searchResults =
-        await _repository.fetchSearchResults(queryText);
+      fetchedList = List<SearchResult>.from(listSubject.value)
+        ..addAll(fetchedList);
+    }
 
-    if (!_searchResultsController.isClosed &&
+    if (fetchedListSize != _backendListSize) {
+      existsNext = false;
+    }
+
+    if (!_isFetchingController.isClosed &&
         queryText == searchTextController.text) {
-      _searchResultsController.add(searchResults);
+      listSubject.sink.add(UnmodifiableListView<SearchResult>(fetchedList));
     }
   }
 
   /////////////////////////////////////////////////////////////
+  // * Public Functions
+  void navigateToTopicOrUserScreen(BuildContext context, SearchResult result) {
+    result.type == SearchResultType.user
+        ? Navigator.of(context).pushReplacementNamed(
+            RouteName.userProfile,
+            arguments: result.userId,
+          )
+        : Navigator.of(context).pushReplacementNamed(
+            RouteName.topicFeed,
+            arguments: result.name,
+          );
+  }
+
+  /////////////////////////////////////////////////////////////
   // * Getters
-  Stream<List<SearchResult>> get searchResultsStream =>
-      _searchResultsController.stream;
+  Stream<bool> get isFetchingStream => _isFetchingController.stream;
 }

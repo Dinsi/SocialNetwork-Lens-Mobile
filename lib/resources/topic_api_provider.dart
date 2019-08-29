@@ -86,11 +86,12 @@ class TopicApiProvider extends BaseApiProvider {
     throw HttpException(printText);
   }
 
-  Future<List<SearchResult>> fetchSearchResults(String query) async {
+  Future<List<SearchResult>> fetchSearchResults(
+      String query, int lastResultId) async {
     print('_topic_fetchSearchResults_');
 
     final response = await client.post(
-      '${super.baseUrl}topics/search/',
+      '${super.baseUrl}topics/search/${(lastResultId != null ? "?after=$lastResultId" : "")}',
       headers: {
         HttpHeaders.contentTypeHeader: ContentType.json.value,
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
@@ -101,7 +102,7 @@ class TopicApiProvider extends BaseApiProvider {
     print('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      List<dynamic> body = jsonDecode(response.body) as List;
+      List body = jsonDecode(response.body) as List;
       List<SearchResult> results = List<SearchResult>(body.length);
 
       for (var i = 0; i < body.length; i++) {

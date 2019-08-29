@@ -91,8 +91,9 @@ class Repository {
   Future<User> fetchUserInfoById(int userId) =>
       userApiProvider.fetchInfoById(userId);
 
-  Future<List<SearchResult>> fetchSearchResults(String query) =>
-      topicsApiProvider.fetchSearchResults(query);
+  Future<List<SearchResult>> fetchSearchResults(
+          String query, int lastResultId) =>
+      topicsApiProvider.fetchSearchResults(query, lastResultId);
 
   Future<int> bulkUpdateTopics(List<Topic> changedTopics) =>
       topicsApiProvider.bulkUpdate(changedTopics);

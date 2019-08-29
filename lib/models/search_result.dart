@@ -1,3 +1,9 @@
+class SearchResultType {
+  static const int hashtag = 0;
+  static const int city = 1;
+  static const int user = 2;
+}
+
 class SearchResult {
   final int id;
   final String name;

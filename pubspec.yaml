@@ -27,7 +27,6 @@ dependencies:
   get_it: ^1.0.3+2
   provider: ^3.0.0+1
   rxdart: ^0.22.0
-  keyboard_visibility: ^0.5.6
 
   # flutter_screenutil: ^0.5.1
   

@@ -1,5 +1,6 @@
 import 'package:aperture/models/search_result.dart';
 import 'package:aperture/ui/core/base_view.dart';
+import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
 import 'package:aperture/view_models/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,18 +9,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
-      child: SafeArea(
-        child: SimpleBaseView<SearchModel>(
-          onModelReady: (model) => model.init(context),
-          builder: (context, model, _) {
-            return Scaffold(
+    return SafeArea(
+      child: SimpleBaseView<SearchModel>(
+        onModelReady: (model) => model.init(context),
+        builder: (context, model, _) {
+          return NotificationListener<ScrollNotification>(
+            onNotification: model.onNotification,
+            child: Scaffold(
               appBar: AppBar(
                 leading: IconButton(
                   icon: const BackButtonIcon(),
                   tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                  onPressed: () => FocusScope.of(context).unfocus(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    FocusScope.of(context).unfocus();
+                  },
                 ),
                 titleSpacing: 0.0,
                 title: Container(
@@ -77,31 +81,46 @@ class SearchScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              body: StreamBuilder<List<SearchResult>>(
-                stream: model.searchResultsStream,
+              body: StreamBuilder<bool>(
+                stream: model.isFetchingStream,
+                initialData: false,
                 builder: (context, snapshot) {
-                  final searchResults = snapshot.data;
-
-                  return searchResults == null
+                  return !snapshot.data
                       ? Container()
-                      : ListView.builder(
-                          itemCount: searchResults.length,
-                          itemBuilder: (context, index) => ListTile(
-                            title: Text(searchResults[index].name),
-                            leading: Icon(
-                              searchResults[index].type == 0
-                                  ? FontAwesomeIcons.hashtag
-                                  : FontAwesomeIcons.userAlt,
-                            ),
-                            onTap: () => model.navigateToTopicOrUserScreen(
-                                context, index),
-                          ),
+                      : ScrollLoadingListView<SearchResult>(
+                          model: model,
+                          widgetAdapter: (key, searchResult) {
+                            IconData iconData;
+                            switch (searchResult.type) {
+                              case SearchResultType.hashtag:
+                                iconData = FontAwesomeIcons.hashtag;
+                                break;
+
+                              case SearchResultType.city:
+                                iconData = Icons.location_city;
+                                break;
+
+                              case SearchResultType.user:
+                                iconData = FontAwesomeIcons.userAlt;
+                                break;
+
+                              default:
+                            }
+
+                            return ListTile(
+                              key: key,
+                              title: Text(searchResult.name),
+                              leading: Icon(iconData),
+                              onTap: () => model.navigateToTopicOrUserScreen(
+                                  context, searchResult),
+                            );
+                          },
                         );
                 },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
