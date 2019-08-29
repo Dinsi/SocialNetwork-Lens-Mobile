@@ -117,7 +117,7 @@ class CollectionListModel extends BaseModel {
       ),
     );
 
-    if (dialogResult == null || dialogResult == false) {
+    if (dialogResult != true) {
       return;
     }
 

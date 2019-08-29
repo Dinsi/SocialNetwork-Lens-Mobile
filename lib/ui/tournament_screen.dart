@@ -182,71 +182,65 @@ class TournamentScreen extends StatelessWidget {
                 itemBuilder: (_, index) {
                   Post targetPost = model.getPostByIndex(index);
                   final userNames = targetPost.user.name.split(' ');
-                  final basicPostModel = model.getBasicPostModel(index);
 
                   return Card(
                     margin: EdgeInsets.zero,
-                    child: ChangeNotifierProvider<BasicPostModel>.value(
-                      value: basicPostModel,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () => Navigator.of(context).pushNamed(
-                                RouteName.detailedPost,
-                                arguments: {'basicPostModel': basicPostModel}),
-                            child: Image.network(
-                              basicPostModel.post.image,
-                              fit: BoxFit.cover,
-                            ),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () =>
+                              model.navigateToDetailedPost(context, index),
+                          child: Image.network(
+                            targetPost.image,
+                            fit: BoxFit.cover,
                           ),
-                          Positioned(
-                            left: 0.0,
-                            right: 0.0,
-                            bottom: 0.0,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withOpacity(0.7),
-                                  ],
-                                ),
+                        ),
+                        Positioned(
+                          left: 0.0,
+                          right: 0.0,
+                          bottom: 0.0,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.7),
+                                ],
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Text(
-                                        '${userNames[0]}\n${userNames[userNames.length - 1]}',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Text(
+                                      '${userNames[0]}\n${userNames[userNames.length - 1]}',
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                    Consumer<BasicPostModel>(
-                                      builder: (_, targetModel, __) =>
-                                          _buildRoundIconButton(
-                                        side: 30.0,
-                                        icon: Icons.star,
-                                        iconColor: targetModel.state ==
-                                                BasicPostViewState.UpVote
-                                            ? Colors.amber
-                                            : Colors.grey,
-                                        onPressed: () =>
-                                            model.changeVotePh2(index),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  _buildRoundIconButton(
+                                    side: 30.0,
+                                    icon: Icons.star,
+                                    iconColor: model.userHasVoted &&
+                                            model.isVotedPost(index)
+                                        ? Colors.amber
+                                        : Colors.grey,
+                                    onPressed: !model.userHasVoted
+                                        ? () =>
+                                            model.changeVotePh2(context, index)
+                                        : null,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },

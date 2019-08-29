@@ -46,7 +46,4 @@ class TopicFeedModel extends BaseModel with BaseFeedMixin<Post> {
       listSubject.sink.add(postList);
     }
   }
-
-  @override
-  void afterInitialFetch(double circularIndicatorHeight) => null;
 }

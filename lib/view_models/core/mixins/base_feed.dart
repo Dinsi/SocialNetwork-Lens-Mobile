@@ -75,8 +75,6 @@ mixin BaseFeedMixin<T> {
 
   Future<void> fetch(bool refresh);
 
-  void afterInitialFetch(double circularIndicatorHeight);
-
   Observable<UnmodifiableListView<T>> get listStream => listSubject.stream;
   int get listLength => listSubject.value.length;
 }

@@ -64,9 +64,6 @@ class FeedModel extends BaseModel with BaseFeedMixin<Post> {
     }
   }
 
-  @override
-  void afterInitialFetch(double circularIndicatorHeight) => null;
-
   void navigateTo(BuildContext context, String route, [Object arguments]) {
     Navigator.of(context).pushNamed(route, arguments: arguments);
   }

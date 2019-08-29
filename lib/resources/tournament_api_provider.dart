@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode;
+import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:io';
 
 import 'package:aperture/models/post.dart';
@@ -16,7 +16,7 @@ class TournamentApiProvider extends BaseApiProvider {
           HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
-    print(response.body.toString());
+    print('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       final body = jsonDecode(response.body);
@@ -36,7 +36,7 @@ class TournamentApiProvider extends BaseApiProvider {
       },
     );
 
-    print(response.body.toString());
+    print('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       final List body = jsonDecode(response.body);
@@ -56,7 +56,7 @@ class TournamentApiProvider extends BaseApiProvider {
       },
     );
 
-    print(response.body.toString());
+    print('${response.statusCode.toString()}\n${response.body}');
 
     switch (response.statusCode) {
       case HttpStatus.created:
@@ -70,5 +70,25 @@ class TournamentApiProvider extends BaseApiProvider {
       default:
         throw HttpException('_tournament_submitPost_');
     }
+  }
+
+  Future<int> submitVote(int postId) async {
+    print("_tournament_submitVote_");
+    final response = await client.post(
+      "${super.baseUrl}tournaments/vote/",
+      body: jsonEncode({'post': postId}),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
+        HttpHeaders.contentTypeHeader: ContentType.json.value,
+      },
+    );
+
+    print('${response.statusCode.toString()}\n${response.body}');
+
+    if (response.statusCode == HttpStatus.accepted) {
+      return 0;
+    }
+
+    throw HttpException('_tournament_submitVote_');
   }
 }

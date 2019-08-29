@@ -23,7 +23,6 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   BasicPostModel _basicPostModel;
 
   String _nextLink;
-  bool _toComments;
 
   final listViewKey = GlobalKey();
   ScrollController _scrollController = ScrollController();
@@ -34,15 +33,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   DetailedPostModel() : super(DetailedPostViewState.Idle);
 
   // * Init Functions
-  void init(bool toComments, BasicPostModel model) {
-    // Set toComments
-    _toComments = toComments;
-    if (_toComments) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _calculateInitialHeight();
-      });
-    }
-
+  void init(BasicPostModel model) {
     // Delegate model
     _basicPostModel = model;
   }
@@ -81,23 +72,6 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
           _commentLimit, _basicPostModel.post.id, _nextLink);
 
       _updateComments(fetchedData);
-    }
-  }
-
-  @override
-  void afterInitialFetch(double circularIndicatorHeight) {
-    if (_toComments) {
-      _initialHeight = _initialHeight - circularIndicatorHeight;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (listSubject.hasValue) {
-          if (_scrollController.position.maxScrollExtent <= _initialHeight) {
-            _scrollController
-                .jumpTo(_scrollController.position.maxScrollExtent);
-          } else {
-            _scrollController.jumpTo(_initialHeight);
-          }
-        }
-      });
     }
   }
 
@@ -166,12 +140,6 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     if (!listSubject.isClosed) {
       listSubject.sink.add(comments);
     }
-  }
-
-  void _calculateInitialHeight() {
-    final RenderBox columnRenderBox =
-        listViewKey.currentContext.findRenderObject();
-    _initialHeight = columnRenderBox.size.height;
   }
 
   /////////////////////////////////////////////////////////////

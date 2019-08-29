@@ -6,9 +6,10 @@ class TournamentInfo {
   final DateTime startDate;
   final DateTime nextStageDate;
   final DateTime endDate;
+  int votedPostId;
 
   TournamentInfo(this.id, this.title, this.description, this.currentStage,
-      this.startDate, this.nextStageDate, this.endDate);
+      this.startDate, this.nextStageDate, this.endDate, this.votedPostId);
 
   factory TournamentInfo.fromJson(Map<String, dynamic> json) {
     return TournamentInfo(
@@ -19,6 +20,7 @@ class TournamentInfo {
       DateTime.parse(json['start_date']),
       DateTime.parse(json['next_stage_date']),
       DateTime.parse(json['end_date']),
+      json['???'], // TODO fill with aproppriate field when available
     );
   }
 
@@ -30,6 +32,7 @@ class TournamentInfo {
     data['start_date'] = this.startDate.toString();
     data['next_stage_date'] = this.nextStageDate.toString();
     data['end_date'] = this.endDate.toString();
+    data['???'] = this.votedPostId;
     return data;
   }
 }

@@ -18,6 +18,7 @@ import 'package:aperture/ui/tournament_screen.dart';
 import 'package:aperture/ui/upload_post_screen.dart';
 import 'package:aperture/ui/user_info_screen.dart';
 import 'package:aperture/ui/user_profile_screen.dart';
+import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 
 abstract class RouteName {
@@ -63,12 +64,10 @@ abstract class Router {
         return MaterialPageRoute<Null>(builder: (_) => FeedScreen());
 
       case RouteName.detailedPost:
-        final data = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute<Null>(
           builder: (_) {
             return DetailedPostScreen(
-              basicPostModel: data['basicPostModel'],
-              toComments: data['toComments'] as bool,
+              basicPostModel: settings.arguments as BasicPostModel,
             );
           },
         );

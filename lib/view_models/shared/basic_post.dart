@@ -44,10 +44,7 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
   void navigateToDetailedPost(BuildContext context, bool toComments) async {
     Navigator.of(context).pushNamed(
       RouteName.detailedPost,
-      arguments: {
-        'toComments': toComments,
-        'basicPostModel': this,
-      },
+      arguments: this,
     );
   }
 

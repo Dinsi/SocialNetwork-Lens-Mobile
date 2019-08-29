@@ -27,10 +27,10 @@ class CollectionPostGridModel extends StateModel<CollectionPostGridViewState> {
     BasicPostModel subModel = locator<BasicPostModel>()
       ..init(_collection.posts[index]);
 
-    Navigator.of(context).pushNamed(RouteName.detailedPost, arguments: {
-      'basicPostModel': subModel,
-      'toComments': false,
-    });
+    Navigator.of(context).pushNamed(
+      RouteName.detailedPost,
+      arguments: subModel,
+    );
   }
 
   String get collectionName => _collectionName;

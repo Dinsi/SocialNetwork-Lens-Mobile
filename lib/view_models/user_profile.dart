@@ -62,9 +62,6 @@ class UserProfileModel extends StateModel<UserProfileViewState>
     }
   }
 
-  @override
-  void afterInitialFetch(double circularIndicatorHeight) => null;
-
   Future<void> fetchUser(int userId) async {
     if (_appInfo.currentUser.id == userId) {
       _user = appInfo.currentUser;

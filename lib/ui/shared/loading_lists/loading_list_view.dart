@@ -22,9 +22,7 @@ abstract class LoadingListViewState<T, LListViewT extends LoadingListView<T>>
   @override
   void initState() {
     super.initState();
-    widget.model
-        .fetch(false)
-        .then((_) => widget.model.afterInitialFetch(_circularIndicatorHeight));
+    widget.model.fetch(false);
   }
 
   @override

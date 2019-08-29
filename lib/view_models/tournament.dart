@@ -2,6 +2,7 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/tournament_info.dart';
 import 'package:aperture/resources/repository.dart';
+import 'package:aperture/router.dart';
 import 'package:aperture/view_models/core/base_model.dart';
 import 'package:aperture/view_models/core/enums/change_vote_action.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
@@ -16,9 +17,6 @@ class TournamentModel extends StateModel<TournamentViewState> {
 
   // Phase 1
   int _currentIndex;
-
-  // Phase 2
-  List<BasicPostModel> _basicPostModels;
 
   TournamentModel() : super(TournamentViewState.Loading);
 
@@ -37,12 +35,6 @@ class TournamentModel extends StateModel<TournamentViewState> {
 
       case 2:
         _tournamentPosts = await _repository.fetchTournamentPosts();
-        _basicPostModels = List.generate(
-          _tournamentPosts.length,
-          (index) => locator<BasicPostModel>()..init(_tournamentPosts[index]),
-          growable: false,
-        );
-
         setState(TournamentViewState.ActivePhase2);
         break;
 
@@ -51,7 +43,8 @@ class TournamentModel extends StateModel<TournamentViewState> {
     }
   }
 
-  Future<void> changeVotePh1(BuildContext context, ChangeVoteAction action) async {
+  Future<void> changeVotePh1(
+      BuildContext context, ChangeVoteAction action) async {
     final targetIndex = _currentIndex;
     _repository.changeVote(_tournamentPosts[targetIndex].id, action);
 
@@ -74,12 +67,67 @@ class TournamentModel extends StateModel<TournamentViewState> {
     }
   }
 
-  void changeVotePh2(int index) => _basicPostModels[index].onUpvoteOrRemove();
+  Future<void> changeVotePh2(BuildContext context, int index) async {
+    final theme = Theme.of(context);
+    final dialogResult = await showDialog<bool>(
+      context: context,
+      builder: (context) => Theme(
+        data: theme.copyWith(primaryColor: Colors.red),
+        child: AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text('Are you sure you want to vote on this post?\n'),
+              Text(
+                'This action is irreversible for the current tournament',
+                style: theme.textTheme.subtitle.copyWith(
+                  color: Colors.grey,
+                ),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () => Navigator.of(context).pop<bool>(false),
+            ),
+            FlatButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop<bool>(true),
+            )
+          ],
+        ),
+      ),
+    );
+
+    if (dialogResult != true) {
+      return;
+    }
+
+    _tournamentInfo.votedPostId = _tournamentPosts[index].id;
+    notifyListeners();
+
+    try {
+      await _repository
+          .submitVoteToCurrentTournament(_tournamentPosts[index].id);
+    } on Exception {
+      _tournamentInfo.votedPostId = null;
+      notifyListeners();
+    }
+  }
+
+  // * Navigation
+  void navigateToDetailedPost(BuildContext context, int index) {
+    final model = locator<BasicPostModel>();
+    model.init(_tournamentPosts[index]);
+    Navigator.of(context).pushNamed(RouteName.detailedPost, arguments: model);
+  }
 
   // * Getters
   String get tournamentName => _tournamentInfo.title;
-
-  BasicPostModel getBasicPostModel(int index) => _basicPostModels[index];
+  bool get userHasVoted => _tournamentInfo.votedPostId != null;
+  bool isVotedPost(int index) =>
+      _tournamentInfo.votedPostId == _tournamentPosts[index].id;
 
   bool get noPostExists => _tournamentPosts?.isEmpty ?? true;
   int get listLength => _tournamentPosts.length;

@@ -21,13 +21,9 @@ const _iconSideSize = 40.0;
 const _newCommentIconSideSize = 30.0;
 
 class DetailedPostScreen extends StatelessWidget {
-  final bool toComments;
   final BasicPostModel basicPostModel;
 
-  const DetailedPostScreen({
-    bool toComments,
-    @required this.basicPostModel,
-  }) : this.toComments = toComments ?? false;
+  const DetailedPostScreen({@required this.basicPostModel});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +31,7 @@ class DetailedPostScreen extends StatelessWidget {
       child: Scaffold(
         body: ChangeNotifierBaseView<DetailedPostModel>(
           onModelReady: (model) {
-            model.init(toComments, basicPostModel);
+            model.init(basicPostModel);
           },
           builder: (context, model, _) {
             return RefreshIndicator(
@@ -100,7 +96,7 @@ class DetailedPostScreen extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 8.0),
-      _buildCommentSection(model)
+      if (model.post.commentsLength != 0) _buildCommentSection(model)
     ];
   }
 
