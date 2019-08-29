@@ -4,19 +4,20 @@ import 'dart:io';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/tournament_info.dart';
 import 'package:aperture/resources/base_api_provider.dart';
+import 'package:flutter/widgets.dart' show debugPrint;
 import 'package:http/http.dart';
 
 class TournamentApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<TournamentInfo> fetchInfo() async {
-    print("_tournament_fetchInfo_");
+    debugPrint("_tournament_fetchInfo_");
     final response = await client.get("${super.baseUrl}tournaments/current/",
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       final body = jsonDecode(response.body);
@@ -28,7 +29,7 @@ class TournamentApiProvider extends BaseApiProvider {
   }
 
   Future<List<Post>> fetchPosts() async {
-    print("_tournament_fetchPosts_");
+    debugPrint("_tournament_fetchPosts_");
     final response = await client.get(
       "${super.baseUrl}tournaments/posts/",
       headers: {
@@ -36,7 +37,7 @@ class TournamentApiProvider extends BaseApiProvider {
       },
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       final List body = jsonDecode(response.body);
@@ -48,7 +49,7 @@ class TournamentApiProvider extends BaseApiProvider {
   }
 
   Future<int> submitPost(int postId) async {
-    print("_tournament_submitPost_");
+    debugPrint("_tournament_submitPost_");
     final response = await client.get(
       "${super.baseUrl}posts/$postId/submit/",
       headers: {
@@ -56,7 +57,7 @@ class TournamentApiProvider extends BaseApiProvider {
       },
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     switch (response.statusCode) {
       case HttpStatus.created:
@@ -73,7 +74,7 @@ class TournamentApiProvider extends BaseApiProvider {
   }
 
   Future<int> submitVote(int postId) async {
-    print("_tournament_submitVote_");
+    debugPrint("_tournament_submitVote_");
     final response = await client.post(
       "${super.baseUrl}tournaments/vote/",
       body: jsonEncode({'post': postId}),
@@ -83,7 +84,7 @@ class TournamentApiProvider extends BaseApiProvider {
       },
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.accepted) {
       return 0;

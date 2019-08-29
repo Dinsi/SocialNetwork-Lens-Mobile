@@ -8,19 +8,20 @@ import 'package:async/async.dart' show DelegatingStream;
 import 'package:http/http.dart'
     show ByteStream, Client, MultipartFile, MultipartRequest;
 import 'package:http_parser/http_parser.dart' show MediaType;
+import 'package:flutter/widgets.dart' show debugPrint;
 import 'package:path/path.dart';
 
 class UserApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<User> fetchInfo() async {
-    print('_user_fetchInfo_');
+    debugPrint('_user_fetchInfo_');
 
     final response = await client.get('${super.baseUrl}users/self/', headers: {
       HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
     });
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       dynamic body = jsonDecode(response.body);
@@ -32,14 +33,14 @@ class UserApiProvider extends BaseApiProvider {
   }
 
   Future<User> fetchInfoById(int userId) async {
-    print('_user_fetchInfoById_');
+    debugPrint('_user_fetchInfoById_');
 
     final response = await client.get('${super.baseUrl}users/$userId/',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ${appInfo.accessToken}'
         });
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       return User.fromJson(jsonDecode(response.body));
@@ -49,7 +50,7 @@ class UserApiProvider extends BaseApiProvider {
   }
 
   Future<int> finishRegister(List<int> desiredTopics) async {
-    print('_user_finishRegister_');
+    debugPrint('_user_finishRegister_');
 
     final response = await client.post(
       '${super.baseUrl}users/finish_register/',
@@ -60,7 +61,7 @@ class UserApiProvider extends BaseApiProvider {
       body: jsonEncode({'topics': desiredTopics}),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       await appInfo.setUserFromMap(jsonDecode(response.body));
@@ -71,7 +72,7 @@ class UserApiProvider extends BaseApiProvider {
   }
 
   Future<int> updateEmail(String email, String password) async {
-    print('_user_updateEmail_');
+    debugPrint('_user_updateEmail_');
 
     final Map<String, String> fields = {
       'email': email,
@@ -87,7 +88,7 @@ class UserApiProvider extends BaseApiProvider {
       body: jsonEncode(fields),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     switch (response.statusCode) {
       case HttpStatus.ok:
@@ -101,7 +102,7 @@ class UserApiProvider extends BaseApiProvider {
 
   Future<int> updatePassword(String oldPassword, String newPassword,
       String confirmationPassword) async {
-    print('_user_updatePassword_');
+    debugPrint('_user_updatePassword_');
 
     final Map<String, String> fields = {
       'password': oldPassword,
@@ -118,7 +119,7 @@ class UserApiProvider extends BaseApiProvider {
       body: jsonEncode(fields),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     switch (response.statusCode) {
       case HttpStatus.ok:
@@ -131,7 +132,7 @@ class UserApiProvider extends BaseApiProvider {
   }
 
   Future<int> patch(Map<EditProfileField, String> fields) async {
-    print('_user_patch_');
+    debugPrint('_user_patch_');
 
     final Map<String, String> stringFields = _getStringFields(fields);
 
@@ -144,7 +145,7 @@ class UserApiProvider extends BaseApiProvider {
       body: jsonEncode(stringFields),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       await appInfo.setUserFromMap(jsonDecode(response.body));
@@ -156,7 +157,7 @@ class UserApiProvider extends BaseApiProvider {
 
   Future<int> patchMultiPart(
       File imageFile, Map<EditProfileField, String> fields) async {
-    print("_user_patchMultiPart_");
+    debugPrint("_user_patchMultiPart_");
 
     ByteStream stream =
         new ByteStream(DelegatingStream.typed(imageFile.openRead()));
@@ -183,12 +184,12 @@ class UserApiProvider extends BaseApiProvider {
         {HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken});
 
     final response = await request.send();
-    print(response.statusCode);
+    debugPrint(response.statusCode.toString());
 
     if (response.statusCode == HttpStatus.ok) {
       response.stream.transform(utf8.decoder).listen((value) async {
         await appInfo.setUserFromMap(jsonDecode(value));
-        print(value);
+        debugPrint(value);
       });
       return 0;
     } //TODO assuming success

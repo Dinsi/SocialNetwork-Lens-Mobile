@@ -7,20 +7,21 @@ import 'package:aperture/models/topic.dart';
 import 'package:aperture/resources/base_api_provider.dart';
 import 'package:aperture/view_models/shared/subscription_app_bar.dart'
     show SubscriptionAction;
+import 'package:flutter/widgets.dart' show debugPrint;
 import 'package:http/http.dart' show Client;
 
 class TopicApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<List<Topic>> fetchRecommended() async {
-    print('_topic_fetchRecommended_');
+    debugPrint('_topic_fetchRecommended_');
 
     final response = await client.get('${super.baseUrl}topics/recommended/',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       List<dynamic> body = (jsonDecode(response.body) as List);
@@ -37,14 +38,14 @@ class TopicApiProvider extends BaseApiProvider {
   }
 
   Future<Topic> fetchSingle(String topic) async {
-    print('_topic_fetchSingle_');
+    debugPrint('_topic_fetchSingle_');
 
     final response = await client.get('${super.baseUrl}topics/$topic/',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       return Topic.fromJson(jsonDecode(response.body));
@@ -55,20 +56,20 @@ class TopicApiProvider extends BaseApiProvider {
 
   Future<int> toggleSubscription(
       String topic, SubscriptionAction action) async {
-    String printText = '_topic_toggleSubscription_';
+    String debugPrintText = '_topic_toggleSubscription_';
     String actionPath;
 
     switch (action) {
       case SubscriptionAction.Subscribe:
-        printText += 'subscribe_';
+        debugPrintText += 'subscribe_';
         actionPath = 'subscribe';
         break;
       case SubscriptionAction.Unsubscribe:
-        printText += 'unsubscribe_';
+        debugPrintText += 'unsubscribe_';
         actionPath = 'unsubscribe';
     }
 
-    print(printText);
+    debugPrint(debugPrintText);
 
     final response = await client.post(
       '${super.baseUrl}topics/$topic/$actionPath/',
@@ -77,18 +78,18 @@ class TopicApiProvider extends BaseApiProvider {
       },
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       return 0;
     }
 
-    throw HttpException(printText);
+    throw HttpException(debugPrintText);
   }
 
   Future<List<SearchResult>> fetchSearchResults(
       String query, int lastResultId) async {
-    print('_topic_fetchSearchResults_');
+    debugPrint('_topic_fetchSearchResults_');
 
     final response = await client.post(
       '${super.baseUrl}topics/search/${(lastResultId != null ? "?after=$lastResultId" : "")}',
@@ -99,7 +100,7 @@ class TopicApiProvider extends BaseApiProvider {
       body: jsonEncode({"q": query}),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       List body = jsonDecode(response.body) as List;
@@ -116,7 +117,7 @@ class TopicApiProvider extends BaseApiProvider {
   }
 
   Future<int> bulkUpdate(List<Topic> changedTopics) async {
-    print('_topic_bulkUpdate_');
+    debugPrint('_topic_bulkUpdate_');
 
     List<int> topicsNames = List<int>(changedTopics.length);
     for (var i = 0; i < changedTopics.length; i++) {
@@ -132,7 +133,7 @@ class TopicApiProvider extends BaseApiProvider {
       body: jsonEncode({'topics': topicsNames}),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       return 0;

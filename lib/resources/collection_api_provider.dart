@@ -3,13 +3,14 @@ import 'dart:io';
 
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/resources/base_api_provider.dart';
+import 'package:flutter/widgets.dart' show debugPrint;
 import 'package:http/http.dart';
 
 class CollectionApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<Collection> fetch(int collectionId) async {
-    print('_collection_fetch_');
+    debugPrint('_collection_fetch_');
 
     final response = await client.get(
       '${super.baseUrl}collections/$collectionId/',
@@ -18,7 +19,7 @@ class CollectionApiProvider extends BaseApiProvider {
       },
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       //TODO only covers valid path
@@ -29,7 +30,7 @@ class CollectionApiProvider extends BaseApiProvider {
   }
 
   Future<Collection> appendPost(int collectionId, int postId) async {
-    print('_collection_appendPost_');
+    debugPrint('_collection_appendPost_');
 
     final response = await client.patch(
       '${super.baseUrl}collections/$collectionId/append/',
@@ -40,7 +41,7 @@ class CollectionApiProvider extends BaseApiProvider {
       body: jsonEncode({'post': postId}),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
       //TODO only covers valid path
@@ -51,7 +52,7 @@ class CollectionApiProvider extends BaseApiProvider {
   }
 
   Future<Collection> postNew(String collectionName) async {
-    print('_collection_postNew_');
+    debugPrint('_collection_postNew_');
 
     final response = await client.post(
       '${super.baseUrl}collections/',
@@ -62,7 +63,7 @@ class CollectionApiProvider extends BaseApiProvider {
       body: jsonEncode({'name': collectionName}),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.created) {
       //TODO only covers valid path

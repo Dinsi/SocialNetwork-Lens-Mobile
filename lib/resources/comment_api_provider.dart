@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:aperture/models/comment.dart';
 import 'package:aperture/resources/base_api_provider.dart';
+import 'package:flutter/widgets.dart' show debugPrint;
 import 'package:http/http.dart' show Client;
 
 class CommentApiProvider extends BaseApiProvider {
@@ -10,7 +11,7 @@ class CommentApiProvider extends BaseApiProvider {
 
   Future<dynamic> fetchList(
       int commentLimit, int postId, String nextLink) async {
-    print("_comment_fetchList_");
+    debugPrint("_comment_fetchList_");
     final response = await client.get(
         nextLink ??
             "${super.baseUrl}posts/$postId/comments/?limit=$commentLimit",
@@ -18,7 +19,7 @@ class CommentApiProvider extends BaseApiProvider {
           HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
         });
 
-    print(response.body.toString());
+    debugPrint(response.body.toString());
 
     if (response.statusCode == HttpStatus.ok) {
       if (response.body.isEmpty) {
@@ -40,7 +41,7 @@ class CommentApiProvider extends BaseApiProvider {
   }
 
   Future<Comment> post(int postId, String comment) async {
-    print('_comment_post_');
+    debugPrint('_comment_post_');
 
     final response = await client.post(
       '${super.baseUrl}posts/$postId/comments/',
@@ -51,7 +52,7 @@ class CommentApiProvider extends BaseApiProvider {
       body: jsonEncode({'text': comment}),
     );
 
-    print('${response.statusCode.toString()}\n${response.body}');
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
     if (response.statusCode == HttpStatus.created) {
       return Comment.fromJson(jsonDecode(response.body));
     }

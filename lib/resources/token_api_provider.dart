@@ -3,6 +3,7 @@ import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
 
 import 'package:aperture/resources/base_api_provider.dart';
 import 'package:aperture/view_models/login.dart';
+import 'package:flutter/widgets.dart' show debugPrint;
 import 'package:http/http.dart' show Client;
 import 'package:http/http.dart';
 
@@ -12,7 +13,7 @@ class TokenApiProvider extends BaseApiProvider {
   Client client = Client();
 
   Future<int> login(String username, String password) async {
-    print('_token_login_');
+    debugPrint('_token_login_');
 
     final response = await client.post('${super.baseUrl}token/',
         body: jsonEncode({'username': username, 'password': password}),
@@ -34,7 +35,7 @@ class TokenApiProvider extends BaseApiProvider {
   }
 
   Future<int> register(Map<LoginField, String> fields) async {
-    print('_token_register_');
+    debugPrint('_token_register_');
 
     final requestFields = {
       'username': fields[LoginField.SignUpUsername],
@@ -48,8 +49,8 @@ class TokenApiProvider extends BaseApiProvider {
         body: jsonEncode(requestFields),
         headers: {HttpHeaders.contentTypeHeader: ContentType.json.value});
 
-    print(response.statusCode);
-    print(response.body);
+    debugPrint(response.statusCode.toString());
+    debugPrint(response.body);
 
     switch (response.statusCode) {
       case HttpStatus.created:
@@ -65,7 +66,7 @@ class TokenApiProvider extends BaseApiProvider {
 
   Future<bool> verify() async {
     //TODO fix verify, returns false on other functions and does nothing
-    print('_token_verify_');
+    debugPrint('_token_verify_');
 
     Response response = await client.post('${super.baseUrl}token/verify/',
         body: jsonEncode({'token': appInfo.accessToken}),

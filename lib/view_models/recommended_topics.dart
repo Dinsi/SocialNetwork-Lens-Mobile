@@ -6,7 +6,7 @@ import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:aperture/view_models/core/base_model.dart';
-import 'package:flutter/material.dart' show BuildContext, Navigator;
+import 'package:flutter/material.dart' show BuildContext, Navigator, debugPrint;
 
 enum RecTopViewState { Loading, Idle, Busy }
 
@@ -45,7 +45,7 @@ class RecommendedTopicsModel extends StateModel<RecTopViewState> {
 
   void toggleTopic(Topic topic) {
     _recommendedTopics[topic] = !_recommendedTopics[topic];
-    print(_recommendedTopics);
+    debugPrint(_recommendedTopics.toString());
     notifyListeners();
   }
 

@@ -28,7 +28,6 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   ScrollController _scrollController = ScrollController();
   TextEditingController _commentTextController = TextEditingController();
   FocusNode _commentFocusNode = FocusNode();
-  double _initialHeight;
 
   DetailedPostModel() : super(DetailedPostViewState.Idle);
 
