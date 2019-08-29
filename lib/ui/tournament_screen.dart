@@ -1,13 +1,10 @@
 import 'package:aperture/models/post.dart';
-import 'package:aperture/router.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/core/enums/change_vote_action.dart';
-import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:aperture/view_models/tournament.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 class TournamentScreen extends StatelessWidget {
   @override

@@ -19,8 +19,6 @@ import 'package:aperture/resources/user_api_provider.dart';
 import 'package:aperture/view_models/core/enums/change_vote_action.dart';
 import 'package:aperture/view_models/edit_profile.dart';
 import 'package:aperture/view_models/login.dart';
-import 'package:aperture/view_models/shared/basic_post.dart'
-    show ChangeVoteAction;
 import 'package:aperture/view_models/shared/subscription_app_bar.dart'
     show SubscriptionAction;
 
@@ -123,4 +121,7 @@ class Repository {
 
   Future<int> submitPostToCurrentTournament(int postId) =>
       tournamentsApiProvider.submitPost(postId);
+
+  Future<int> submitVoteToCurrentTournament(int postId) =>
+      tournamentsApiProvider.submitVote(postId);
 }

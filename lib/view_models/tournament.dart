@@ -8,6 +8,8 @@ import 'package:aperture/view_models/core/enums/change_vote_action.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 
+const _backendListSize = 5;
+
 enum TournamentViewState { ActivePhase1, ActivePhase2, Inactive, Loading }
 
 class TournamentModel extends StateModel<TournamentViewState> {
@@ -17,6 +19,7 @@ class TournamentModel extends StateModel<TournamentViewState> {
 
   // Phase 1
   int _currentIndex;
+  bool existsNext;
 
   TournamentModel() : super(TournamentViewState.Loading);
 
@@ -26,15 +29,19 @@ class TournamentModel extends StateModel<TournamentViewState> {
     switch (_tournamentInfo.currentStage) {
       case 1:
         _tournamentPosts = await _repository.fetchTournamentPosts();
+
         if (_tournamentPosts.isNotEmpty) {
           _currentIndex = 0;
-          print(_tournamentPosts[_currentIndex].image);
+          existsNext = _tournamentPosts.length == _backendListSize;
+          debugPrint(_tournamentPosts[_currentIndex].image);
         }
+
         setState(TournamentViewState.ActivePhase1);
         break;
 
       case 2:
         _tournamentPosts = await _repository.fetchTournamentPosts();
+
         setState(TournamentViewState.ActivePhase2);
         break;
 
@@ -50,19 +57,24 @@ class TournamentModel extends StateModel<TournamentViewState> {
 
     if (_tournamentPosts.length > _currentIndex + 1) {
       _currentIndex++;
-      print(_tournamentPosts[_currentIndex].image);
-
       notifyListeners();
+      
+      debugPrint(_tournamentPosts[_currentIndex].image);
     } else {
-      _currentIndex = -1;
-      notifyListeners();
+      if (existsNext) {
+        _currentIndex = -1;
+        notifyListeners();
 
-      _tournamentPosts = await _repository.fetchTournamentPosts();
-      if (_tournamentPosts.isNotEmpty) {
-        _currentIndex = 0;
-        print(_tournamentPosts[_currentIndex].image);
+        _tournamentPosts = await _repository.fetchTournamentPosts();
+
+        if (_tournamentPosts.isNotEmpty) {
+          _currentIndex = 0;
+          debugPrint(_tournamentPosts[_currentIndex].image);
+          return;
+        }
       }
 
+      _currentIndex = null;
       notifyListeners();
     }
   }
