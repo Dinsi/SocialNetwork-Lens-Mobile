@@ -101,10 +101,23 @@ class LoginModel extends BaseModel {
       return;
     }
 
-    int code = await _repository.login(username, password);
+    int code;
+    try {
+      code = await _repository.login(username, password);
+    } on Exception {
+      _buttonsController.add(true);
+      return;
+    }
 
     if (code == 0) {
-      User user = await _repository.fetchUserInfo();
+      User user;
+      try {
+        user = await _repository.fetchUserInfo();
+      } on Exception {
+        _buttonsController.add(true);
+        return;
+      }
+
       if (user != null) {
         Navigator.of(context).pushReplacementNamed(!user.hasFinishedRegister
             ? RouteName.recommendedTopics
@@ -139,7 +152,8 @@ class LoginModel extends BaseModel {
         firstName.isEmpty ||
         lastName.isEmpty ||
         email.isEmpty ||
-        password.isEmpty) {
+        password.isEmpty ||
+        confirmedPassword.isEmpty) {
       showInSnackBar(context, scaffoldKey, 'All sign up fields must be filled');
       _buttonsController.add(true);
       return;
@@ -165,8 +179,7 @@ class LoginModel extends BaseModel {
     }
 
     if (password.length < 6 || password.length > 16) {
-      showInSnackBar(context, scaffoldKey,
-          'Password is too short or too long (min: 6 / max: 16)');
+      showInSnackBar(context, scaffoldKey, 'Password is too short (min: 6)');
       _buttonsController.add(true);
       return;
     }
@@ -179,29 +192,52 @@ class LoginModel extends BaseModel {
       LoginField.SignUpPassword: password
     };
 
-    int result = await _repository.register(fields);
+    int result;
+    try {
+      result = await _repository.register(fields);
+    } on Exception {
+      _buttonsController.add(true);
+      return;
+    }
 
-    if (result == 0) {
-      result = await _repository.login(username, password);
+    switch (result) {
+      case 0:
+        try {
+          result = await _repository.login(username, password);
 
-      if (result == 0) {
-        User user = await _repository.fetchUserInfo();
-        if (user != null) {
-          Navigator.of(context).pushReplacementNamed(!user.hasFinishedRegister
-              ? RouteName.recommendedTopics
-              : RouteName.userInfo);
+          if (result == 0) {
+            User user = await _repository.fetchUserInfo();
+            if (user != null) {
+              Navigator.of(context).pushReplacementNamed(
+                  !user.hasFinishedRegister
+                      ? RouteName.recommendedTopics
+                      : RouteName.userInfo);
+              return;
+            }
+
+            showInSnackBar(context, scaffoldKey,
+                'Network error: could not fetch user info');
+          } else {
+            showInSnackBar(context, scaffoldKey,
+                'Account was created, but sign in failed');
+          }
+        } on Exception {
+          _buttonsController.add(true);
           return;
         }
 
+        break;
+
+      case 1:
         showInSnackBar(
-            context, scaffoldKey, 'Network error: could not fetch user info');
-      } else {
+            context, scaffoldKey, 'That username has already been taken');
+        break;
+
+      case 2:
         showInSnackBar(
-            context, scaffoldKey, 'Account was created, but sign in failed');
-      }
-    } else {
-      showInSnackBar(
-          context, scaffoldKey, 'That username has already been taken');
+            context, scaffoldKey, 'That email has already been taken');
+        break;
+      default:
     }
 
     _buttonsController.add(true);

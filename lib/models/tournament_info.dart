@@ -20,7 +20,7 @@ class TournamentInfo {
       DateTime.parse(json['start_date']),
       DateTime.parse(json['next_stage_date']),
       DateTime.parse(json['end_date']),
-      json['???'], // TODO fill with aproppriate field when available
+      json['voted_post_id'],
     );
   }
 
@@ -32,7 +32,7 @@ class TournamentInfo {
     data['start_date'] = this.startDate.toString();
     data['next_stage_date'] = this.nextStageDate.toString();
     data['end_date'] = this.endDate.toString();
-    data['???'] = this.votedPostId;
+    data['voted_post_id'] = this.votedPostId;
     return data;
   }
 }

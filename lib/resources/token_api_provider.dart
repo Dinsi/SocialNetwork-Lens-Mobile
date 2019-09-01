@@ -57,7 +57,11 @@ class TokenApiProvider extends BaseApiProvider {
         return 0;
 
       case HttpStatus.badRequest:
-        return 1; // Username is taken
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+
+        // 1 -> username is taken
+        // 2 -> email is taken
+        return body.entries.first.key == 'username' ? 1 : 2;
 
       default:
         throw HttpException('_token_register_');

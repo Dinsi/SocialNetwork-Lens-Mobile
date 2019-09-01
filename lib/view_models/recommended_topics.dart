@@ -36,7 +36,7 @@ class RecommendedTopicsModel extends StateModel<RecTopViewState> {
 
     int code = await _repository.finishRegister(selectedTopicIds);
     if (code == 0) {
-      Navigator.of(context).pushReplacementNamed(RouteName.userInfo);
+      Navigator.of(context).pushReplacementNamed(RouteName.feed);
       return;
     }
 

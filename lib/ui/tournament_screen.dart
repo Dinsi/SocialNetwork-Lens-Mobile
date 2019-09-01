@@ -103,40 +103,60 @@ class TournamentScreen extends StatelessWidget {
                 ),
               ),
             ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: model.currentIndex == null
-              ? Text(
-                  'Congratulations!\n\n' +
-                      'It looks like you already voted for all posts\n' +
-                      'Come back later to participate in the final vote',
-                  style: Theme.of(context).textTheme.subhead.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                  textAlign: TextAlign.center,
-                )
-              : model.currentIndex == -1
-                  ? Card(
-                      child: Center(
-                        child: defaultCircularIndicator(),
-                      ),
-                    )
-                  : Card(
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Center(
-                            child: defaultCircularIndicator(),
-                          ),
-                          Image.network(
-                            model.currentPost.image,
-                            fit: BoxFit.cover,
+      body: Column(
+        children: <Widget>[
+          Text(
+            'Upvote or downvote the entries!',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle
+                .copyWith(color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            model.tournamentName,
+            style: Theme.of(context).textTheme.title,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20.0),
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: model.currentIndex == null
+                    ? Text(
+                        'Congratulations!\n\n' +
+                            'It looks like you already voted for all posts\n' +
+                            'Come back later to participate in the final vote',
+                        style: Theme.of(context).textTheme.subhead.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                        textAlign: TextAlign.center,
+                      )
+                    : model.currentIndex == -1
+                        ? Card(
+                            child: Center(
+                              child: defaultCircularIndicator(),
+                            ),
                           )
-                        ],
-                      ),
-                    ),
-        ),
+                        : Card(
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: <Widget>[
+                                Center(
+                                  child: defaultCircularIndicator(),
+                                ),
+                                Image.network(
+                                  model.currentPost.image,
+                                  fit: BoxFit.cover,
+                                )
+                              ],
+                            ),
+                          ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -230,7 +250,29 @@ class TournamentScreen extends StatelessWidget {
                                     onPressed: !model.userHasVoted
                                         ? () =>
                                             model.changeVotePh2(context, index)
-                                        : null,
+                                        : () => showDialog(
+                                              context: context,
+                                              builder: (context) => Theme(
+                                                data: Theme.of(context)
+                                                    .copyWith(
+                                                        primaryColor:
+                                                            Colors.red),
+                                                child: AlertDialog(
+                                                  title:
+                                                      const Text('Vote limit'),
+                                                  content: const Text(
+                                                      'You can only vote once during this phase. Try again in the next tournament'),
+                                                  actions: <Widget>[
+                                                    FlatButton(
+                                                      child: const Text('OK'),
+                                                      onPressed: () =>
+                                                          Navigator.of(context)
+                                                              .pop(),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                   ),
                                 ],
                               ),

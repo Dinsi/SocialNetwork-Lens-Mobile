@@ -139,6 +139,8 @@ class DetailedPostScreen extends StatelessWidget {
 
   Widget _buildImageAndVoteSection(
       BuildContext context, DetailedPostModel model) {
+    final iconTheme = IconTheme.of(context);
+
     return Column(
       children: <Widget>[
         ImageContainer(
@@ -151,42 +153,56 @@ class DetailedPostScreen extends StatelessWidget {
         Container(
           color: Colors.grey[100],
           height: 50.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: SizedBox(
-                  width: 50.0,
-                  height: double.infinity,
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: InkWell(
-                      onTap: null,
-                      child: Icon(FontAwesomeIcons.camera),
+          child: Material(
+            type: MaterialType.transparency,
+            child: IconTheme(
+              data: iconTheme.copyWith(color: Colors.grey[600]),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: SizedBox(
+                      width: 50.0,
+                      height: double.infinity,
+                      child: InkWell(
+                        onTap: null,
+                        child: Icon(FontAwesomeIcons.camera),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              ChangeNotifierProvider<BasicPostModel>.value(
-                value: basicPostModel,
-                child: VoteButtons(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: SizedBox(
-                  width: 50.0,
-                  height: double.infinity,
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: InkWell(
-                      onTap: () => model.navigateToCollectionList(context),
-                      child: Icon(FontAwesomeIcons.bookmark),
-                    ),
+                  ChangeNotifierProvider<BasicPostModel>.value(
+                    value: basicPostModel,
+                    child: VoteButtons(),
                   ),
-                ),
+                  PopupMenuButton<DetailedPostOptions>(
+                    onSelected: (result) =>
+                        model.onMoreSelected(context, result),
+                    itemBuilder: (context) =>
+                        <PopupMenuEntry<DetailedPostOptions>>[
+                      const PopupMenuItem<DetailedPostOptions>(
+                        value: DetailedPostOptions.CollectionAdd,
+                        height: 52.0,
+                        child: ListTile(
+                          title: Text('Add to collection'),
+                          leading: Icon(FontAwesomeIcons.bookmark),
+                        ),
+                      ),
+                      PopupMenuItem<DetailedPostOptions>(
+                        value: DetailedPostOptions.SubmitPost,
+                        height: 52.0,
+                        enabled: model.postBelongsToUser,
+                        child: ListTile(
+                          title: const Text('Submit post'),
+                          leading: const Icon(FontAwesomeIcons.random),
+                          enabled: model.postBelongsToUser,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ],

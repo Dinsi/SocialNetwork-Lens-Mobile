@@ -278,14 +278,16 @@ class LoginScreen extends StatelessWidget {
             ? [LengthLimitingTextInputFormatter(characterLimit)]
             : null,
         obscureText: isPassword ? obscureText : false,
-        onSubmitted: (_) {
-          model.focusNodes[currentField].unfocus();
-          existsNextField
-              ? FocusScope.of(context).requestFocus(model.focusNodes[nextField])
-              : model.signInOrSignUp(context);
-        },
+        onSubmitted: existsNextField
+            ? (_) {
+                model.focusNodes[currentField].unfocus();
+                FocusScope.of(context)
+                    .requestFocus(model.focusNodes[nextField]);
+              }
+            : null,
         decoration: InputDecoration(
           labelText: labelText,
+          labelStyle: isPassword ? TextStyle(fontSize: 17.0) : null,
           suffixIcon: isPassword
               ? GestureDetector(
                   onTap: () => model.toggleObscureText(currentField),

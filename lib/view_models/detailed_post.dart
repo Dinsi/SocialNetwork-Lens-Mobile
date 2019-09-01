@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:aperture/locator.dart';
 import 'package:aperture/models/comment.dart';
@@ -13,6 +14,8 @@ import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 
 const _commentLimit = 10;
+
+enum DetailedPostOptions { CollectionAdd, SubmitPost }
 
 enum DetailedPostViewState { Idle, Publishing }
 
@@ -103,6 +106,19 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     setState(DetailedPostViewState.Idle);
   }
 
+  void onMoreSelected(BuildContext context, DetailedPostOptions result) {
+    switch (result) {
+      case DetailedPostOptions.CollectionAdd:
+        _basicPostModel.navigateToCollectionList(context);
+        break;
+      case DetailedPostOptions.SubmitPost:
+        if (postBelongsToUser) {
+          _submitPostToTournament(context);
+        }
+        break;
+    }
+  }
+
   /////////////////////////////////////////////////////////////
   // * Navigator Functions
   void navigateToUserProfile(BuildContext context, [CompactUser user]) {
@@ -141,13 +157,113 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     }
   }
 
+  void _submitPostToTournament(BuildContext context) async {
+    final theme = Theme.of(context);
+
+    final dialogResult = await showDialog<bool>(
+      context: context,
+      builder: (context) => Theme(
+        data: theme.copyWith(primaryColor: Colors.red),
+        child: AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                  'Are you sure you want to submit this post to the current tournament?\n'),
+              Text(
+                'You can only submit one post per tournament',
+                style: theme.textTheme.subtitle.copyWith(color: Colors.grey),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () => Navigator.of(context).pop<bool>(false),
+            ),
+            FlatButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop<bool>(true),
+            )
+          ],
+        ),
+      ),
+    );
+
+    if (dialogResult != true) {
+      return;
+    }
+
+    int result;
+    try {
+      result = await _repository
+          .submitPostToCurrentTournament(_basicPostModel.post.id);
+    } on HttpException {
+      showDialog<bool>(
+        context: context,
+        builder: (context) => Theme(
+          data: theme.copyWith(primaryColor: Colors.red),
+          child: AlertDialog(
+            content: Text(
+              'Something went wrong',
+              style: theme.textTheme.subtitle.copyWith(color: Colors.grey),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop<bool>(true),
+              )
+            ],
+          ),
+        ),
+      );
+      return;
+    }
+
+    String contentString;
+    switch (result) {
+      case 0:
+        contentString = 'The post has been submitted successfully';
+        break;
+      case 1:
+        contentString = 'There is no active tournament in progress';
+        break;
+      case 2:
+        contentString = 'You can only submit one post per tournament';
+        break;
+      default:
+        return;
+    }
+
+    showDialog<bool>(
+      context: context,
+      builder: (context) => Theme(
+        data: theme.copyWith(primaryColor: Colors.red),
+        child: AlertDialog(
+          title: const Text('Submit Post To Tournament'),
+          content: Text(
+            contentString,
+            style: theme.textTheme.subtitle.copyWith(color: Colors.grey),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop<bool>(true),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   /////////////////////////////////////////////////////////////
   // * Getters
   Post get post => _basicPostModel.post;
   VoidCallback get onUpvoteOrRemove => _basicPostModel.onUpvoteOrRemove;
   VoidCallback get onDownvoteOrRemove => _basicPostModel.onDownvoteOrRemove;
-  Future<String> Function(BuildContext) get navigateToCollectionList =>
-      _basicPostModel.navigateToCollectionList;
+
+  bool get postBelongsToUser =>
+      _basicPostModel.post.user.id == appInfo.currentUser.id;
 
   ScrollController get scrollController => _scrollController;
   TextEditingController get commentTextController => _commentTextController;
