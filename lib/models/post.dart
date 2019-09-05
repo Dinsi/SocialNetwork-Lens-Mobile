@@ -55,7 +55,7 @@ class Post {
     data['votes'] = this.votes;
     data['user_vote'] = this.userVote;
     data['comments_length'] = this.commentsLength;
-    data['location'] = this.location.toJson();
+    data['location'] = this.location?.toJson() ?? null;
     return data;
   }
 }
