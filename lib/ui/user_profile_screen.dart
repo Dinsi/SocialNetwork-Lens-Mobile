@@ -1,16 +1,14 @@
 import 'package:aperture/models/post.dart';
 import 'package:aperture/models/users/compact_user.dart';
-import 'package:aperture/models/users/user.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/basic_post.dart';
 import 'package:aperture/ui/shared/description_text.dart';
 import 'package:aperture/ui/shared/loading_lists/no_scroll_loading_list_view.dart';
-import 'package:aperture/ui/shared/subscription_app_bar.dart';
+import 'package:aperture/ui/shared/app_bars/subscription_app_bar.dart';
 import 'package:aperture/ui/shared/user_avatar.dart';
 import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/view_models/user_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class UserProfileScreen extends StatelessWidget {
   final int userId;
@@ -37,51 +35,11 @@ class UserProfileScreen extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: Column(
                           children: <Widget>[
-                            model.isSelf
-                                ? Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 16.0,
-                                    ),
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: <Widget>[
-                                        Consumer<User>(
-                                          builder: (_, currentUser, __) =>
-                                              _buildUserAvatar(currentUser),
-                                        ),
-                                        Positioned(
-                                          height: 125.0,
-                                          right: 15.0,
-                                          child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: Colors.blue,
-                                                width: 3.0,
-                                              ),
-                                            ),
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.edit,
-                                                color: Colors.blue,
-                                              ),
-                                              alignment: Alignment.center,
-                                              onPressed: () =>
-                                                  model.navigateToEditProfile(
-                                                      context),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0,
-                                    ),
-                                    child: _buildUserAvatar(model.user),
-                                  ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: _buildUserAvatar(model.user),
+                            ),
                             if (model.user.headline != null)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 12.0),

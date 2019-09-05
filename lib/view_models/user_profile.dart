@@ -85,31 +85,6 @@ class UserProfileModel extends StateModel<UserProfileViewState>
     );
   }
 
-  Future<void> navigateToEditProfile(BuildContext context) async {
-    int result = await Navigator.of(context).pushNamed(RouteName.editProfile);
-
-    if (result != null) {
-      setState(UserProfileViewState.Loading);
-
-      fetchUser(_user.id);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Edit Profile'),
-            content: const Text('Profile has been edited successfully'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          );
-        },
-      );
-    }
-  }
-
   User get user => _user;
   bool get isSelf => _appInfo.currentUser.id == _user.id;
 }
