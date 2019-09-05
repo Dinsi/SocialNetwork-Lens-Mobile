@@ -79,7 +79,6 @@ flutter:
   # see https://flutter.io/custom-fonts/#from-packages
 
   assets:
-    - assets/img/login_logo.png
     - assets/img/user_placeholder.png
 
   fonts:
