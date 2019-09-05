@@ -211,7 +211,7 @@ class LoginModel extends BaseModel {
               Navigator.of(context).pushReplacementNamed(
                   !user.hasFinishedRegister
                       ? RouteName.recommendedTopics
-                      : RouteName.userInfo);
+                      : RouteName.feed);
               return;
             }
 
