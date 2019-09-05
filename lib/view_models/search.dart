@@ -14,7 +14,6 @@ import 'package:rxdart/subjects.dart';
 
 const _backendListSize = 20;
 
-// TODO implement either switches or '@'/'#' specific searches
 class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
   final _repository = locator<Repository>();
   final _isFetchingController = BehaviorSubject<bool>.seeded(false);

@@ -22,7 +22,6 @@ class CollectionApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      //TODO only covers valid path
       return Collection.fromJson(jsonDecode(response.body));
     }
 
@@ -44,7 +43,6 @@ class CollectionApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      //TODO only covers valid path
       return Collection.fromJson(jsonDecode(response.body));
     }
 
@@ -66,7 +64,6 @@ class CollectionApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.created) {
-      //TODO only covers valid path
       return Collection.fromJson(jsonDecode(response.body));
     }
 

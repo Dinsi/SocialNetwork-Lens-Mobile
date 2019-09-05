@@ -7,8 +7,6 @@ import 'package:flutter/widgets.dart' show debugPrint;
 import 'package:http/http.dart' show Client;
 import 'package:http/http.dart';
 
-// TODO fix after token functionality clarification
-
 class TokenApiProvider extends BaseApiProvider {
   Client client = Client();
 
@@ -69,7 +67,6 @@ class TokenApiProvider extends BaseApiProvider {
   }
 
   Future<bool> verify() async {
-    //TODO fix verify, returns false on other functions and does nothing
     debugPrint('_token_verify_');
 
     Response response = await client.post('${super.baseUrl}token/verify/',

@@ -79,8 +79,6 @@ class PostApiProvider extends BaseApiProvider {
   }
 
   Future<int> upload(File imageFile, String title, String description) async {
-    //TODO verifyToken();
-
     debugPrint("_post_upload_");
 
     ByteStream stream =
@@ -122,7 +120,7 @@ class PostApiProvider extends BaseApiProvider {
       return 0;
     }
 
-    throw HttpException('_post_upload_'); //TODO add more errors as necessary
+    throw HttpException('_post_upload_');
   }
 
   Future<int> changeVote(int postId, ChangeVoteAction action) async {

@@ -13,8 +13,6 @@ import 'package:rxdart/rxdart.dart';
 enum TopicListViewState { Idle, Updating }
 
 class TopicListModel extends StateModel<TopicListViewState> {
-  // TODO cover empty list case
-
   final Repository _repository = locator<Repository>();
   final AppInfo _appInfo = locator<AppInfo>();
 
@@ -67,7 +65,6 @@ class TopicListModel extends StateModel<TopicListViewState> {
       await _appInfo.bulkRemoveTopicsFromUser(_changedTopics);
     }
 
-    // TODO show dialog after pop ???
     Navigator.of(context).pop();
   }
 

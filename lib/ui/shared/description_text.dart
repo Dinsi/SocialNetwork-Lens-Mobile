@@ -13,8 +13,6 @@ class DescriptionText extends StatefulWidget {
   _DescriptionTextState createState() => _DescriptionTextState();
 }
 
-//TODO fix this IMMEDIATELY
-
 class _DescriptionTextState extends State<DescriptionText>
     with SingleTickerProviderStateMixin<DescriptionText> {
   List<String> _textSplits;
@@ -105,7 +103,6 @@ class _DescriptionTextState extends State<DescriptionText>
                 style: TextStyle(color: Colors.blue),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () =>
-                      // TODO navigateToTopicFeed
                       Navigator.of(context).pushNamed(
                         RouteName.topicFeed,
                         arguments: textSplit.replaceFirst('#', ''),

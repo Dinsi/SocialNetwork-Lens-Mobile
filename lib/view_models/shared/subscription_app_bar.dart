@@ -39,7 +39,7 @@ class SubscriptionAppBarModel extends StateModel<SubscriptionAppBarViewState> {
       wantsSubscription
           ? SubscriptionAction.Subscribe
           : SubscriptionAction.Unsubscribe,
-    ); //TODO assuming result is valid
+    );
 
     if (result == 0) {
       if (wantsSubscription) {

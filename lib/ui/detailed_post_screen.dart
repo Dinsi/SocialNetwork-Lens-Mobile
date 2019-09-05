@@ -62,18 +62,12 @@ class DetailedPostScreen extends StatelessWidget {
     return [
       Padding(
         padding: const EdgeInsets.only(left: 12.0, top: 12.0, right: 12.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            basicPostModel.isSelf
-                ? Consumer<User>(
-                    builder: (context, currentUser, __) =>
-                        _buildUserRow(context, model, currentUser),
-                  )
-                : _buildUserRow(context, model, model.post.user),
-            _buildTopActionButtons(model),
-          ],
-        ),
+        child: basicPostModel.isSelf
+            ? Consumer<User>(
+                builder: (context, currentUser, __) =>
+                    _buildUserRow(context, model, currentUser),
+              )
+            : _buildUserRow(context, model, model.post.user),
       ),
       const SizedBox(height: 16.0),
       DescriptionText(
@@ -127,16 +121,6 @@ class DetailedPostScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTopActionButtons(DetailedPostModel model) {
-    // TODO Implement action buttons
-    return /*SizedBox(
-            width: 50.0,
-            height: _defaultHeight - 20.0,
-            child: Placeholder(),
-          );*/
-        Container();
-  }
-
   Widget _buildImageAndVoteSection(
       BuildContext context, DetailedPostModel model) {
     final iconTheme = IconTheme.of(context);
@@ -147,7 +131,7 @@ class DetailedPostScreen extends StatelessWidget {
           imageUrl: model.post.image,
           imageHeight: model.post.height,
           imageWidth: model.post.width,
-          onTap: null, // TODO toFullImageScreen
+          onTap: null,
           onDoubleTap: () => model.onUpvoteOrRemove(),
         ),
         Container(

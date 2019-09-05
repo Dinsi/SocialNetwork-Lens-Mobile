@@ -137,7 +137,7 @@ class TopicApiProvider extends BaseApiProvider {
 
     if (response.statusCode == HttpStatus.ok) {
       return 0;
-    } //TODO assuming valid
+    }
 
     throw HttpException('_topic_bulkUpdate_');
   }

@@ -192,7 +192,7 @@ class UserApiProvider extends BaseApiProvider {
         debugPrint(value);
       });
       return 0;
-    } //TODO assuming success
+    }
 
     throw HttpException('_user_patchMultiPart_');
   }

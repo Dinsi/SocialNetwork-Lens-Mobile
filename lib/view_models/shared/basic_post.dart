@@ -49,7 +49,6 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
   }
 
   void navigateToUserProfile(BuildContext context) {
-    // TODO navigateToUserProfile
     Navigator.of(context).pushNamed(
       RouteName.userProfile,
       arguments: _post.user.id,
@@ -57,7 +56,6 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
   }
 
   Future<String> navigateToCollectionList(BuildContext context) async {
-    // TODO navigateToCollections?
     return await Navigator.of(context).pushNamed(
       RouteName.collectionList,
       arguments: {
@@ -85,7 +83,6 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
         } else {
           _post.votes++;
           setState(BasicPostViewState.UpVote);
-          // TODO place dialog here?
         }
         return;
       }
@@ -111,7 +108,6 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
 
         _post.votes--;
         setState(BasicPostViewState.NoVote);
-        // TODO place dialog here?
       }
     });
   }
@@ -132,7 +128,6 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
         } else {
           _post.votes--;
           setState(BasicPostViewState.DownVote);
-          // TODO place dialog here
         }
         return;
       }

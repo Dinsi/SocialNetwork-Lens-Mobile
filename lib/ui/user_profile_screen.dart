@@ -157,6 +157,4 @@ class UserProfileScreen extends StatelessWidget {
   Widget _buildUserAvatar(CompactUser user) {
     return UserAvatar(isCircle: true, side: 130.0, user: user);
   }
-
-  // TODO _buildUserInfoSection(UserProfileModel model) {}
 }

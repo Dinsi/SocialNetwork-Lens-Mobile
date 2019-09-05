@@ -92,7 +92,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     _commentTextController.clear();
 
     Comment newCommentObj = await _repository.postComment(
-        _basicPostModel.post.id, newComment); // TODO assuming result is valid
+        _basicPostModel.post.id, newComment);
 
     if (!listSubject.isClosed) {
       listSubject.sink.add(UnmodifiableListView(
@@ -122,7 +122,6 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   /////////////////////////////////////////////////////////////
   // * Navigator Functions
   void navigateToUserProfile(BuildContext context, [CompactUser user]) {
-    // TODO navigateToUserProfile
     Navigator.of(context).pushNamed(
       RouteName.userProfile,
       arguments: user != null ? user.id : _basicPostModel.post.user.id,

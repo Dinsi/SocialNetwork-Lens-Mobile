@@ -26,8 +26,6 @@ enum ImageType { Asset, Network, File }
 
 enum EditProfileViewState { Idle, Updating }
 
-// TODO Update pfp in entire app ???
-
 class EditProfileModel extends StateModel<EditProfileViewState> {
   final Repository _repository = locator<Repository>();
   final AppInfo _appInfo = locator<AppInfo>();
@@ -215,7 +213,6 @@ class EditProfileModel extends StateModel<EditProfileViewState> {
       result = await _repository.patchUser(newFields);
     }
 
-    // TODO implement other errors
     if (result == 0) {
       Navigator.of(context).pop(result);
       return;

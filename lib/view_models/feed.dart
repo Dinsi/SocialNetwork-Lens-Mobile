@@ -13,9 +13,7 @@ import 'package:image_picker/image_picker.dart';
 
 const _backendListSize = 20;
 
-// TODO FIX THIS
 class FeedModel extends BaseModel with BaseFeedMixin<Post> {
-  // TODO cover empty list case
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   void signOut(BuildContext context) {
