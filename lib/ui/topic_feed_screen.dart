@@ -2,7 +2,7 @@ import 'package:aperture/models/post.dart';
 import 'package:aperture/ui/core/base_view.dart';
 import 'package:aperture/ui/shared/basic_post.dart';
 import 'package:aperture/ui/shared/loading_lists/scroll_loading_list_view.dart';
-import 'package:aperture/ui/shared/subscription_app_bar.dart';
+import 'package:aperture/ui/shared/app_bars/subscription_app_bar.dart';
 import 'package:aperture/view_models/topic_feed.dart';
 import 'package:flutter/material.dart';
 

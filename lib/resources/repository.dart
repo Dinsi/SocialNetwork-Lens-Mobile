@@ -123,4 +123,10 @@ class Repository {
 
   Future<int> submitVoteToCurrentTournament(int postId) =>
       tournamentsApiProvider.submitVote(postId);
+
+  Future<int> deleteCollections(List<int> collectionIdList) =>
+      collectionsApiProvider.bulkDelete(collectionIdList);
+
+  Future<int> removePostsFromCollection(int collectionId, List<int> postIdList) =>
+      collectionsApiProvider.bulkPostRemove(collectionId, postIdList);
 }

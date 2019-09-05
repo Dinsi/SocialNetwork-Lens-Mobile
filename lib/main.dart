@@ -6,6 +6,7 @@ import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,7 +41,11 @@ Future<String> _getInitialRoute() async {
   if (!validToken) {
     return RouteName.login;
   } else {
-    User user = await repository.fetchUserInfo();
+    User user = (await Future.wait([
+      repository.fetchUserInfo(),
+      repository.fetchTournamentInfo(),
+    ]))[0] as User;
+
     if (!user.hasFinishedRegister) {
       return RouteName.recommendedTopics;
     } else {

@@ -75,11 +75,7 @@ class AppInfo {
   Future<void> addCollectionToUser(CompactCollection collection) =>
       _updateUser((user) => user..collections.add(collection));
 
-  Future<void> addPostToUserCollection(
-          int index, CompactCollection collection) =>
-      _updateUser((user) => user..collections.add(collection));
-
-  Future<void> updateUserCollection(
+  Future<void> appendPostToUserCollection(
           int index, int postId, Collection newCollectionData) =>
       _updateUser(((user) {
         if (user.collections[index].length++ == 0) {
@@ -90,6 +86,20 @@ class AppInfo {
 
         return user;
       }));
+
+  Future<void> updateUserCollection(CompactCollection updatedCollection) =>
+      _updateUser((user) {
+        final index = user.collections
+            .indexWhere((collection) => collection.id == updatedCollection.id);
+
+        user.collections[index] = updatedCollection;
+        return user;
+      });
+
+  Future<void> bulkRemoveCollectionsFromUser(List<int> collectionIdList) =>
+      _updateUser((user) => user
+        ..collections.removeWhere(
+            (collection) => collectionIdList.contains(collection.id)));
 
   ///////////////////////////////////////////////////////
   // * Private Functions

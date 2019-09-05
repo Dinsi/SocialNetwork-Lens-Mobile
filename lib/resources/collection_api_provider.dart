@@ -69,4 +69,46 @@ class CollectionApiProvider extends BaseApiProvider {
 
     throw HttpException('_collection_postNew_');
   }
+
+  Future<int> bulkDelete(List<int> collectionIdList) async {
+    debugPrint('_collection_bulkDelete_');
+
+    final response = await client.post(
+      '${super.baseUrl}collections/bulkdelete/',
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
+        HttpHeaders.contentTypeHeader: ContentType.json.value,
+      },
+      body: jsonEncode({'collections': collectionIdList}),
+    );
+
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
+
+    if (response.statusCode == HttpStatus.ok) {
+      return 0;
+    }
+
+    throw HttpException('_collection_bulkDelete_');
+  }
+
+  Future<int> bulkPostRemove(int collectionId, List<int> postIdList) async {
+    debugPrint('_collection_bulkPostRemove_');
+
+    final response = await client.post(
+      '${super.baseUrl}collections/$collectionId/bulkremove/',
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken,
+        HttpHeaders.contentTypeHeader: ContentType.json.value,
+      },
+      body: jsonEncode({'posts': postIdList}),
+    );
+
+    debugPrint('${response.statusCode.toString()}\n${response.body}');
+
+    if (response.statusCode == HttpStatus.ok) {
+      return 0;
+    }
+
+    throw HttpException('_collection_bulkPostRemove_');
+  }
 }

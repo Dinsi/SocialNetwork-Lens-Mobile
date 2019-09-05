@@ -9,15 +9,17 @@ import 'package:aperture/ui/utils/shortcuts.dart';
 import 'package:aperture/models/collections/collection.dart';
 import 'package:aperture/models/collections/compact_collection.dart';
 import 'package:aperture/view_models/core/base_model.dart';
+import 'package:aperture/view_models/core/deletable_list_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
-import 'package:rxdart/subjects.dart';
 
-class CollectionListModel extends BaseModel {
+enum CollectionListViewState { Idle, Busy, DeleteMode }
+
+class CollectionListModel extends StateModel<CollectionListViewState>
+    with DeletableListItems {
   final _repository = locator<Repository>();
   final _appInfo = locator<AppInfo>();
 
-  final _canPopController = PublishSubject<bool>();
   int _postId;
   bool _isAddToCollection;
 
@@ -27,62 +29,37 @@ class CollectionListModel extends BaseModel {
   TextEditingController _newCollectionController;
 
   //////////////////////////////////////////////////////////////////////
+
+  CollectionListModel() : super(CollectionListViewState.Idle);
+
+  //////////////////////////////////////////////////////////////////////
   // * Init
   void init(bool isAddToCollection, int postId) {
     _isAddToCollection = isAddToCollection;
     _postId = postId;
+
+    if (!_isAddToCollection) {
+      final collections = _appInfo.currentUser.collections;
+
+      checkBoxStates = Map.fromIterables(
+        Iterable.generate(collections.length, (index) => collections[index].id),
+        Iterable.generate(collections.length, (_) => false),
+      );
+
+      checkBoxStates[0] = false;
+    }
   }
 
   //////////////////////////////////////////////////////////////////////
   // * Dispose
   @override
   void dispose() {
-    _canPopController.close();
-
+    super.dispose();
     _newCollectionController?.dispose();
   }
 
   //////////////////////////////////////////////////////////////////////
   // * Public Functions
-  bool existsInCollection(int index) {
-    return _appInfo.currentUser.collections[index].posts.contains(_postId);
-  }
-
-  //////////////////////////////////////////////////////////////////////
-
-  Future<void> onCollectionTap(BuildContext context, int index) async {
-    CompactCollection targetCollection =
-        _appInfo.currentUser.collections[index];
-
-    if (_isAddToCollection) {
-      if (!existsInCollection(index)) {
-        Collection result = await _updateCollection(index);
-        if (result != null) {
-          //TODO only covers valid response
-          Navigator.of(context).pop(targetCollection.name);
-        }
-      } else {
-        showInSnackBar(
-          context,
-          scaffoldKey,
-          '${targetCollection.name} already contains current post',
-        );
-      }
-
-      return;
-    }
-
-    Navigator.of(context).pushNamed(
-      RouteName.collectionPosts,
-      arguments: {
-        'collId': targetCollection.id,
-        'collName': targetCollection.name,
-      },
-    );
-  }
-
-  //////////////////////////////////////////////////////////////////////
-
   Future<void> showNewCollectionDialog(BuildContext context) async {
     if (_newCollectionController == null) {
       _newCollectionController = TextEditingController();
@@ -122,7 +99,7 @@ class CollectionListModel extends BaseModel {
     }
 
     // Prevent user from using the back button
-    _toggleCanPop(false);
+    setState(CollectionListViewState.Busy);
 
     // Validations
     final newCollectionName = _newCollectionController.text.trim();
@@ -139,7 +116,7 @@ class CollectionListModel extends BaseModel {
       User user = _appInfo.currentUser;
 
       final newCompactCollection =
-          CompactCollection.fromJson(newCollection.toJson());
+          CompactCollection.fromCollection(newCollection);
 
       await _appInfo.addCollectionToUser(newCompactCollection);
 
@@ -155,8 +132,11 @@ class CollectionListModel extends BaseModel {
               'Server error: could not add post to collection');
         }
       } else {
+        // Add entry for delete checkbox
+        checkBoxStates[newCompactCollection.id] = false;
+
         // Grant access to back button
-        _toggleCanPop(true);
+        setState(CollectionListViewState.Idle);
         showInSnackBar(
             context, scaffoldKey, 'Collection ($newCollectionName) created');
       }
@@ -166,14 +146,138 @@ class CollectionListModel extends BaseModel {
     }
   }
 
+  bool existsInCollection(int index) {
+    return _appInfo.currentUser.collections[index].posts.contains(_postId);
+  }
+
   //////////////////////////////////////////////////////////////////////
-  //* Private Functions
-  void _toggleCanPop(bool event) {
-    if (!_canPopController.isClosed) {
-      _canPopController.sink.add(event);
+  //// * DeletableListItems overrides
+  @override
+  void onItemTap(BuildContext context, int index) {
+    if (state == CollectionListViewState.Idle) {
+      _onIdleCollectionTap(context, index);
+    } else {
+      // state == CollectionListViewState.DeleteMode
+      _onDeleteModeCollectionTap(context, index);
     }
   }
 
+  ///////////////////////////////////
+  @override
+  void triggerDeleteMode(int index) {
+    checkBoxStates[_appInfo.currentUser.collections[index].id] = true;
+    selected++;
+    setState(CollectionListViewState.DeleteMode);
+  }
+
+  ///////////////////////////////////
+  @override
+  void toggleSelectAll() {
+    final collectionLength = _appInfo.currentUser.collections.length;
+    if (selected == collectionLength) {
+      selected = 0;
+      checkBoxStates.forEach((key, _) {
+        if (checkBoxStates[key] == true) {
+          checkBoxStates[key] = false;
+        }
+      });
+    } else {
+      selected = collectionLength;
+      checkBoxStates.forEach((key, _) {
+        if (checkBoxStates[key] == false) {
+          checkBoxStates[key] = true;
+        }
+      });
+    }
+
+    notifyListeners();
+  }
+
+  ///////////////////////////////////
+  @override
+  bool isItemSelected(int index) {
+    return checkBoxStates[_appInfo.currentUser.collections[index].id] == true;
+  }
+
+  ///////////////////////////////////
+  @override
+  void deleteItems(BuildContext context) async {
+    setState(CollectionListViewState.Busy);
+
+    List<int> collectionIdList;
+
+    if (selectedAll) {
+      collectionIdList = _appInfo.currentUser.collections
+          .map((collection) => collection.id)
+          .toList();
+    } else {
+      collectionIdList = List(selected);
+      int listIndex = 0;
+
+      for (final collectionId in checkBoxStates.keys) {
+        if (checkBoxStates[collectionId] == false) {
+          continue;
+        }
+
+        collectionIdList[listIndex++] = collectionId;
+        if (selected == listIndex) {
+          break;
+        }
+      }
+    }
+
+    final result = await _repository.deleteCollections(collectionIdList);
+
+    if (result == 0) {
+      await _appInfo.bulkRemoveCollectionsFromUser(collectionIdList);
+
+      // Reset variables
+      selected = 0;
+
+      final collectionIdKeyList = checkBoxStates.keys.toList();
+      for (final collectionId in collectionIdKeyList) {
+        if (collectionIdList.contains(collectionId)) {
+          checkBoxStates.remove(collectionId);
+          continue;
+        }
+
+        checkBoxStates[collectionId] = false;
+      }
+
+      setState(CollectionListViewState.Idle);
+      showInSnackBar(
+          context,
+          scaffoldKey,
+          collectionIdList.length == 1
+              ? '1 collection deleted'
+              : '${collectionIdList.length} collections deleted');
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // * on__ Functions
+  Future<bool> onWillPop() {
+    switch (state) {
+      case CollectionListViewState.Idle:
+        return Future.value(true);
+
+      case CollectionListViewState.Busy:
+        return Future.value(false);
+
+      case CollectionListViewState.DeleteMode:
+        // Reset checkbox and selected
+        checkBoxStates.forEach((key, _) => checkBoxStates[key] = false);
+        selected = 0;
+        setState(CollectionListViewState.Idle);
+        return Future.value(false);
+
+      default:
+        return Future.value(false);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  //* Private Functions
   Future<Collection> _updateCollection(int index) async {
     CompactCollection targetCollection =
         _appInfo.currentUser.collections[index];
@@ -182,10 +286,55 @@ class CollectionListModel extends BaseModel {
         await _repository.appendPostToCollection(targetCollection.id, _postId);
 
     if (result != null) {
-      await _appInfo.updateUserCollection(index, _postId, result);
+      await _appInfo.appendPostToUserCollection(index, _postId, result);
     }
 
     return result;
+  }
+
+  Future<void> _onIdleCollectionTap(BuildContext context, int index) async {
+    CompactCollection targetCollection =
+        _appInfo.currentUser.collections[index];
+    if (_isAddToCollection) {
+      if (!existsInCollection(index)) {
+        Collection result = await _updateCollection(index);
+        if (result != null) {
+          Navigator.of(context).pop(targetCollection.name);
+        }
+      } else {
+        showInSnackBar(
+          context,
+          scaffoldKey,
+          '${targetCollection.name} already contains current post',
+        );
+      }
+
+      return;
+    }
+
+    Navigator.of(context).pushNamed(
+      RouteName.collectionPosts,
+      arguments: {
+        'collId': targetCollection.id,
+        'collName': targetCollection.name,
+      },
+    );
+  }
+
+  void _onDeleteModeCollectionTap(BuildContext context, int index) {
+    final newValue = !isItemSelected(index);
+    checkBoxStates[_appInfo.currentUser.collections[index].id] = newValue;
+    newValue == true ? selected++ : selected--;
+
+    if (selected == _appInfo.currentUser.collections.length) {
+      checkBoxStates[0] = true;
+    } else {
+      if (checkBoxStates[0] == true) {
+        checkBoxStates[0] = false;
+      }
+    }
+
+    notifyListeners();
   }
 
   Future<Collection> _createCollection(String newCollectionName) =>
@@ -196,5 +345,6 @@ class CollectionListModel extends BaseModel {
   bool get isAddToCollection => _isAddToCollection;
   int get postId => _postId;
 
-  Stream<bool> get canPopStream => _canPopController.stream;
+  @override
+  bool get selectedAll => checkBoxStates[0];
 }
