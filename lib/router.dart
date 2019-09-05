@@ -16,14 +16,12 @@ import 'package:aperture/ui/topic_feed_screen.dart';
 import 'package:aperture/ui/topic_list_screen.dart';
 import 'package:aperture/ui/tournament_screen.dart';
 import 'package:aperture/ui/upload_post_screen.dart';
-import 'package:aperture/ui/user_info_screen.dart';
 import 'package:aperture/ui/user_profile_screen.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
 
 abstract class RouteName {
   static const String login = 'login';
-  static const String userInfo = 'userInfo';
   static const String uploadPost = 'uploadPost';
   static const String recommendedTopics = 'recommendedTopics';
   static const String feed = 'feed';
@@ -51,9 +49,6 @@ abstract class Router {
       case RouteName.recommendedTopics:
         return MaterialPageRoute<Null>(
             builder: (_) => RecommendedTopicsScreen());
-
-      case RouteName.userInfo:
-        return MaterialPageRoute<Null>(builder: (_) => UserInfoScreen());
 
       case RouteName.uploadPost:
         return MaterialPageRoute<int>(
