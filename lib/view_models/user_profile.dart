@@ -6,11 +6,9 @@ import 'package:aperture/locator.dart';
 import 'package:aperture/models/post.dart';
 import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
-import 'package:aperture/router.dart';
 import 'package:aperture/view_models/core/base_model.dart';
 import 'package:aperture/view_models/core/mixins/base_feed.dart';
 import 'package:aperture/models/users/user.dart';
-import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const _backendListSize = 20;
