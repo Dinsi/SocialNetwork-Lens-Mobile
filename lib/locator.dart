@@ -1,12 +1,5 @@
 import 'package:aperture/resources/app_info.dart';
-import 'package:aperture/resources/collection_api_provider.dart';
-import 'package:aperture/resources/comment_api_provider.dart';
-import 'package:aperture/resources/post_api_provider.dart';
 import 'package:aperture/resources/repository.dart';
-import 'package:aperture/resources/token_api_provider.dart';
-import 'package:aperture/resources/topic_api_provider.dart';
-import 'package:aperture/resources/tournament_api_provider.dart';
-import 'package:aperture/resources/user_api_provider.dart';
 import 'package:aperture/view_models/change_email.dart';
 import 'package:aperture/view_models/change_password.dart';
 import 'package:aperture/view_models/collection_list.dart';
@@ -31,20 +24,9 @@ final locator = GetIt();
 
 void setupLocator(SharedPreferences prefs) {
   locator.registerLazySingleton(() => AppInfo(prefs));
-
-  locator.registerLazySingleton(() => CollectionApiProvider());
-  locator.registerLazySingleton(() => CommentApiProvider());
-  locator.registerLazySingleton(() => PostApiProvider());
-  locator.registerLazySingleton(() => TokenApiProvider());
-  locator.registerLazySingleton(() => TopicApiProvider());
-  locator.registerLazySingleton(() => UserApiProvider());
-  locator.registerLazySingleton(() => TournamentApiProvider());
-
   locator.registerLazySingleton(() => Repository());
 
-  //TODO turn to LazySingleton for production
-  locator.registerFactory(() => FeedModel());
-
+  locator.registerLazySingleton(() => FeedModel());
   locator.registerFactory(() => LoginModel());
   locator.registerFactory(() => RecommendedTopicsModel());
   locator.registerFactory(() => BasicPostModel());

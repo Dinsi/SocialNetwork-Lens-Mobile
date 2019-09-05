@@ -6,17 +6,11 @@ import 'package:aperture/resources/app_info.dart';
 import 'package:aperture/resources/repository.dart';
 import 'package:aperture/router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show DeviceOrientation, SystemChrome, SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// TODO Place animatedLists on feeds
-
 Future<void> main() async {
   // * Setup
-  // TODO change for full view pictures
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle.dark.copyWith(
         systemNavigationBarColor: Colors.grey[50],
@@ -30,7 +24,6 @@ Future<void> main() async {
   // * Gets the initial route the app starts with
   String initialRoute = await _getInitialRoute();
   runApp(MyApp(initialRoute: initialRoute));
-  //TODO insert splash screen
 }
 
 Future<String> _getInitialRoute() async {
