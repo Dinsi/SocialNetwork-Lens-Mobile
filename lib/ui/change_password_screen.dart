@@ -112,15 +112,9 @@ class ChangePasswordScreen extends StatelessWidget {
             LengthLimitingTextInputFormatter(128),
           ],
           onSubmitted: nextField != null
-              ? (term) {
-                  model.focusNodes[currentField].unfocus();
-                  FocusScope.of(context)
-                      .requestFocus(model.focusNodes[nextField]);
-                }
-              : (term) {
-                  model.focusNodes[currentField].unfocus();
-                  model.updateUserPassword(context);
-                },
+              ? (_) => FocusScope.of(context)
+                  .requestFocus(model.focusNodes[nextField])
+              : null,
           decoration: InputDecoration(
             labelText: label,
             suffixIcon: IconButton(

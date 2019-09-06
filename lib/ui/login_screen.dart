@@ -275,7 +275,6 @@ class LoginScreen extends StatelessWidget {
         obscureText: isPassword ? obscureText : false,
         onSubmitted: existsNextField
             ? (_) {
-                model.focusNodes[currentField].unfocus();
                 FocusScope.of(context)
                     .requestFocus(model.focusNodes[nextField]);
               }

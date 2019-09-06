@@ -188,7 +188,7 @@ class DetailedPostScreen extends StatelessWidget {
                         enabled: model.postBelongsToUser,
                         child: ListTile(
                           title: const Text('Submit post'),
-                          leading: const Icon(FontAwesomeIcons.random),
+                          leading: const Icon(FontAwesomeIcons.fileImport),
                           enabled: model.postBelongsToUser,
                         ),
                       ),

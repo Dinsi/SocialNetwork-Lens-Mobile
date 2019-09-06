@@ -52,16 +52,11 @@ class SettingsScreen extends StatelessWidget {
             ),
             _buildListTile(
               context: context,
-              title: 'Subscriptions',
+              title: 'Manage topics',
               onTap: () {
                 Navigator.of(context).pushNamed(RouteName.topicList);
               },
               iconData: FontAwesomeIcons.thList,
-            ),
-            _buildListTile(
-              context: context,
-              title: 'About',
-              iconData: FontAwesomeIcons.info,
             ),
           ],
         ),

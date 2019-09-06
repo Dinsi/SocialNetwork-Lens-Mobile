@@ -22,7 +22,7 @@ class EditProfileScreen extends StatelessWidget {
             child: Scaffold(
               key: model.scaffoldKey,
               appBar: AppBar(
-                title: Text('Edit Profile'),
+                title: Text('Edit profile'),
                 leading: BackButton(),
                 actions: <Widget>[
                   FlatButton.icon(
@@ -188,12 +188,10 @@ class EditProfileScreen extends StatelessWidget {
       inputFormatters: [
         LengthLimitingTextInputFormatter(characterLimit),
       ],
-      onSubmitted: (term) {
-        model.focusNodes[currentField].unfocus();
-        existsNextField
-            ? FocusScope.of(context).requestFocus(model.focusNodes[nextField])
-            : model.saveProfile(context);
-      },
+      onSubmitted: existsNextField
+          ? (_) =>
+              FocusScope.of(context).requestFocus(model.focusNodes[nextField])
+          : null,
       decoration: InputDecoration(labelText: labelText),
     );
   }

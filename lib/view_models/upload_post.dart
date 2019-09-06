@@ -21,6 +21,7 @@ class UploadPostModel extends StateModel<UploadPostViewState> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final titleTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
+  final descriptionFocusNode = FocusNode();
   File _image;
 
   ///////////////////////////////
@@ -39,6 +40,7 @@ class UploadPostModel extends StateModel<UploadPostViewState> {
     super.dispose();
     titleTextController.dispose();
     descriptionTextController.dispose();
+    descriptionFocusNode.dispose();
   }
 
   ////////////////////////////////////////////////////////////////////////////

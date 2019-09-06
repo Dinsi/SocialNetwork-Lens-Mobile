@@ -24,7 +24,8 @@ class TopicApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      List<dynamic> body = (jsonDecode(utf8.decode(response.bodyBytes)) as List);
+      List<dynamic> body =
+          (jsonDecode(utf8.decode(response.bodyBytes)) as List);
 
       List<Topic> topicsList = List<Topic>(body.length);
       for (int i = 0; i < topicsList.length; i++) {
@@ -88,11 +89,11 @@ class TopicApiProvider extends BaseApiProvider {
   }
 
   Future<List<SearchResult>> fetchSearchResults(
-      String query, int lastResultId) async {
+      String query, int pageNumber) async {
     debugPrint('_topic_fetchSearchResults_');
 
     final response = await client.post(
-      '${super.baseUrl}topics/search/${(lastResultId != null ? "?after=$lastResultId" : "")}',
+      '${super.baseUrl}topics/search/?page=$pageNumber',
       headers: {
         HttpHeaders.contentTypeHeader: ContentType.json.value,
         HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken

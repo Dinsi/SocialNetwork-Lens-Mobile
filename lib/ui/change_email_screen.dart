@@ -59,7 +59,6 @@ class ChangeEmailScreen extends StatelessWidget {
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.text,
                         onSubmitted: (term) {
-                          model.emailFocusNode.unfocus();
                           FocusScope.of(context)
                               .requestFocus(model.passwordFocusNode);
                         },
@@ -83,10 +82,6 @@ class ChangeEmailScreen extends StatelessWidget {
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(128),
                             ],
-                            onSubmitted: (term) {
-                              model.passwordFocusNode.unfocus();
-                              model.updateUserEmail(context);
-                            },
                             decoration: InputDecoration(
                               labelText: "Password",
                               suffixIcon: IconButton(

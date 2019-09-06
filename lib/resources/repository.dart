@@ -89,8 +89,8 @@ class Repository {
       userApiProvider.fetchInfoById(userId);
 
   Future<List<SearchResult>> fetchSearchResults(
-          String query, int lastResultId) =>
-      topicsApiProvider.fetchSearchResults(query, lastResultId);
+          String query, int pageNumber) =>
+      topicsApiProvider.fetchSearchResults(query, pageNumber);
 
   Future<int> bulkUpdateTopics(List<Topic> changedTopics) =>
       topicsApiProvider.bulkUpdate(changedTopics);

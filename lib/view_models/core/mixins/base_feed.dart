@@ -21,7 +21,6 @@ mixin BaseFeedMixin<T> {
   Future request;
 
   bool existsNext = true;
-  bool isLoading = false;
 
   @protected
   BehaviorSubject<UnmodifiableListView<T>> listSubject =
@@ -35,7 +34,6 @@ mixin BaseFeedMixin<T> {
   Future<void> lockedLoadNext(bool refresh) {
     if (request == null) {
       request = fetch(refresh).whenComplete(() {
-        isLoading = false;
         request = null;
       });
       return request;
@@ -54,11 +52,7 @@ mixin BaseFeedMixin<T> {
               notification.metrics.maxScrollExtent -
                       notification.metrics.pixels <=
                   loadingOffset)) {
-        if (!isLoading) {
-          isLoading = true;
-          lockedLoadNext(false);
-        }
-
+        lockedLoadNext(false);
         return true;
       }
     }

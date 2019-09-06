@@ -63,14 +63,18 @@ class UploadPostScreen extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           TextField(
+                            autofocus: true,
                             controller: model.titleTextController,
                             decoration: InputDecoration(labelText: "Title"),
                             keyboardType: TextInputType.text,
+                            onSubmitted: (_) => FocusScope.of(context)
+                                .requestFocus(model.descriptionFocusNode),
                             maxLength: 128,
                           ),
                           const SizedBox(height: 8.0),
                           TextField(
                             controller: model.descriptionTextController,
+                            focusNode: model.descriptionFocusNode,
                             decoration: InputDecoration(
                               labelText: "Description",
                               alignLabelWithHint: true,

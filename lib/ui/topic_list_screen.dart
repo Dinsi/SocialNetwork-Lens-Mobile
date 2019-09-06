@@ -22,7 +22,7 @@ class _TopicListScreenState extends State<TopicListScreen> {
             child: Scaffold(
               appBar: AppBar(
                 leading: BackButton(),
-                title: Text('List of Topics'),
+                title: Text('Manage topics'),
                 actions: <Widget>[
                   FlatButton.icon(
                     icon: Icon(

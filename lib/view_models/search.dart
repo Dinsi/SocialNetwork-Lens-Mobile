@@ -17,6 +17,7 @@ const _backendListSize = 20;
 class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
   final _repository = locator<Repository>();
   final _isFetchingController = BehaviorSubject<bool>.seeded(false);
+  int fetchPageNumber = 0;
 
   ///////////////////////////
 
@@ -27,6 +28,7 @@ class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
   // * Init
   void init(BuildContext context) {
     searchTextController.addListener(() {
+      fetchPageNumber = 0;
       final queryText = searchTextController.text;
       if (queryText.length < 3) {
         if (_isFetchingController.value == true) {
@@ -40,6 +42,10 @@ class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
 
       if (_isFetchingController.value == false) {
         _isFetchingController.sink.add(true);
+      }
+
+      if (queryText.length > 3) {
+        onRefresh();
       }
     });
   }
@@ -61,22 +67,20 @@ class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
     List<SearchResult> fetchedList;
     int fetchedListSize;
 
-    if (refresh || !listSubject.hasValue || listSubject.value == null) {
-      fetchedList = await _repository.fetchSearchResults(queryText, null);
+    fetchedList =
+        await _repository.fetchSearchResults(queryText, fetchPageNumber);
 
-      fetchedListSize = fetchedList.length;
-    } else {
-      fetchedList = await _repository.fetchSearchResults(
-          queryText, listSubject.value.last.id);
+    fetchedListSize = fetchedList.length;
 
-      fetchedListSize = fetchedList.length;
-
+    if (!refresh && listSubject.hasValue && listSubject.value != null) {
       fetchedList = List<SearchResult>.from(listSubject.value)
         ..addAll(fetchedList);
     }
 
     if (fetchedListSize != _backendListSize) {
       existsNext = false;
+    } else {
+      fetchPageNumber++;
     }
 
     if (!_isFetchingController.isClosed &&

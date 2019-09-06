@@ -28,7 +28,24 @@ class FeedModel extends BaseModel with BaseFeedMixin<Post> {
   Future<void> uploadNewPost(BuildContext context) async {
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
-      navigateTo(context, RouteName.uploadPost, file);
+      int code = (await navigateTo(context, RouteName.uploadPost, file)) as int;
+      if (code == 0) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Upload Post'),
+                content: Text('Post has been uploaded successfully'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              );
+            },
+          );
+      }
     }
   }
 
@@ -62,8 +79,8 @@ class FeedModel extends BaseModel with BaseFeedMixin<Post> {
     }
   }
 
-  void navigateTo(BuildContext context, String route, [Object arguments]) {
-    Navigator.of(context).pushNamed(route, arguments: arguments);
+  Future navigateTo(BuildContext context, String route, [Object arguments]) {
+    return Navigator.of(context).pushNamed(route, arguments: arguments);
   }
 
   bool get userIsConfirmed => appInfo.currentUser.isConfirmed;
