@@ -96,28 +96,26 @@ class DetailedPostScreen extends StatelessWidget {
 
   Widget _buildUserRow(
       BuildContext context, DetailedPostModel model, CompactUser user) {
-    return Flexible(
-      child: Row(
-        children: <Widget>[
-          UserAvatar(
-            isCircle: true,
-            side: _iconSideSize,
-            user: user,
+    return Row(
+      children: <Widget>[
+        UserAvatar(
+          isCircle: true,
+          side: _iconSideSize,
+          user: user,
+          onTap: () => model.navigateToUserProfile(context),
+        ),
+        const SizedBox(width: 12.0),
+        Flexible(
+          child: GestureDetector(
             onTap: () => model.navigateToUserProfile(context),
-          ),
-          const SizedBox(width: 12.0),
-          Flexible(
-            child: GestureDetector(
-              onTap: () => model.navigateToUserProfile(context),
-              child: Text(
-                user.name,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
+            child: Text(
+              user.name,
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

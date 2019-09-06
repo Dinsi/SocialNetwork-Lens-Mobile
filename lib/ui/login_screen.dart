@@ -73,11 +73,6 @@ class LoginScreen extends StatelessWidget {
                 obscureText: isObscure,
               );
             }),
-        Container(
-          padding: const EdgeInsets.only(right: 16.0),
-          alignment: Alignment.centerRight,
-          child: Text("Forgot your password?"),
-        ),
         const SizedBox(height: 30.0),
         _buildButton(
           model,
