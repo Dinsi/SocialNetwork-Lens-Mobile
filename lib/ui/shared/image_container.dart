@@ -41,7 +41,7 @@ class ImageContainer extends StatelessWidget {
   }
 
   double _calculatePlaceholderHeight(BuildContext context) {
-    if (MediaQuery.of(context).size.width >= imageWidth) {
+    if (MediaQuery.of(context).size.width - paddingDiff >= imageWidth) {
       return imageHeight.toDouble();
     }
 
