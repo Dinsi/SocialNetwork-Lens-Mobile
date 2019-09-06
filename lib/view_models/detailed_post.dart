@@ -68,12 +68,12 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
       List fetchedData = await Future.wait(futures);
 
       _basicPostModel.setPost(fetchedData[0] as Post);
-      _updateComments(fetchedData[1]);
+      _updateComments(refresh, fetchedData[1]);
     } else {
       dynamic fetchedData = await _repository.fetchComments(
           _commentLimit, _basicPostModel.post.id, _nextLink);
 
-      _updateComments(fetchedData);
+      _updateComments(refresh, fetchedData);
     }
   }
 
@@ -91,8 +91,8 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     String newComment = _commentTextController.text.trim();
     _commentTextController.clear();
 
-    Comment newCommentObj = await _repository.postComment(
-        _basicPostModel.post.id, newComment);
+    Comment newCommentObj =
+        await _repository.postComment(_basicPostModel.post.id, newComment);
 
     if (!listSubject.isClosed) {
       listSubject.sink.add(UnmodifiableListView(
@@ -130,7 +130,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
 
   /////////////////////////////////////////////////////////////
   // * Private Functions
-  void _updateComments(dynamic commentData) {
+  void _updateComments(bool refresh, dynamic commentData) {
     UnmodifiableListView<Comment> comments;
 
     if (commentData is Map) {
@@ -140,7 +140,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
         existsNext = false;
       }
 
-      if (!listSubject.hasValue) {
+      if (refresh || !listSubject.hasValue) {
         comments = UnmodifiableListView<Comment>(
             commentData["comments"] as List<Comment>);
       } else {
