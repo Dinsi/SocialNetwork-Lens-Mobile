@@ -183,4 +183,8 @@ class BasicPostModel extends StateModel<BasicPostViewState> {
 
   Post get post => _post;
   bool get isSelf => _appInfo.currentUser.id == _post.user.id;
+
+  void notifySelf() {
+    notifyListeners();
+  }
 }

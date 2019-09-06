@@ -73,6 +73,11 @@ mixin BaseFeedMixin<T> {
     return lockedLoadNext(true);
   }
 
+  void insertEmptyList() {
+    existsNext = false;
+    listSubject.add(UnmodifiableListView(List(0)));
+  }
+
   Future<void> fetch(bool refresh);
 
   Observable<UnmodifiableListView<T>> get listStream => listSubject.stream;

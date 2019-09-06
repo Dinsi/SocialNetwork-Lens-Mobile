@@ -12,32 +12,30 @@ import 'package:aperture/view_models/core/base_model.dart';
 import 'package:aperture/view_models/core/mixins/base_feed.dart';
 import 'package:aperture/view_models/shared/basic_post.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/subjects.dart';
 
 const _commentLimit = 10;
 
 enum DetailedPostOptions { CollectionAdd, SubmitPost }
 
-enum DetailedPostViewState { Idle, Publishing }
-
-class DetailedPostModel extends StateModel<DetailedPostViewState>
-    with BaseFeedMixin<Comment> {
+class DetailedPostModel extends BaseModel with BaseFeedMixin<Comment> {
   final Repository _repository = locator<Repository>();
 
   BasicPostModel _basicPostModel;
 
   String _nextLink;
+  final _publishButtonSubject = PublishSubject<bool>();
 
-  final listViewKey = GlobalKey();
-  ScrollController _scrollController = ScrollController();
   TextEditingController _commentTextController = TextEditingController();
   FocusNode _commentFocusNode = FocusNode();
-
-  DetailedPostModel() : super(DetailedPostViewState.Idle);
 
   // * Init Functions
   void init(BasicPostModel model) {
     // Delegate model
     _basicPostModel = model;
+    if (_basicPostModel.post.commentsLength == 0) {
+      insertEmptyList();
+    }
   }
 
   /////////////////////////////////////////////////////////////
@@ -45,7 +43,8 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   @override
   void dispose() {
     super.dispose();
-    _scrollController?.dispose();
+    _publishButtonSubject.close();
+
     _commentFocusNode.dispose();
     _commentTextController.dispose();
   }
@@ -84,7 +83,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
       return;
     }
 
-    setState(DetailedPostViewState.Publishing);
+    _publishButtonSubject.add(false);
 
     FocusScope.of(context).unfocus();
 
@@ -94,16 +93,17 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     Comment newCommentObj =
         await _repository.postComment(_basicPostModel.post.id, newComment);
 
+    _basicPostModel.post.commentsLength++;
+    _basicPostModel.notifySelf();
+
     if (!listSubject.isClosed) {
-      listSubject.sink.add(UnmodifiableListView(
-          List.from(listSubject.value)..insert(0, newCommentObj)));
+      listSubject.sink.add(!listSubject.hasValue
+          ? UnmodifiableListView(List()..add(newCommentObj))
+          : UnmodifiableListView(
+              List.from(listSubject.value)..insert(0, newCommentObj)));
     }
 
-    _basicPostModel.post.commentsLength++;
-
-    // Propagating changes
-    _basicPostModel.notifyListeners();
-    setState(DetailedPostViewState.Idle);
+    _publishButtonSubject.add(true);
   }
 
   void onMoreSelected(BuildContext context, DetailedPostOptions result) {
@@ -152,7 +152,7 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
     }
 
     if (!listSubject.isClosed) {
-      listSubject.sink.add(comments);
+      listSubject.sink.add(comments ?? UnmodifiableListView<Comment>(List(0)));
     }
   }
 
@@ -264,7 +264,8 @@ class DetailedPostModel extends StateModel<DetailedPostViewState>
   bool get postBelongsToUser =>
       _basicPostModel.post.user.id == appInfo.currentUser.id;
 
-  ScrollController get scrollController => _scrollController;
+  Stream<bool> get publishButtonStream => _publishButtonSubject.stream;
+
   TextEditingController get commentTextController => _commentTextController;
   FocusNode get commentFocusNode => _commentFocusNode;
 }

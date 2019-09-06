@@ -29,7 +29,7 @@ class DetailedPostScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: ChangeNotifierBaseView<DetailedPostModel>(
+        body: SimpleBaseView<DetailedPostModel>(
           onModelReady: (model) {
             model.init(basicPostModel);
           },
@@ -42,8 +42,7 @@ class DetailedPostScreen extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: ListView(
-                        controller: model.scrollController,
-                        key: model.listViewKey,
+                        physics: AlwaysScrollableScrollPhysics(),
                         children: _buildWidgetList(context, model),
                       ),
                     ),
@@ -60,37 +59,50 @@ class DetailedPostScreen extends StatelessWidget {
 
   List<Widget> _buildWidgetList(BuildContext context, DetailedPostModel model) {
     return [
-      Padding(
-        padding: const EdgeInsets.only(left: 12.0, top: 12.0, right: 12.0),
-        child: basicPostModel.isSelf
-            ? Consumer<User>(
-                builder: (context, currentUser, __) =>
-                    _buildUserRow(context, model, currentUser),
-              )
-            : _buildUserRow(context, model, model.post.user),
-      ),
-      const SizedBox(height: 16.0),
-      DescriptionText(
-        text: model.post.description,
-        withHashtags: true,
-      ),
-      const SizedBox(height: 16.0),
-      _buildImageAndVoteSection(context, model),
-      const SizedBox(height: 16.0),
-      Padding(
-        padding: const EdgeInsets.only(left: 16.0),
-        child: Text(
-          model.post.commentsLength == 1
-              ? '1 comment'
-              : '${model.post.commentsLength} comments',
-          style: Theme.of(context).textTheme.subhead.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
-              ),
+      ChangeNotifierProvider.value(
+        value: basicPostModel,
+        child: Consumer<BasicPostModel>(
+          builder: (context, basicPostModel, __) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 12.0, top: 12.0, right: 12.0),
+                  child: basicPostModel.isSelf
+                      ? Consumer<User>(
+                          builder: (context, currentUser, __) =>
+                              _buildUserRow(context, model, currentUser),
+                        )
+                      : _buildUserRow(context, model, model.post.user),
+                ),
+                const SizedBox(height: 16.0),
+                DescriptionText(
+                  text: model.post.description,
+                  withHashtags: true,
+                ),
+                const SizedBox(height: 16.0),
+                _buildImageAndVoteSection(context, model),
+                const SizedBox(height: 16.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Text(
+                    model.post.commentsLength == 1
+                        ? '1 comment'
+                        : '${model.post.commentsLength} comments',
+                    style: Theme.of(context).textTheme.subhead.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[600],
+                        ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
       const SizedBox(height: 8.0),
-      if (model.post.commentsLength != 0) _buildCommentSection(model)
+      _buildCommentSection(model)
     ];
   }
 
@@ -258,16 +270,27 @@ class DetailedPostScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12.0),
-                    GestureDetector(
-                      onTap: () => model.onCommentPublish(context),
-                      child: SizedBox(
-                        height: _newCommentIconSideSize,
-                        width: _newCommentIconSideSize + 10.0,
-                        child: Icon(
-                          FontAwesomeIcons.solidPaperPlane,
-                          size: _newCommentIconSideSize - 5.0,
-                        ),
-                      ),
+                    StreamBuilder(
+                      initialData: true,
+                      stream: model.publishButtonStream,
+                      builder: (context, snapshot) {
+                        return GestureDetector(
+                          onTap: snapshot.data
+                              ? () => model.onCommentPublish(context)
+                              : null,
+                          child: SizedBox(
+                            height: _newCommentIconSideSize,
+                            width: _newCommentIconSideSize + 10.0,
+                            child: Icon(
+                              FontAwesomeIcons.solidPaperPlane,
+                              size: _newCommentIconSideSize - 5.0,
+                              color: snapshot.data
+                                  ? Colors.black
+                                  : Colors.grey.shade700,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

@@ -22,7 +22,9 @@ abstract class LoadingListViewState<T, LListViewT extends LoadingListView<T>>
   @override
   void initState() {
     super.initState();
-    widget.model.fetch(false);
+    if (widget.model.existsNext) {
+      widget.model.lockedLoadNext(false);
+    }
   }
 
   @override
