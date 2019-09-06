@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode, jsonEncode;
+import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io';
 
 import 'package:aperture/models/post.dart';
@@ -20,7 +20,7 @@ class TournamentApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      final body = jsonDecode(response.body);
+      final body = jsonDecode(utf8.decode(response.bodyBytes));
       return TournamentInfo.fromJson(body);
     } else {
       // If that call was not successful, throw an error.
@@ -40,7 +40,7 @@ class TournamentApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      final List body = jsonDecode(response.body);
+      final List body = jsonDecode(utf8.decode(response.bodyBytes));
       return body.map((post) => Post.fromJson(post)).toList();
     } else {
       // If that call was not successful, throw an error.

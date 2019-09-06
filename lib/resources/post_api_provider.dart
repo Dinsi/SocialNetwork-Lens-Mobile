@@ -40,14 +40,15 @@ class PostApiProvider extends BaseApiProvider {
       HttpHeaders.authorizationHeader: 'Bearer ' + appInfo.accessToken
     });
 
-    debugPrint(response.body.toString(), wrapWidth: 1024);
+    debugPrint('${response.statusCode}\n${response.body}', wrapWidth: 1024);
 
     if (response.statusCode == HttpStatus.ok) {
       if (response.body.isEmpty) {
         return List<Post>();
       }
 
-      List<dynamic> body = (jsonDecode(response.body) as List);
+      List<dynamic> body =
+          (jsonDecode(utf8.decode(response.bodyBytes)) as List);
       List<Post> posts = List<Post>(body.length);
       for (int i = 0; i < body.length; i++) {
         posts[i] = Post.fromJson(body[i]);
@@ -70,7 +71,7 @@ class PostApiProvider extends BaseApiProvider {
     debugPrint(response.body.toString());
 
     if (response.statusCode == HttpStatus.ok) {
-      dynamic body = jsonDecode(response.body);
+      dynamic body = jsonDecode(utf8.decode(response.bodyBytes));
       return Post.fromJson(body);
     } else {
       // If that call was not successful, throw an error.

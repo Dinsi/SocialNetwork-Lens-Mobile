@@ -16,24 +16,6 @@ class FeedScreen extends StatelessWidget {
     return SafeArea(
       child: SimpleBaseView<FeedModel>(
         builder: (_, model, __) {
-          /*NestedScrollView(
-    controller: _scrollViewController,
-    headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-      return <Widget>[
-        new SliverAppBar(
-          title: new Text(widget.title),
-          pinned: true,
-          floating: true,
-          forceElevated: innerBoxIsScrolled,
-          bottom: new TabBar(
-            tabs: <Tab>[
-              new Tab(text: "STATISTICS"),
-              new Tab(text: "HISTORY"),
-            ],
-            controller: _tabController,
-          ),
-        ),
-      ];*/
           return Scaffold(
             key: model.scaffoldKey,
             drawer: Drawer(
@@ -110,26 +92,6 @@ class FeedScreen extends StatelessWidget {
                           onPressed: () => model.uploadNewPost(context),
                         ),
                       ],
-                      bottom: !model.userIsConfirmed
-                          ? PreferredSize(
-                              preferredSize: Size(double.infinity, 50.0),
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "Please confirm your email address",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          : null,
                     ),
                     ScrollLoadingListView<Post>(
                       sliver: true,

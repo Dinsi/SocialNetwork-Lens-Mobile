@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonEncode, jsonDecode;
+import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io' show ContentType, HttpException, HttpHeaders, HttpStatus;
 
 import 'package:aperture/resources/base_api_provider.dart';
@@ -19,7 +19,7 @@ class TokenApiProvider extends BaseApiProvider {
 
     switch (response.statusCode) {
       case HttpStatus.ok:
-        final body = jsonDecode(response.body);
+        final body = jsonDecode(utf8.decode(response.bodyBytes));
         await appInfo.cacheLogin(body['access'], body['refresh']);
 
         return 0;
@@ -55,7 +55,7 @@ class TokenApiProvider extends BaseApiProvider {
         return 0;
 
       case HttpStatus.badRequest:
-        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        final body = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
 
         // 1 -> username is taken
         // 2 -> email is taken
@@ -83,7 +83,7 @@ class TokenApiProvider extends BaseApiProvider {
         return false;
       }
 
-      dynamic body = jsonDecode(response.body);
+      dynamic body = jsonDecode(utf8.decode(response.bodyBytes));
       appInfo.setAccessToken(body['access']);
     }
 

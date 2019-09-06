@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode, jsonEncode;
+import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io';
 
 import 'package:aperture/models/collections/collection.dart';
@@ -22,7 +22,7 @@ class CollectionApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      return Collection.fromJson(jsonDecode(response.body));
+      return Collection.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
 
     throw HttpException('_collection_fetch_');
@@ -43,7 +43,7 @@ class CollectionApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      return Collection.fromJson(jsonDecode(response.body));
+      return Collection.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
 
     throw HttpException('_collection_appendPost_');
@@ -64,7 +64,7 @@ class CollectionApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.created) {
-      return Collection.fromJson(jsonDecode(response.body));
+      return Collection.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
 
     throw HttpException('_collection_postNew_');

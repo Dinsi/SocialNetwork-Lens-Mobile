@@ -24,7 +24,7 @@ class UserApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      dynamic body = jsonDecode(response.body);
+      dynamic body = jsonDecode(utf8.decode(response.bodyBytes));
       await appInfo.setUserFromMap(body);
       return User.fromJson(body);
     }
@@ -43,7 +43,7 @@ class UserApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      return User.fromJson(jsonDecode(response.body));
+      return User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
 
     throw HttpException('_user_fetchInfoById_');
@@ -64,7 +64,7 @@ class UserApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      await appInfo.setUserFromMap(jsonDecode(response.body));
+      await appInfo.setUserFromMap(jsonDecode(utf8.decode(response.bodyBytes)));
       return 0;
     }
 
@@ -148,7 +148,7 @@ class UserApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      await appInfo.setUserFromMap(jsonDecode(response.body));
+      await appInfo.setUserFromMap(jsonDecode(utf8.decode(response.bodyBytes)));
       return 0;
     }
 

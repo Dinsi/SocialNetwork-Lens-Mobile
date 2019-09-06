@@ -41,8 +41,6 @@ class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
       if (_isFetchingController.value == false) {
         _isFetchingController.sink.add(true);
       }
-
-      onRefresh();
     });
   }
 
@@ -63,7 +61,7 @@ class SearchModel extends BaseModel with BaseFeedMixin<SearchResult> {
     List<SearchResult> fetchedList;
     int fetchedListSize;
 
-    if (refresh || !listSubject.hasValue) {
+    if (refresh || !listSubject.hasValue || listSubject.value == null) {
       fetchedList = await _repository.fetchSearchResults(queryText, null);
 
       fetchedListSize = fetchedList.length;

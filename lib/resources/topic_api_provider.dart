@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode, jsonEncode;
+import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io' show HttpException, HttpHeaders, HttpStatus;
 import 'dart:io';
 
@@ -24,7 +24,7 @@ class TopicApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      List<dynamic> body = (jsonDecode(response.body) as List);
+      List<dynamic> body = (jsonDecode(utf8.decode(response.bodyBytes)) as List);
 
       List<Topic> topicsList = List<Topic>(body.length);
       for (int i = 0; i < topicsList.length; i++) {
@@ -48,7 +48,7 @@ class TopicApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      return Topic.fromJson(jsonDecode(response.body));
+      return Topic.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
 
     throw HttpException('_topic_fetchSingle_');
@@ -103,7 +103,7 @@ class TopicApiProvider extends BaseApiProvider {
     debugPrint('${response.statusCode.toString()}\n${response.body}');
 
     if (response.statusCode == HttpStatus.ok) {
-      List body = jsonDecode(response.body) as List;
+      List body = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       List<SearchResult> results = List<SearchResult>(body.length);
 
       for (var i = 0; i < body.length; i++) {

@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode, jsonEncode;
+import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io';
 
 import 'package:aperture/models/comment.dart';
@@ -26,7 +26,7 @@ class CommentApiProvider extends BaseApiProvider {
         return List<Comment>();
       }
 
-      dynamic body = jsonDecode(response.body);
+      dynamic body = jsonDecode(utf8.decode(response.bodyBytes));
       List<dynamic> commentsData = (body["results"] as List);
       List<Comment> comments = List<Comment>(commentsData.length);
       for (int i = 0; i < commentsData.length; i++) {
@@ -54,7 +54,7 @@ class CommentApiProvider extends BaseApiProvider {
 
     debugPrint('${response.statusCode.toString()}\n${response.body}');
     if (response.statusCode == HttpStatus.created) {
-      return Comment.fromJson(jsonDecode(response.body));
+      return Comment.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
 
     throw HttpException('_comment_post_');
